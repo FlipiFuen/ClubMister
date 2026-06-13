@@ -1,12 +1,15 @@
+{% extends "club_mister/base.html" %}
+{% load i18n %}
 
-<!doctype html>
-<html lang='es'>
-<head>
-  <meta charset='uf-8'>
-  <title 'ClubMister'></title>
-</head>
-<body>
-  <h1>ClubMister</h1>
-  <p>Manager de fútbol que lo flipas</p>
-</body>
-</hml>
+{% block title %}{% trans "Inicio" %} | ClubMister{% endblock %}
+
+{% block contenido %}
+  <section class="hero">
+    <div class="card">
+      <h1>{% trans "Lleva a tu club a lo más alto" %}</h1>
+      <p>
+        {% trans "Dirige tu propio club y lleva al equipo a la élite." %}
+      </p>
+    </div>
+  </section>
+{% endblock %}

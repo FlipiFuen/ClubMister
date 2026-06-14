@@ -1,0 +1,17 @@
+
+{% extends 'club_mister/base.html' %}
+
+{% block title %}Registro | ClubMister{% endblock %}
+
+{% block contenido %}
+  <div class="card">
+    <h1>Crear cuenta</h1>
+    <p class="muted">Django ya trae un formulario básico de registro.</p>
+
+    <form method="post">
+      {% csrf_token %}
+      {{ formulario.as_p }}
+      <button type="submit">Registrarme</button>
+    </form>
+  </div>
+{% endblock %}

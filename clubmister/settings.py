@@ -37,6 +37,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     # Mis aplicaciones
     'club_mister',
+    'usuarios',
     
     # Aplicaciones Django
     'django_bootstrap5',
@@ -134,3 +135,14 @@ LOCALE_PATHS = [
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+# Si un usuario intenta entrar en una vista protegida sin iniciar sesión,
+# Django lo enviará a esta URL.
+LOGIN_URL = 'login'
+
+# Después de iniciar sesión correctamente, Django lo redirigirá aquí.
+LOGIN_REDIRECT_URL = 'club_mister:principal'
+
+# Después de cerrar sesión, el usuario volverá a esta página.
+LOGOUT_REDIRECT_URL = 'club_mister:principal'
+

@@ -1,0 +1,17 @@
+
+{% extends 'club_mister/base.html' %}
+
+{% block title %}Login | TravelChecklist{% endblock %}
+
+{% block contenido %}
+  <div class="card">
+    <h1>Iniciar sesión</h1>
+    <p class="muted">Usa tu usuario y contraseña para entrar.</p>
+
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit">Entrar</button>
+    </form>
+  </div>
+{% endblock %}

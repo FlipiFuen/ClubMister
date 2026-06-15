@@ -1,14 +1,34 @@
 {% extends "club_mister/base.html" %}
 {% load i18n %}
+{% load static %}
 
 {% block title %}{% trans "Inicio" %} | ClubMister{% endblock %}
 
 {% block contenido %}
+
   <section class="hero">
-    <div class="card">
-      <h1>{% trans "Lleva a tu club a lo más alto" %}</h1>
-      <p>
-        {% trans "Dirige tu propio club y lleva al equipo a la élite." %}
+    <div class="card pt-0 px-5 pb-5  text-center bg-transparent border-0">
+      <p class="fs-2 fw-bold text-white font-trebuchet mb-0">{% trans "Dirige tu club y llévalo" %}</p>
+      <p class="fs-3 text-warning font-comic">
+        {% trans "a competir en la élite" %}
+      </p>
+    </div>
+    <div class="card tarjeta-gestion">
+      <img src="{% static "imagenes/gestion.png" %}" alt="gestion">
+      <p class="fs-3 fw-bold text-warning font-comic">
+        {% trans "GESTIONA TU CLUB" %}
+      </p>
+    </div>
+    <div class="card tarjeta-dirige">
+      <img src="{% static "imagenes/dirige.png" %}" alt="dirige">
+      <p class="fs-3 fw-bold text-warning font-comic">
+        {% trans "DIRIGE A TU EQUIPO" %}
+      </p>
+    </div>
+    <div class="card tarjeta-compite">
+      <img src="{% static "imagenes/compite.png" %}" alt="compite">
+      <p class="fs-3 fw-bold text-warning font-comic">
+        {% trans "COMPITE ONLINE" %}
       </p>
     </div>
   </section>

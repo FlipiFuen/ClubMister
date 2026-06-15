@@ -7,35 +7,17 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}ClubMister{% endblock %}</title>
-  <link rel="stylesheet" href="{% static 'estilo.css' %}"> 
     
   {% load i18n %}
   {% load django_bootstrap5 %}
   {% bootstrap_css %}
+  <link rel="stylesheet" href="{% static 'estilo.css' %}"> 
   {% bootstrap_javascript %}
-  
-  <style>
-    .dropdown-item img {
-      width: 20px;
-      height: 20px;
-      margin-right: 10px;
-    }
-    .custom-font-size {
-      font-size: 2.5rem; /* Cambia el tamaño de la fuente aquí */
-    }
-    /* Evitar que textos largos rompan el layout */
-    .allow-wrap, .nav-link, .navbar-text, .team-title {
-      white-space: normal !important;
-      overflow-wrap: anywhere;
-    }
-    /* Compensar navbar fixed-top */
-    body { padding-top: 100px; }
-  </style>
-
+  {% block extra_css %}{% endblock %}
 </head>
 
 <body>
-  <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4 border fixed-top" style="height: 90px;">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-success mb-4 border fixed-top" style="height: 90px;">
     <div class="container-fluid">
       <a class="navbar-brand" href="{% url 'club_mister:principal' %}">
         <img src="{% static 'imagenes/logo.png' %}" alt="logo">
@@ -55,7 +37,7 @@
               </li>
           {% else %}
             <li class="nav-item">
-              <b><span class="navbar-text custom-font-size">CLUBMISTER</span></b>
+              <b><span class="navbar-text custom-font-size text-primary">CLUBMISTER</span></b>
             </li>
           {% endif %}
         </ul>
@@ -94,7 +76,7 @@
           </form>
         </div>
       </div> <!-- navbar de colapso-->
-    </div>
+    </div> <!-- container-fluid -->
   </nav>
         
 {% block contenido %}{% endblock contenido %}

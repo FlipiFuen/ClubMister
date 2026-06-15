@@ -1,0 +1,130 @@
+/* Globales */
+body {
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    padding-top: 100px; /* Compensar navbar fixed-top */
+}
+
+.custom-navbar {
+    background-color: #1e8d25 !important; /* Color de fondo negro */
+    height: 90px;
+    border-bottom: 2px solid #ffc107 !important; /* Borde inferior amarillo opcional */
+}
+
+/* Fuentes personalizadas */
+.font-arial {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.font-comic {
+    font-family: "Comic Sans MS", "Comic Sans", cursive;
+}
+
+.font-trebuchet{
+    font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial, sans-serif;
+}
+
+.custom-font-size {
+    font-size: 2.5rem;
+}
+
+/* Navbar e Idiomas */
+.dropdown-item img {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+}
+
+/* Utilidades de texto */
+.allow-wrap, .nav-link, .navbar-text, .team-title {
+    white-space: normal !important;
+    overflow-wrap: anywhere;
+}
+
+/* Sección Hero */
+.hero {
+    /* La ruta es relativa al archivo CSS */
+    background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url("imagenes/fondo.png");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    min-height: calc(100vh - 100px);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding-top: 0;
+    color: white;
+}
+
+/* Tarjeta abajo izquierda */
+.hero .tarjeta-gestion{
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    top: 75%;
+    right: 67%;
+    width: 30%;
+    min-width: 280px;
+    background-color: #000000 !important;
+    border: 2px solid #ffc107 !important;
+    border-radius: 15px;
+    padding: 10px;
+    color: yellow;
+}
+
+/* Tamaño para la imagen de la tarjeta */
+.hero .tarjeta-gestion img {
+    width: 20%;
+    height: 80%;
+    padding-right: 5%;
+}
+
+/* Tarjeta abajo centro */
+.hero .tarjeta-dirige{
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    top: 75%;
+    right: 35%;
+    width: 30%;
+    min-width: 280px;
+    background-color: #000000 !important;
+    border: 2px solid #ffc107 !important;
+    border-radius: 15px;
+    padding: 10px;
+    color: yellow;
+}
+
+/* Tamaño para la imagen de la tarjeta */
+.hero .tarjeta-dirige img {
+    width: 20%;
+    height: 80%;
+    padding-right: 5%;
+}
+
+/* Tarjeta abajo derecha */
+.hero .tarjeta-compite{
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    top: 75%;
+    right: 3%;
+    width: 30%;
+    min-width: 280px;
+    background-color: #000000 !important;
+    border: 2px solid #ffc107 !important;
+    border-radius: 15px;
+    padding: 10px;
+    color: yellow;
+}
+
+/* Tamaño para la imagen de la tarjeta */
+.hero .tarjeta-compite img {
+    width: 20%;
+    height: 80%;
+    padding-right: 5%;
+}

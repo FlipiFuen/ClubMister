@@ -1,17 +1,29 @@
 
 {% extends 'club_mister/base.html' %}
+{% load static %}
+{% load i18n %}
+{% load django_bootstrap5%}
 
-{% block title %}Login | TravelChecklist{% endblock %}
+{% block title %}Login | ClubMister {% endblock %}
 
 {% block contenido %}
-  <div class="card">
-    <h1>Iniciar sesión</h1>
-    <p class="muted">Usa tu usuario y contraseña para entrar.</p>
 
-    <form method="post">
-      {% csrf_token %}
-      {{ form.as_p }}
-      <button type="submit">Entrar</button>
-    </form>
-  </div>
+  <div class="login-container">
+
+    <div class="card p-4 bg-success text-white border-warning"  style="width: 100%; max-width: 400px; --bs-bg-opacity: .85;">
+      <h1 class="text-center mb-4">{% trans "Iniciar Sesión" %}</h1>
+      {% if form.errors %}
+        <div class="alert alert-danger py-2 text-center">
+          <small>{% trans "Usuario o contraseña incorrectos." %}</small>
+        </div>
+      {% endif %}
+
+      <form action="{% url 'usuarios:login' %}" method="post">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        <button class="btn btn-warning w-100 mt-3 fw-bold" name="submit">{% trans "Entrar" %}</button>
+      </form>
+    </div> <!-- card -->
+  </div> <!-- login-container -->
+
 {% endblock %}

@@ -37,7 +37,7 @@
               </li>
           {% else %}
             <li class="nav-item">
-              <b><span class="navbar-text custom-font-size text-primary">CLUBMISTER</span></b>
+              <b><span class="navbar-text custom-font-size text-info">CLUBMISTER</span></b>
             </li>
           {% endif %}
         </ul>
@@ -46,7 +46,7 @@
          {% if not user.is_authenticated %}
             <ul class="navbar-nav">
               <li class="nav-item">
-                <a href="{% url 'usuarios:login' %}" class="nav-link">{% trans "Inicar sesión" %} </a>
+                <a href="{% url 'usuarios:login' %}" class="nav-link">{% trans "Iniciar sesión" %} </a>
               </li>
               <li class="nav-item">
                 <a href="{% url 'usuarios:registro' %}" class="nav-link">{% trans "Registrarse" %} </a>

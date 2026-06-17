@@ -5,7 +5,7 @@ body {
 }
 
 .custom-navbar {
-    background-color: #1e8d25 !important; /* Color de fondo negro */
+    background-color: #cbe91c !important; /* Color de fondo */
     height: 90px;
     border-bottom: 2px solid #ffc107 !important; /* Borde inferior amarillo opcional */
 }
@@ -43,7 +43,7 @@ body {
 /* Sección Hero */
 .hero {
     /* La ruta es relativa al archivo CSS */
-    background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url("imagenes/fondo.png");
+    background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url("imagenes/fondo.png");
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
@@ -127,4 +127,17 @@ body {
     width: 20%;
     height: 80%;
     padding-right: 5%;
+}
+
+/* Contenedor para centrar el Login con fondo */
+.login-container {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url("imagenes/login.png");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    min-height: calc(100vh - 100px); /* Ajuste según el padding del body */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
 }

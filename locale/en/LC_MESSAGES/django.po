@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-13 22:26+0200\n"
+"POT-Creation-Date: 2026-06-19 03:26+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,26 +17,65 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-#: .\club_mister\templates\club_mister\base.html:65
-msgid "Selecciona un idioma"
-msgstr "Select languaje"
 
-#: .\club_mister\templates\club_mister\principal.html:4
+#: .\club_mister\templates\club_mister\base.html:49
+msgid "Iniciar sesión"
+msgstr "Login"
+
+#: .\club_mister\templates\club_mister\base.html:52
+msgid "Registrarse"
+msgstr "Register"
+
+#: .\club_mister\templates\club_mister\base.html:62
+msgid "Selecciona un idioma"
+msgstr "Select a languaje"
+
+#: .\club_mister\templates\club_mister\principal.html:5
 msgid "Inicio"
 msgstr "Start"
 
-#: .\club_mister\templates\club_mister\principal.html:9
-msgid "Lleva a tu club a lo más alto"
-msgstr "Take your club to the top"
-
 #: .\club_mister\templates\club_mister\principal.html:11
-msgid "Dirige tu propio club y lleva al equipo a la élite."
-msgstr "Manage your own club and lead the team to the elite"
+msgid "Dirige tu club y llévalo"
+msgstr "Manage your club and lead it"
 
-#: .\clubmister\settings.py:125
-msgid "Spanish"
-msgstr ""
+#: .\club_mister\templates\club_mister\principal.html:13
+msgid "a competir en la élite"
+msgstr "to compete at the elite level"
+
+#: .\club_mister\templates\club_mister\principal.html:19
+msgid "GESTIONA TU CLUB"
+msgstr "MANAGE YOUR CLUB"
+
+#: .\club_mister\templates\club_mister\principal.html:25
+msgid "DIRIGE A TU EQUIPO"
+msgstr "LEAD YOUR TEAM"
+
+#: .\club_mister\templates\club_mister\principal.html:31
+msgid "COMPITE ONLINE"
+msgstr "COMPETE ONLINE"
 
 #: .\clubmister\settings.py:126
+msgid "Spanish"
+msgstr "Spanish"
+
+#: .\clubmister\settings.py:127
 msgid "English"
-msgstr ""
+msgstr "English"
+
+#: .\usuarios\templates\usuarios\login.html:14
+msgid "Iniciar Sesión"
+msgstr "Login"
+
+#: .\usuarios\templates\usuarios\login.html:17
+msgid "Usuario o contraseña incorrectos."
+msgstr "Incorrect username or password"
+
+#: .\usuarios\templates\usuarios\login.html:24
+msgid "Entrar"
+msgstr "Enter"
+
+#~ msgid "Lleva a tu club a lo más alto"
+#~ msgstr "Take your club to the top"
+
+#~ msgid "Dirige tu propio club y lleva al equipo a la élite."
+#~ msgstr "Manage your own club and lead the team to the elite"

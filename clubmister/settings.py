@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     # Mis aplicaciones
     'club_mister',
     'usuarios',
+    'clubs',
     
     # Aplicaciones Django
     'django_bootstrap5',

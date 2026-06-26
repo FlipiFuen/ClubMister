@@ -11,7 +11,7 @@ class Equipo(models.Model):
     division = models.PositiveIntegerField(default=1)
     grupo = models.PositiveIntegerField(default=1)
     temporada = models.PositiveIntegerField()
-    partidos_jugados = models.IntegerField(default=1)
+    partidos_jugados = models.IntegerField(default=0)
     victorias = models.IntegerField(default=0)
     empates = models.IntegerField(default=0)
     derrotas = models.IntegerField(default=0)

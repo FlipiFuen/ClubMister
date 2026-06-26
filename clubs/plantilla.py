@@ -49,7 +49,7 @@ class Plantilla:
                 numeros_apellidos.append(numero)
             
             # Leemos el archivo de apellidos
-            with open('./futbolistas/apellidos.txt', 'r', encoding='utf-8') as file:
+            with open('./clubs/futbolistas/apellidos.txt', 'r', encoding='utf-8') as file:
                 lineas = file.readlines()
                 
             # Seleccionamos los apellidos aleatorios
@@ -126,7 +126,7 @@ class Plantilla:
     def averaged_random(self, average, max_deviation):
         """Genera un número aleatorio con una desvición estandar a partir de un promedio dado"""
         # Seleccionamos un valor aleatorio de la lista de valores gaussianos
-        rand_gaussian = gaussian_vars[self.uniform_random(0, N_GAUSS - 1)]
+        rand_gaussian = gaussian_vars[self.uniform_random(N_GAUSS - 1)]
         # Calculamos la desviación esandar a partir del promedio y la desviación máxima
         deviation = max_deviation * rand_gaussian
         return int(average + deviation)
@@ -195,7 +195,7 @@ class Plantilla:
             "mcd": 0,
             "mc": 0,
             "mp": 0,
-            "del": o
+            "del": 0
         } # Diccionario para contar la cantidad de jugadores por posición
         
         # Asignamos un valor inicial a las 4 habilidades de los furbolistas

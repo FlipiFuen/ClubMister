@@ -3,6 +3,8 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
 
+from clubs.models import Equipo
+
 class RegistroForm(UserCreationForm):
     """
     Formulario de registro para nuevos usuarios

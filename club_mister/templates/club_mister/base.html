@@ -1,17 +1,18 @@
 <!DOCTYPE html>
 
-<html lang="{{ LANGUAGE_CODE }}" dir="{% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'he' or LANGUAGE_CODE == 'fa' %}rtl{% else %}ltr{% endif %}">
+<html lang="{{ LANGUAGE_CODE }}"
+  dir="{% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'he' or LANGUAGE_CODE == 'fa' %}rtl{% else %}ltr{% endif %}">
 
 <head>
   {% load static %}
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}ClubMister{% endblock %}</title>
-    
+
   {% load i18n %}
   {% load django_bootstrap5 %}
   {% bootstrap_css %}
-  <link rel="stylesheet" href="{% static 'estilo.css' %}"> 
+  <link rel="stylesheet" href="{% static 'estilo.css' %}">
   {% bootstrap_javascript %}
   {% block extra_css %}{% endblock %}
 </head>
@@ -25,43 +26,59 @@
 
       <!--Boton de colapso-->
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
-              aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-      
+
       <div class="collapse navbar-collapse" id="navbarCollapse">
         <ul class="navbar-nav mx-auto">
           {% if user.is_authenticated %}
-              <li class="nav-item">
-                <b><h1>{{ nombre_equipo }}</h1></b>
-              </li>
-              <li class="nav-item">
-                <p>{{ user.username }}</p>
-          {% else %}
-            <li class="nav-item">
-              <b><span class="navbar-text custom-font-size text-info">CLUBMISTER</span></b>
-            </li>
+          <li class="nav-item">
+            <b>
+              <h1>{{ nombre_equipo }}</h1>
+            </b>
+          </li>
+          <li class="nav-item">
+            <p>{{ user.username }}</p>
+            {% else %}
+          <li class="nav-item">
+            <b><span class="navbar-text custom-font-size text-info">CLUBMISTER</span></b>
+          </li>
           {% endif %}
         </ul>
 
         <!-- botones de registro y login si el usuario no está autentificado -->
-         {% if not user.is_authenticated %}
-            <ul class="navbar-nav">
-              <li class="nav-item">
-                <a href="{% url 'usuarios:login' %}" class="nav-link">{% trans "Iniciar sesión" %} </a>
-              </li>
-              <li class="nav-item">
-                <a href="{% url 'usuarios:registro' %}" class="nav-link">{% trans "Registrarse" %} </a>
-              </li>
-            </ul>
-          {% endif %}
+        {% if not user.is_authenticated %}
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a href="{% url 'usuarios:login' %}" class="nav-link">{% trans "Iniciar sesión" %} </a>
+          </li>
+          <li class="nav-item">
+            <a href="{% url 'usuarios:registro' %}" class="nav-link">{% trans "Registrarse" %} </a>
+          </li>
+        </ul>
+        <!-- Botón de desconexión si el usuario está logueado -->
+        {% else %}
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <form method="post" action="{% url 'usuarios:logout' %}" class="d-inline">
+              {% csrf_token %}
+              <button type="submit" class="nav-link btn btn-link align-baseline text-start"
+                style="padding:0; border: 0;">
+                {% trans "Cerrar sesión" %}
+              </button>
+            </form>
+          </li>
+        </ul>
+        {% endif %}
 
         <div class="dropdown ms-3 mb-0">
           <form method="post" action="{% url 'set_language' %}">
-              {% csrf_token %}
-              <input type="hidden" name="next" value="{{ request.get_full_path }}" />
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                  {% trans "Selecciona un idioma" %}
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.get_full_path }}" />
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+              data-bs-toggle="dropdown" aria-expanded="false">
+              {% trans "Selecciona un idioma" %}
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
               <li>
@@ -80,8 +97,8 @@
       </div> <!-- navbar de colapso-->
     </div> <!-- container-fluid -->
   </nav>
-        
-{% block contenido %}{% endblock contenido %}
+
+  {% block contenido %}{% endblock contenido %}
 
 </body>
 

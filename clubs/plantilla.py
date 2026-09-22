@@ -1,35 +1,40 @@
 import random
 import math
+from pathlib import Path
 
 # Constantes
 N_GAUSS = 1000
 
-# Generar una lista de valores gaussianos
-gaussian_vars = []
+def fill_gaussian_vars_arr(amount):
+    """Llena la lista gaussian_vars con valores gaussianos"""
+    # Generar una lista de valores gaussianos
+    valores_gausianos = []
+
+    for _ in range(amount):
+        salida = False
+        while not salida:
+            u1 = random.random()
+            u2 = random.random()
+            v1 = 2 * u1 - 1
+            v2 = 2 * u2 - 1
+            s = v1 * v1 + v2 * v2
+                
+            if s < 1.0:
+                x = v1 * math.sqrt(-2 * math.log(s) / s)
+                    
+                if -1.0 < x < 1.0:
+                    valores_gausianos.append(x)
+                    salida = True
+                    
+    return valores_gausianos
+    
+
 
 class Plantilla:
     def __init__(self):
         self.jugadores = [] # Lista para almacenar los jugadores del equipo
-        self.crear_equipo()
-        
-    def fill_gaussian_vars_arr(amount):
-        """Llena la lista gaussian_vars con valores gaussianos"""
-        for _ in range(amount):
-            salida = False
-            while not salida:
-                u1 = random.random()
-                u2 = random.random()
-                v1 = 2 * u1 - 1
-                v2 = 2 * u2 - 1
-                s = v1 * v1 + v2 * v2
-                if s < 1.0:
-                    x = v1 * math.sqrt(-2 * math.log(s) / s)
-                    if -1.0 < x < 1.0:
-                        gaussian_vars.append(x)
-                        salida = True
-    
-    # Llamar a la función para llenar la lista de valores gaussianos                    
-    fill_gaussian_vars_arr(N_GAUSS)
+        # Llamar a la función para llenar la lista de valores gaussianos                    
+        self.gaussian_vars = fill_gaussian_vars_arr(N_GAUSS)
     
     def agregar_jugador(self, jugador):
         """Agrega un jugador a la lsita de jugadores del equipo"""
@@ -40,31 +45,20 @@ class Plantilla:
         return self.jugadores
     
     def generar_nombres(self):
-        """Genera nombres de los futbolistas del equipo"""
-        # Generamos 28 números aleatorios para leer el archivo de apellidos, cada número será la línea que contiene el apellido
-        numeros_apellidos = []
-        while len(numeros_apellidos) < 29:
-            numero = random.randint(1, 6422)
-            if numero not in numeros_apellidos: # Verificamos que el número no esté repetido
-                numeros_apellidos.append(numero)
+        """Genera nombres de los futbolistas del equipo
+        
+            Returns:
+                list: Lista de nombres generados de los futbolistas del equipo.
+        """
+        ruta_apellidos = Path(__file__).resolve().parent/"futbolistas"/"apellidos.txt"
+        
+        with ruta_apellidos.open(encoding="utf-8") as archivo:
+            apellidos = [linea.strip() for linea in archivo if linea.strip()]
             
-            # Leemos el archivo de apellidos
-            with open('./clubs/futbolistas/apellidos.txt', 'r', encoding='utf-8') as file:
-                lineas = file.readlines()
-                
-            # Seleccionamos los apellidos aleatorios
-            apellidos = []
-            for numero in numeros_apellidos:
-                apellidos.append(lineas[numero].strip())
-            
-            # Añadimos la inicial del nombre a cada apellido
-            nombres = []
-            for apellido in apellidos:
-                inicial = random.choice('ABCDEFGHIJKLMNOPQRSTUVWXYZ')
-                nombres.append(f"{inicial}. {apellido}")
+        apellidos_elegidos = random.sample(apellidos, 29)
         
         # Devolvemos la lista de nombres generados
-        return nombres
+        return [f"{random.choice('ABCDEFGHIJKLMNOPQRSTUVWXYZ')}. {apellido}" for apellido in apellidos_elegidos]
     
     def generar_nacionalidad(self):
         """Genera una nacionalidad aleatoria para el futbolista"""
@@ -126,7 +120,7 @@ class Plantilla:
     def averaged_random(self, average, max_deviation):
         """Genera un número aleatorio con una desvición estandar a partir de un promedio dado"""
         # Seleccionamos un valor aleatorio de la lista de valores gaussianos
-        rand_gaussian = gaussian_vars[self.uniform_random(N_GAUSS - 1)]
+        rand_gaussian = self.gaussian_vars[self.uniform_random(N_GAUSS - 1)]
         # Calculamos la desviación esandar a partir del promedio y la desviación máxima
         deviation = max_deviation * rand_gaussian
         return int(average + deviation)

@@ -28,22 +28,25 @@ class RegistroForm(UserCreationForm):
         
     def clean_nombre_equipo(self):
         """Valida que el nombre del equipo sea único """
-        nombre_equipo = self.cleaned_data['nombre_equipo']
-        if Equipo.objects.filter(nombre_equipo = nombre_equipo).exists():
+        nombre_equipo = self.cleaned_data['nombre_equipo'].strip()
+        
+        if Equipo.objects.filter(nombre_equipo__iexact = nombre_equipo).exists():
             raise forms.ValidationError(_("El nombre del equipo ya existe"))
         return nombre_equipo
     
     def clean_abreviatura(self):
         """Comprueba que la abreviatura del equipo tenga exactamente 3 caracteres"""
-        abreviatura = self.cleaned_data['abreviatura']
-        if len(abreviatura) != 3:
+        abreviatura = self.cleaned_data['abreviatura'].strip().upper()
+        
+        if len(abreviatura) != 3 or not abreviatura.isalpha():
              raise forms.ValidationError(_("La abreviatura debe tener exactamente 3 caracteres."))
+        
         return abreviatura
     
     def save(self, commit=True):
         user = super().save(commit=False)
         user.email = self.cleaned_data['email']
-        print("Nombre equipo:", self.cleaned_data['nombre_equipo'])
+        
         if commit:
             user.save()
         return user

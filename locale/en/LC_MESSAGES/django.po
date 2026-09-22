@@ -22,6 +22,10 @@ msgstr ""
 msgid "Iniciar sesión"
 msgstr "Login"
 
+#: .\club_mister\templates\club_mister\base.html:49
+msgid "Cerrar sesión"
+msgstr "Logout"
+
 #: .\club_mister\templates\club_mister\base.html:52
 msgid "Registrarse"
 msgstr "Register"

@@ -43,90 +43,49 @@ body {
 /* Sección Hero */
 .hero {
     /* La ruta es relativa al archivo CSS */
+    box-sizing: border-box;
+    padding: 24px 4vw 32px;
     background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url("imagenes/fondo.png");
     background-size: cover;
     background-position: center;
-    background-attachment: fixed;
+    background-attachment: scroll;
     min-height: calc(100vh - 100px);
-    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
-    padding-top: 0;
+    justify-content: space-between;
+    gap: 24px;
     color: white;
 }
 
 /* Tarjeta abajo izquierda */
-.hero .tarjeta-gestion{
-    position: absolute;
+.hero .tarjeta {
+    box-sizing: border-box;
     display: flex;
     flex-direction: row;
     align-items: center;
-    top: 75%;
-    right: 67%;
-    width: 30%;
-    min-width: 280px;
+    width: min(420px, 100%);
+    min-width: 0;
+    margin: 0;
     background-color: #000000 !important;
     border: 2px solid #ffc107 !important;
     border-radius: 15px;
-    padding: 10px;
+    padding: 12px;
     color: yellow;
 }
 
 /* Tamaño para la imagen de la tarjeta */
-.hero .tarjeta-gestion img {
-    width: 20%;
-    height: 80%;
-    padding-right: 5%;
-}
-
-/* Tarjeta abajo centro */
-.hero .tarjeta-dirige{
-    position: absolute;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    top: 75%;
-    right: 35%;
-    width: 30%;
-    min-width: 280px;
-    background-color: #000000 !important;
-    border: 2px solid #ffc107 !important;
-    border-radius: 15px;
-    padding: 10px;
-    color: yellow;
+.hero .tarjeta img {
+    width: 72px;
+    height: 72px;
+    object-fit: contain;
+    flex: 0 0 72px;
+    margin-right: 16px;
 }
 
 /* Tamaño para la imagen de la tarjeta */
-.hero .tarjeta-dirige img {
-    width: 20%;
-    height: 80%;
-    padding-right: 5%;
-}
-
-/* Tarjeta abajo derecha */
-.hero .tarjeta-compite{
-    position: absolute;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    top: 75%;
-    right: 3%;
-    width: 30%;
-    min-width: 280px;
-    background-color: #000000 !important;
-    border: 2px solid #ffc107 !important;
-    border-radius: 15px;
-    padding: 10px;
-    color: yellow;
-}
-
-/* Tamaño para la imagen de la tarjeta */
-.hero .tarjeta-compite img {
-    width: 20%;
-    height: 80%;
-    padding-right: 5%;
+.hero .tarjeta p {
+    margin: 0;
 }
 
 /* Contenedor para centrar el Login con fondo */

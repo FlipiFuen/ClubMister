@@ -5,12 +5,12 @@
 
 <head>
   {% load static %}
+  {% load i18n %}
+  {% load django_bootstrap5 %}
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}ClubMister{% endblock %}</title>
 
-  {% load i18n %}
-  {% load django_bootstrap5 %}
   {% bootstrap_css %}
   <link rel="stylesheet" href="{% static 'estilo.css' %}">
   {% bootstrap_javascript %}
@@ -18,7 +18,7 @@
 </head>
 
 <body>
-  <nav class="navbar navbar-expand-lg navbar-dark bg-success mb-4 border fixed-top" style="height: 90px;">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-success border fixed-top" style="height: 90px;">
     <div class="container-fluid">
       <a class="navbar-brand" href="{% url 'club_mister:principal' %}">
         <img src="{% static 'imagenes/logo.png' %}" alt="logo">
@@ -33,43 +33,43 @@
       <div class="collapse navbar-collapse" id="navbarCollapse">
         <ul class="navbar-nav mx-auto">
           {% if user.is_authenticated %}
-          <li class="nav-item">
-            <b>
-              <h1>{{ nombre_equipo }}</h1>
-            </b>
-          </li>
-          <li class="nav-item">
-            <p>{{ user.username }}</p>
+            <li class="nav-item">
+              <b>
+                <h1>{{ nombre_equipo }}</h1>
+              </b>
+            </li>
+            <li class="nav-item">
+              <p>{{ user.username }}</p>
             {% else %}
-          <li class="nav-item">
-            <b><span class="navbar-text custom-font-size text-info">CLUBMISTER</span></b>
-          </li>
+            <li class="nav-item">
+              <b><span class="navbar-text custom-font-size text-info">CLUBMISTER</span></b>
+            </li>
           {% endif %}
         </ul>
 
         <!-- botones de registro y login si el usuario no está autentificado -->
         {% if not user.is_authenticated %}
-        <ul class="navbar-nav">
-          <li class="nav-item">
-            <a href="{% url 'usuarios:login' %}" class="nav-link">{% trans "Iniciar sesión" %} </a>
-          </li>
-          <li class="nav-item">
-            <a href="{% url 'usuarios:registro' %}" class="nav-link">{% trans "Registrarse" %} </a>
-          </li>
-        </ul>
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a href="{% url 'usuarios:login' %}" class="nav-link">{% trans "Iniciar sesión" %} </a>
+            </li>
+            <li class="nav-item">
+              <a href="{% url 'usuarios:registro' %}" class="nav-link">{% trans "Registrarse" %} </a>
+            </li>
+          </ul>
         <!-- Botón de desconexión si el usuario está logueado -->
         {% else %}
-        <ul class="navbar-nav">
-          <li class="nav-item">
-            <form method="post" action="{% url 'usuarios:logout' %}" class="d-inline">
-              {% csrf_token %}
-              <button type="submit" class="nav-link btn btn-link align-baseline text-start"
-                style="padding:0; border: 0;">
-                {% trans "Cerrar sesión" %}
-              </button>
-            </form>
-          </li>
-        </ul>
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <form method="post" action="{% url 'usuarios:logout' %}" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="nav-link btn btn-link align-baseline text-start"
+                  style="padding:0; border: 0;">
+                  {% trans "Cerrar sesión" %}
+                </button>
+              </form>
+            </li>
+          </ul>
         {% endif %}
 
         <div class="dropdown ms-3 mb-0">
@@ -98,8 +98,37 @@
     </div> <!-- container-fluid -->
   </nav>
 
-  {% block contenido %}{% endblock contenido %}
+  {% if user.is_authenticated %}
+    <div class="app-shell">
+      <aside class="sidebar bg-success text-white">
+        <div class="sidebar-header">
+          <h2>ClubMister</h2>
+        </div>
+        <nav class="nav flex-column gap-2">
+          <a class="nav-link text-white" href="{% url 'club_mister:principal' %}">
+            {% trans "Inicio" %}
+          </a>
 
+          <a class="nav-link text-white" href="#">
+            {% trans "Mi equipo" %}
+          </a>
+
+          <a class="nav-link text-white" href="#">
+            {% trans "Futbolistas" %}
+          </a>
+
+          <a class="nav-link text-white" href="#">
+            {% trans "Partidos" %}
+          </a>
+        </nav>
+      </aside>
+    </div>
+  {% endif %}
+
+  <main class="{% if user.is_authenticated %}main-content{% else %}main-content full-width{% endif %}">
+    {% block contenido %}{% endblock contenido %}
+  </main>
+  
 </body>
 
 </html>

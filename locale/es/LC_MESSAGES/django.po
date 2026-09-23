@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-19 03:26+0200\n"
+"POT-Creation-Date: 2026-09-23 23:58+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,21 +18,38 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: .\club_mister\templates\club_mister\base.html:49
+#: .\club_mister\templates\club_mister\base.html:54
 msgid "Iniciar sesión"
 msgstr ""
 
-#: .\club_mister\templates\club_mister\base.html:52
+#: .\club_mister\templates\club_mister\base.html:57
 msgid "Registrarse"
 msgstr ""
 
-#: .\club_mister\templates\club_mister\base.html:62
+#: .\club_mister\templates\club_mister\base.html:68
+msgid "Cerrar sesión"
+msgstr ""
+
+#: .\club_mister\templates\club_mister\base.html:81
 msgid "Selecciona un idioma"
 msgstr ""
 
+#: .\club_mister\templates\club_mister\base.html:109
 #: .\club_mister\templates\club_mister\principal.html:5
 msgid "Inicio"
 msgstr "Inicio"
+
+#: .\club_mister\templates\club_mister\base.html:113
+msgid "Mi equipo"
+msgstr ""
+
+#: .\club_mister\templates\club_mister\base.html:117
+msgid "Futbolistas"
+msgstr ""
+
+#: .\club_mister\templates\club_mister\base.html:121
+msgid "Partidos"
+msgstr ""
 
 #: .\club_mister\templates\club_mister\principal.html:11
 msgid "Dirige tu club y llévalo"
@@ -54,12 +71,36 @@ msgstr ""
 msgid "COMPITE ONLINE"
 msgstr ""
 
-#: .\clubmister\settings.py:126
+#: .\config\settings.py:127
 msgid "Spanish"
 msgstr ""
 
-#: .\clubmister\settings.py:127
+#: .\config\settings.py:128
 msgid "English"
+msgstr ""
+
+#: .\usuarios\formulario.py:14
+msgid "Correo electrónico"
+msgstr ""
+
+#: .\usuarios\formulario.py:15
+msgid "Nombre del equipo"
+msgstr ""
+
+#: .\usuarios\formulario.py:19
+msgid "Abreviatura"
+msgstr ""
+
+#: .\usuarios\formulario.py:21
+msgid "Abreviatura de 3 letras para el equipo"
+msgstr ""
+
+#: .\usuarios\formulario.py:34
+msgid "El nombre del equipo ya existe"
+msgstr ""
+
+#: .\usuarios\formulario.py:42
+msgid "La abreviatura debe tener exactamente 3 caracteres."
 msgstr ""
 
 #: .\usuarios\templates\usuarios\login.html:14
@@ -72,6 +113,14 @@ msgstr ""
 
 #: .\usuarios\templates\usuarios\login.html:24
 msgid "Entrar"
+msgstr ""
+
+#: .\usuarios\templates\usuarios\registro.html:10
+msgid "Crear cuenta"
+msgstr ""
+
+#: .\usuarios\templates\usuarios\registro.html:15
+msgid "Registrarme"
 msgstr ""
 
 #~ msgid "Lleva a tu club a lo más alto"

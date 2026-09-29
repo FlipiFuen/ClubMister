@@ -127,6 +127,11 @@ body {
     padding: 20px;
 }
 
+.club-page {width: 100%;
+    min-height: calc(100vh - 90px);
+    background: url("/static/imagenes/club.png") center / cover no-repeat;
+}
+
 @media (max-width: 991px) {
     .app-shell {
         display: block;

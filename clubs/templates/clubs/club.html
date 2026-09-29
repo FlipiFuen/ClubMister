@@ -1,0 +1,20 @@
+{% extends "club_mister/base.html" %}
+{% load i18n static %}
+
+{% block title %}{{ title|default:_('Club') }}{% endblock %}
+
+{% block contenido %}
+  <div class="club-page container-fluid py-4 club">
+      <div class = "row justify-content-center">
+        <div class="col-12 col-md-8 col-lg-6">
+            <div class="card h-100">
+                <div class= "card-body text-center">
+                  <h4 class="card-title">{% trans "Temporada" %} - {{ user.equipo.temporada }}</h4>
+                  <h4>{% trans "División" %} - {{ user.equipo.division }}</h4>
+                  <h4>{% trans "Grupo" %} - {{ user.equipo.grupo }}</h4>
+                </div>
+            </div>
+        </div>
+      </div>
+  </div>
+{% endblock contenido %}

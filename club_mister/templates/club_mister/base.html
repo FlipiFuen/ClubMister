@@ -105,29 +105,38 @@
           <h2>ClubMister</h2>
         </div>
         <nav class="nav flex-column gap-2">
-          <a class="nav-link text-white" href="{% url 'club_mister:principal' %}">
-            {% trans "Inicio" %}
+          <a class="nav-link text-white" href="{% url 'clubs:club' %}">
+            {% trans "Club" %}
           </a>
 
           <a class="nav-link text-white" href="#">
-            {% trans "Mi equipo" %}
+            {% trans "Equipo" %}
           </a>
 
           <a class="nav-link text-white" href="#">
-            {% trans "Futbolistas" %}
+            {% trans "Estadio" %}
           </a>
-
+          <hr>
           <a class="nav-link text-white" href="#">
             {% trans "Partidos" %}
           </a>
+
+          <a class="nav-link text-white" href="#">
+            {% trans "Divisón" %}
+          </a>
+
+          <a class="nav-link text-white" href="#">
+            {% trans "Calendario" %}
+          </a>
         </nav>
       </aside>
-    </div>
+    
   {% endif %}
 
-  <main class="{% if user.is_authenticated %}main-content{% else %}main-content full-width{% endif %}">
-    {% block contenido %}{% endblock contenido %}
-  </main>
+    <main class="{% if user.is_authenticated %}main-content{% else %}main-content full-width{% endif %}">
+      {% block contenido %}{% endblock contenido %}
+    </main>
+  </div>
   
 </body>
 

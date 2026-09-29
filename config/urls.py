@@ -22,4 +22,5 @@ urlpatterns = [
     path('i18n/', include('django.conf.urls.i18n')),
     path('', include('club_mister.urls')),
     path('', include('usuarios.urls')),
+    path('club/', include('clubs.urls')),
 ]

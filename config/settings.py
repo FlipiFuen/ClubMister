@@ -139,7 +139,7 @@ STATIC_URL = 'static/'
 
 # Si un usuario intenta entrar en una vista protegida sin iniciar sesión,
 # Django lo enviará a esta URL.
-LOGIN_URL = 'login'
+LOGIN_URL = 'usuarios:login'
 
 # Después de iniciar sesión correctamente, Django lo redirigirá aquí.
 LOGIN_REDIRECT_URL = 'club_mister:principal'

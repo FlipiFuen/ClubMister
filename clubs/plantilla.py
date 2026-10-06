@@ -85,33 +85,21 @@ class Plantilla:
     
     def generar_posicion(self, posiciones):
         """Genera una posición aleatoria para el futbolista"""
-        puesto = None
+        limites = {"por": 2, "def": 8, "mcd": 3, "mc": 6, "mp": 3, "del": 7}
+        numeros_puesto = {1: "por", 2: "def", 3: "mcd", 4: "mc", 5: "mp", 6: "del"}
         num_posiciones = [1, 2, 2, 2, 2, 2, 3, 4, 4, 4, 4, 5, 6, 6, 6, 6]
         posicion = random.choice(num_posiciones)
-        # Asignar la posición a la lista de posiciones
-        if posicion == 1 and posiciones["por"] < 2:
-            self.posiciones["por"] += 1
-            puesto = "por"
-        elif posicion == 2 and posiciones["def"] < 8:
-            self.posiciones["def"] += 1
-            puesto = "def"
-        elif posicion == 3 and posiciones["mcd"] < 3:
-            self.posiciones["mcd"] += 1
-            puesto = "mcd"
-        elif posicion == 4 and posiciones["mc"] < 6:
-            self.posiciones["mc"] += 1
-            puesto = "mc"
-        elif posicion == 5 and posiciones["mp"] < 3:
-            self.posiciones["mp"] += 1
-            puesto = "mp"
-        elif posicion == 6 and posiciones["del"] < 7:
-            self.posiciones["del"] += 1
-            puesto = "del"
-        if puesto is None or puesto == "":
-            # Si no se puede asignar la posición, intenta nuevamente
-            return self.generar_posicion(posiciones)
-        # Devolver la posición generada
-        return puesto
+        
+        # Si ya no queda hueco en ninguna posición, avisamos con una excepción
+        if all(posiciones[puesto] >= limites[puesto] for puesto in limites):
+            raise ValueError("No quedan huecos disponibles en ninguna posición")
+        
+        while True:
+            posicion = random.choice(num_posiciones)
+            puesto = numeros_puesto[posicion]
+            if posiciones[puesto] < limites[puesto]:
+                self.posiciones[puesto] += 1
+                return puesto
     
     def uniform_random(self, max_value):
         """Genera un número aleatorio uniforme entre 0 y max_value"""

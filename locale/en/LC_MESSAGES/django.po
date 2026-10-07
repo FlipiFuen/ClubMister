@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-23 23:59+0200\n"
+"POT-Creation-Date: 2026-10-07 03:36+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,38 +18,52 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: .\club_mister\templates\club_mister\base.html:54
+#: .\club_mister\templates\club_mister\base.html:58
 msgid "Iniciar sesión"
 msgstr "Login"
 
-#: .\club_mister\templates\club_mister\base.html:57
+#: .\club_mister\templates\club_mister\base.html:63
 msgid "Registrarse"
 msgstr "Register"
 
-#: .\club_mister\templates\club_mister\base.html:68
+#: .\club_mister\templates\club_mister\base.html:74
 msgid "Cerrar sesión"
 msgstr "Logout"
 
-#: .\club_mister\templates\club_mister\base.html:81
+#: .\club_mister\templates\club_mister\base.html:87
 msgid "Selecciona un idioma"
 msgstr "Select a languaje"
 
-#: .\club_mister\templates\club_mister\base.html:109
+#: .\club_mister\templates\club_mister\base.html:115
+#: .\clubs\templates\clubs\club.html:4
+msgid "Club"
+msgstr "Club"
+
+#: .\club_mister\templates\club_mister\base.html:119
+#, fuzzy
+#| msgid "Mi equipo"
+msgid "Equipo"
+msgstr "My Team"
+
+#: .\club_mister\templates\club_mister\base.html:123
+msgid "Estadio"
+msgstr "Stadium"
+
+#: .\club_mister\templates\club_mister\base.html:128
+msgid "Partidos"
+msgstr "Matchs"
+
+#: .\club_mister\templates\club_mister\base.html:132
+msgid "Divisón"
+msgstr "Division"
+
+#: .\club_mister\templates\club_mister\base.html:136
+msgid "Calendario"
+msgstr "Calendar"
+
 #: .\club_mister\templates\club_mister\principal.html:5
 msgid "Inicio"
 msgstr "Start"
-
-#: .\club_mister\templates\club_mister\base.html:113
-msgid "Mi equipo"
-msgstr "My Team"
-
-#: .\club_mister\templates\club_mister\base.html:117
-msgid "Futbolistas"
-msgstr "Players"
-
-#: .\club_mister\templates\club_mister\base.html:121
-msgid "Partidos"
-msgstr "Matchs"
 
 #: .\club_mister\templates\club_mister\principal.html:11
 msgid "Dirige tu club y llévalo"
@@ -70,6 +84,218 @@ msgstr "LEAD YOUR TEAM"
 #: .\club_mister\templates\club_mister\principal.html:31
 msgid "COMPITE ONLINE"
 msgstr "COMPETE ONLINE"
+
+#: .\clubs\templates\clubs\club.html:12
+msgid "Temporada"
+msgstr "Season"
+
+#: .\clubs\templates\clubs\club.html:13
+msgid "División"
+msgstr "Division"
+
+#: .\clubs\templates\clubs\club.html:14
+msgid "Grupo"
+msgstr "Group"
+
+#: .\clubs\templates\clubs\equipo.html:23
+msgid "años"
+msgstr "years"
+
+#: .\clubs\templates\clubs\equipo.html:39
+msgid "HABILIDADES"
+msgstr "SKILLS"
+
+#: .\clubs\templates\clubs\equipo.html:42
+msgid "Porteria"
+msgstr "Goal"
+
+#: .\clubs\templates\clubs\equipo.html:54
+msgid "Tackling"
+msgstr "Tackling"
+
+#: .\clubs\templates\clubs\equipo.html:66
+msgid "Pases"
+msgstr "Passes"
+
+#: .\clubs\templates\clubs\equipo.html:78
+msgid "Tiros"
+msgstr "Shots"
+
+#: .\clubs\templates\clubs\equipo.html:90
+msgid "Resistencia"
+msgstr "Endurance"
+
+#: .\clubs\templates\clubs\equipo.html:101
+msgid "Lado Preferido"
+msgstr "Preferred Side"
+
+#: .\clubs\templates\clubs\equipo.html:115
+msgid "ESTADISTICAS"
+msgstr "Statistics"
+
+#: .\clubs\templates\clubs\equipo.html:118
+#, fuzzy
+#| msgid "Partidos"
+msgid "Partidos Jugados"
+msgstr "Matchs"
+
+#: .\clubs\templates\clubs\equipo.html:122
+msgid "Paradas"
+msgstr "Saves"
+
+#: .\clubs\templates\clubs\equipo.html:126
+msgid "Goles"
+msgstr "Goals"
+
+#: .\clubs\templates\clubs\equipo.html:130
+msgid "Asistencias"
+msgstr "Assists"
+
+#: .\clubs\templates\clubs\equipo.html:134
+msgid "Pases Buenos"
+msgstr "Good Passes"
+
+#: .\clubs\templates\clubs\equipo.html:148
+msgid "Lesionado por"
+msgstr "Injured by"
+
+#: .\clubs\templates\clubs\equipo.html:148
+msgid "semanas"
+msgstr "weeks"
+
+#: .\clubs\templates\clubs\equipo.html:151
+msgid "Su salud es buena"
+msgstr "Their health is good"
+
+#: .\clubs\templates\clubs\equipo.html:156
+msgid "Temperamento"
+msgstr "Temper"
+
+#: .\clubs\templates\clubs\equipo.html:158
+#: .\clubs\templates\clubs\equipo.html:160
+#: .\clubs\templates\clubs\equipo.html:162
+msgid "Tiene un temperamento"
+msgstr "He has a temper"
+
+#: .\clubs\templates\clubs\equipo.html:167
+msgid "Suspendido por:"
+msgstr "Suspended for"
+
+#: .\clubs\views.py:42
+msgid "INUTIL"
+msgstr "USELESS"
+
+#: .\clubs\views.py:44
+msgid "APRENDIZ"
+msgstr "APPRENTICE"
+
+#: .\clubs\views.py:46
+msgid "PRINCIPIANTE"
+msgstr "BEGINNER"
+
+#: .\clubs\views.py:48
+msgid "ACEPTABLE"
+msgstr "ACCEPTABLE"
+
+#: .\clubs\views.py:50
+msgid "BUENO"
+msgstr "GOOD"
+
+#: .\clubs\views.py:52
+msgid "MAGNIFICO"
+msgstr "MAGNIFICENT"
+
+#: .\clubs\views.py:54
+msgid "ESPLENDIDO"
+msgstr "GORGEOUS"
+
+#: .\clubs\views.py:56
+msgid "ELITE"
+msgstr "ELITE"
+
+#: .\clubs\views.py:58
+msgid "MAESTRO"
+msgstr "MASTER"
+
+#: .\clubs\views.py:60
+msgid "ESTRELLA"
+msgstr "STAR"
+
+#: .\clubs\views.py:62
+msgid "CRACK"
+msgstr "CRACK"
+
+#: .\clubs\views.py:64
+msgid "PLATA"
+msgstr "SILVER"
+
+#: .\clubs\views.py:66
+msgid "ORO"
+msgstr "GOLD"
+
+#: .\clubs\views.py:68
+msgid "GOAT"
+msgstr "GOAT"
+
+#: .\clubs\views.py:73
+msgid "AGOTADO"
+msgstr "EXHAUSTED"
+
+#: .\clubs\views.py:75
+msgid "CANSADO"
+msgstr "TIRED"
+
+#: .\clubs\views.py:77
+msgid "EN FORMA"
+msgstr "FIT"
+
+#: .\clubs\views.py:79
+msgid "UN TORO"
+msgstr "A BULL"
+
+#: .\clubs\views.py:81
+msgid "TANQUE"
+msgstr "TANK"
+
+#: .\clubs\views.py:86
+msgid "DERECHA"
+msgstr "RIGHT"
+
+#: .\clubs\views.py:88
+msgid "IZQUIERDA"
+msgstr "LEFT"
+
+#: .\clubs\views.py:90
+msgid "CENTRO"
+msgstr "CENTER"
+
+#: .\clubs\views.py:92
+msgid "IZQUIERDA-DERECHA"
+msgstr "LEFT-RIGHT"
+
+#: .\clubs\views.py:94
+msgid "CENTRO-DERECHA"
+msgstr "CENTER-RIGHT"
+
+#: .\clubs\views.py:96
+msgid "IZQUIERDA-CENTRO"
+msgstr "LEFT-CENTER"
+
+#: .\clubs\views.py:98 .\clubs\views.py:100
+msgid "IZQUIERDA-CENTRO-DERECHA"
+msgstr "LEFT-CENTER-RIGHT"
+
+#: .\clubs\views.py:107
+msgid "Calmado"
+msgstr "Calm"
+
+#: .\clubs\views.py:110
+msgid "Normal"
+msgstr "Normal"
+
+#: .\clubs\views.py:113
+msgid "Agresivo"
+msgstr "Aggressive"
 
 #: .\config\settings.py:127
 msgid "Spanish"
@@ -124,6 +350,9 @@ msgstr "Create account"
 #| msgid "Registrarse"
 msgid "Registrarme"
 msgstr "Register"
+
+#~ msgid "Futbolistas"
+#~ msgstr "Players"
 
 #~ msgid "Lleva a tu club a lo más alto"
 #~ msgstr "Take your club to the top"

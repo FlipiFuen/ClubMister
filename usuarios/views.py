@@ -1,6 +1,12 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login
-from django.db import transaction
+from django.contrib import messages 
+from django.contrib.auth.decorators import login_required 
+from django.contrib.auth.forms import PasswordChangeForm
+from django.db import DatabaseError, transaction
+
+from . import services
+from .forms import FormularioCambiarEmail, FormularioRegistroUsuario
 
 from .formulario import RegistroForm
 from .services import crear_equipo_inicial
@@ -39,3 +45,39 @@ def registro(request):
             return redirect('club_mister:principal')
         
     return render(request, 'usuarios/registro.html', {'formulario': formulario})
+
+@login_required    
+def ajustes_cuenta(request):
+    """Gestiona los ajustes de la cuenta del usuario, incluyendo cambio de email,
+    cambio de contraseña y eliminación de la cuenta
+    
+    Args:
+        request: El objeto HttpRequest.
+        
+        Returns:
+            Un HttpResponse que redirige a la página de perfil tras una acción exitosa,
+            o que renderiza la plantilla de ajustes con los formularios correspondientes.
+    """
+    form_email = FormularioCambiarEmail(instance=request.user)
+    form_password = PasswordChangeForm(user=request.user)
+    
+    # Si la petición no es POST, simplemente renderizamos los formularios con los datos actuales.
+    if request.method == "POST":
+        try:
+            respuesta = services.procesar_ajustes_cuenta(request)
+            
+            if respuesta.get("redirect"):
+                return redirect(respuesta["redirect"])
+            
+            form_email = respuesta.get("form_email", form_email)
+            form_password = respuesta.get("form_password", form_password)
+        except DatabaseError:
+            messages.error(request, "Ha ocurrido un error en la base de datos. Inténtalo de nuevo")
+    
+    # Si la petición no es POST, simplemente renderizamos los formularios con los datos actuales.
+    contexto = {
+        "form_email": form_email,
+        "form_password": form_password,
+    }
+    
+    return render(request, "flipigames/ajustes_cuenta.html", contexto)

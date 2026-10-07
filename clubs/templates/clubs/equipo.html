@@ -1,0 +1,177 @@
+{% extends "club_mister/base.html" %}
+{% load i18n static %}
+
+{% block title %}{{ title|default:club.nombre_equipo }}{% endblock %}
+
+{% block contenido %}
+
+<div class="container py-4">
+    <!-- Título del equipo -->
+    <div class="text-center mb-4">
+        <h1 class="display-5 fw-bold text-success">{{ club.nombre_equipo }}</h1>
+    </div>
+
+    <!-- Lista de Jugadores -->
+    <div class="row g-4">
+        {% for jugador in plantilla %}
+            <div class="col-12">
+                <div class="card shadow-sm border-0 bg-primary-subtle">
+                    <!-- Cabecera Ficha Jugador -->
+                    <div class="card-header bg-success text-white d-flex justify-content-between align-items-center py-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <h2 class="h4 mb-0 fw-bold">{{ jugador.nombre }}</h2>
+                            <span class="badge text-dark fs-6">{{ jugador.edad }} {% trans "años" %}</span>
+                        </div>
+
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="fw-semibold">{{ jugador.nacionalidad }}</span>
+                                <img src="{% static 'imagenes/banderas/' %}{{ jugador.nacionalidad }}.jpg"
+                                    alt="{{ jugador.nacionalidad }}" class="rounded border" style="height: 20px; width: 30px; object-fit: cover">
+                        </div>
+                    </div>
+            
+                    <!-- Cuerpo de la Ficha -->
+                    <div class="card-body">
+                        <div class="row g-4 align-items-center">
+
+                            <!-- Columna 1: Habilidades -->
+                            <div class="col-12 col-lg-4">
+                                <h5 class="text-uppercase text-muted fw-bold border-bottom pb-2 mb-3">{% trans "HABILIDADES" %}</h5>
+                                <div class="mb-2">
+                                    <div class="d-flex justify-content-between small fw-bold mb-1">
+                                        <span>{% trans "Porteria" %}</span>
+                                        <span>{{ jugador.st }}</span>
+                                    </div>
+                                    <div class="progress" style="height: 18px;">
+                                        <div class="progress-bar bg-success" role="progressbar" style="width: {{ jugador.porcentaje_st }}%;">
+                                            {{ jugador.calificacion_st }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-2">
+                                    <div class="d-flex justify-content-between small fw-bold mb-1">
+                                        <span>{% trans "Tackling" %}</span>
+                                        <span>{{ jugador.tk }}
+                                    </div>
+                                    <div class="progress" style="height: 18px;">
+                                        <div class="progress-bar bg-success" role="progressbar" style="width: {{ jugador.porcentaje_tk }}%;">
+                                            {{ jugador.calificacion_tk }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-2">
+                                    <div class="d-flex justify-content-between small fw-bold mb-1">
+                                        <span>{% trans "Pases" %}</span>
+                                        <span>{{ jugador.ps }}
+                                    </div>
+                                    <div class="progress" style="height: 18px;">
+                                        <div class="progress-bar bg-success" role="progressbar" style="width: {{ jugador.porcentaje_ps }}%;">
+                                            {{ jugador.calificacion_ps }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-2">
+                                    <div class="d-flex justify-content-between small fw-bold mb-1">
+                                        <span>{% trans "Tiros" %}</span>
+                                        <span>{{ jugador.sh }}
+                                    </div>
+                                    <div class="progress" style="height: 18px;">
+                                        <div class="progress-bar bg-success" role="progressbar" style="width: {{ jugador.porcentaje_sh }}%;">
+                                            {{ jugador.calificacion_sh }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-2">
+                                    <div class="d-flex justify-content-between small fw-bold mb-1">
+                                        <span>{% trans "Resistencia" %}</span>
+                                        <span>{{ jugador.resistencia }}</span>
+                                    </div>
+                                    <div class="progress" style="height: 18px;">
+                                        <div class="progress-bar bg-success" role="progressbar" style="width: {{ jugador.resistencia }}%;">
+                                            {{ jugador.calificacion_resistencia }}
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between small fw-bold mt-3 pt-2 border-top">
+                                    <span>{% trans "Lado Preferido" %}</span>
+                                    <span class="badge bg-secondary">{{ jugador.lado }}</span>
+                                </div>
+                            </div> <!-- Columna 1 -->
+
+                            <!-- Columna 2: Foto Central -->
+                            <div class="col-12 col-lg-4 text-center">
+                                <img src="{% static 'imagenes/futbolistas/fut' %}{{ forloop.counter }}.jpg" 
+                                    alt="Jugador {{ forloop.counter }}" class="img-fluid rounded shadow-sm border w-100"
+                                    style="max-height: 320px; object-fit: cover;">
+                            </div>
+                            
+                            <!-- Columna 3: Estadísticas -->
+                            <div class="col-12 col-lg-4">
+                                <h5 class="text-uppercase text-muted fw-bold border-bottom pb-2 mb-3">{% trans "ESTADISTICAS" %}</h5>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent px-0 py-2">
+                                        <span>{% trans "Partidos Jugados" %}</span>
+                                        <span>{{ jugador.partidos }}</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent px-0 py-2">
+                                        <span>{% trans "Paradas" %}</span>
+                                        <span>{{ jugador.paradas }}</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent px-0 py-2">
+                                        <span>{% trans "Goles" %}</span>
+                                        <span>{{ jugador.goles }}</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent px-0 py-2">
+                                        <span>{% trans "Asistencias" %}</span>
+                                        <span>{{ jugador.asistencias }}</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent px-0 py-2">
+                                        <span>{% trans "Pases Buenos" %}</span>
+                                        <span>{{ jugador.pases_buenos }}</span>
+                                    </li>
+                                </ul>
+                            </div> <!-- Columna 3 -->
+                        </div>
+                    </div>
+
+                    <!-- Pie de la Tarjeta -->
+                    <div class="card-footer bg-body-secondary d-flex flex-wrap justify-content-between align-items-center gap-2 py-2">
+                        <div>
+                            {% if jugador.lesion > 0 %}
+                                <span class="badge bg-danger d-inline-flex align-items-center gap-1">
+                                    <img src="{% static 'imagenes/banderas/cruzroja.jpg' %}" alt="Lesionado" style="height: 14px;">
+                                        {% trans "Lesionado por" %} {{ jugador.lesion }} {% trans "semanas" %}</span>
+                            {% else %}
+                                <span class="badge bg-success-subtle text-success border border-success">
+                                    {% trans "Su salud es buena" %}</span>
+                            {% endif %}
+                        </div>
+
+                        <div>
+                            <span class="small fw-bold">{% trans "Temperamento" %}</span>
+                            {% if jugador.agresivo == "Calmado" %}
+                                <span class="badge bg-info text-dark">{% trans "Tiene un temperamento" %} {{ jugador.agresivo }}</span>
+                            {% elif jugador.agresivo == "Normal" %}
+                                <span class="badge bg-primary">{% trans "Tiene un temperamento" %} {{ jugador.agresivo }}</span>
+                            {% elif jugador.agresivo == "Agresivo" %}
+                                <span class="badge bg-danger">{% trans "Tiene un temperamento" %} {{ jugador.agresivo }}</span>
+                            {% endif %}
+                        </div>
+
+                        <div>
+                            <span class="badge bg-warning text-dark">{% trans "Suspendido por:" %} {{ jugador.suspension }} partidos</span>
+                        </div>
+                    </div> <!-- Pie -->
+                </div> <!-- Tarjeta -->
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock contenido %}
+

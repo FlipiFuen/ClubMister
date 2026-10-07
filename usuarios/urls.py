@@ -9,4 +9,5 @@ urlpatterns = [
     path('login/', auth_views.LoginView.as_view(template_name='usuarios/login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(template_name='club_mister/principal.html'), name='logout'),
     path('', include('django.contrib.auth.urls')),
+    path('ajustes/', views.ajustes_cuenta, name='ajustes_cuenta'),
 ]

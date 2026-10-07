@@ -6,7 +6,7 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.db import DatabaseError, transaction
 
 from . import services
-from .forms import FormularioCambiarEmail, FormularioRegistroUsuario
+from .formulario import FormularioCambiarEmail, FormularioRegistroUsuario
 
 from .formulario import RegistroForm
 from .services import crear_equipo_inicial
@@ -80,4 +80,4 @@ def ajustes_cuenta(request):
         "form_password": form_password,
     }
     
-    return render(request, "flipigames/ajustes_cuenta.html", contexto)
+    return render(request, "usuarios/ajustes_cuenta.html", contexto)

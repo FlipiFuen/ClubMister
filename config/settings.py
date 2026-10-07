@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'clubs',
     
     # Aplicaciones Django
+    'crispy_forms',
+    'crispy_bootstrap5',
     'django_bootstrap5',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -146,4 +148,8 @@ LOGIN_REDIRECT_URL = 'club_mister:principal'
 
 # Después de cerrar sesión, el usuario volverá a esta página.
 LOGOUT_REDIRECT_URL = 'club_mister:principal'
+
+# Configuración de Crispy-forms
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
 

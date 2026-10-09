@@ -98,13 +98,13 @@ class FormularioRegistroUsuario(UserCreationForm):
         
         # Usamos "email__iexact" para realizar una búsqueda insensible a mayúsculas y minúsculas
         if User.objects.filter(email__iexact=email).exists():
-            raise forms.ValidationError("Este correo electrónico ya está registrado por otro usuario")
+            raise forms.ValidationError(_("Este correo electrónico ya está registrado por otro usuario"))
         
         return email
 
 class FormularioCambiarEmail(forms.ModelForm):
     
-    email = forms.EmailField(label = "Nuevo Correo Electrónico", required = True)
+    email = forms.EmailField(label = _("Nuevo Correo Electrónico"), required = True)
     
     def clean_email(self):
         """

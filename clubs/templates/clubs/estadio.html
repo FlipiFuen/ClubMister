@@ -1,0 +1,84 @@
+{% extends "club_mister/base.html" %}
+{% load i18n static %}
+
+{% block title %}{{ title|default:_('Estadio') }}{% endblock %}
+
+{% block contenido %}
+    <div class="container-fluid py-5 min-vh-100 d-flex flex-column justify-content-center align-items-center"
+         style="background-image: url('{% static 'imagenes/estadio.png' %}'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+        <!-- Título de la página -->
+        <div class="text-center mb-4">
+            <h1 class="display-4 fw-bold text-white text-shadow shadow-sm p-2 bg-dark bg-opacity-50 rounded">
+                    {{ estadio.nombre }}
+            </h1>
+        </div>
+        <!-- Tarjeta Principal -->
+        <div class="row justify-content-center w-100">
+            <div class="col-12 col-md-8 col-lg-6">
+                <div class="card shadow-lg border-0 bg-dark bg-opacity-75 text-white rounded-3">
+                    <!-- Cabecera de la Tarjeta -->
+                    <div class="card-header bg-success bg-gradient text-white d-flex justify-content-between align-items-center py-3">
+                
+                    </div>
+                    <!-- Cuerpo de la tarjeta -->
+                    <div class="card-body p-4">
+                        <h5 class="text-uppercase text-success-subtle fw-bold border-bottom border-secondary pb-2 mb-4 text-center">
+                            {% trans "INFORMACION DEL ESTADIO" %}
+                        </h5>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white border-secondary py-3 fs-5">
+                                <span><i class="bi bi-people-fill text-success me-2"></i>{% trans "Capacidad" %}</i></span>
+                                <span class="badge bg-success fs-6">{{ estadio.capacidad }} {% trans "espectadores" %}
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white border-secondary py-3 fs-5">
+                                <span><i class="bi bi-cash-coin text-success me-2"></i>{% trans "Precio entrada" %}</i></span>
+                                <span class="badge bg-primary fs-6">{{ estadio.precio }} F</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white border-secondary py-3 fs-5">
+                                <span><i class="bi bi-trophy-fill text-success me-2">{% trans "Liga: División - " %}</i></span>
+                                <span class="fw-semibold text-secondary">{{ estadio.equipo.division }}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white border-secondary py-3 fs-5">
+                                <span><i class="bi bi-diagram-3-fill text-success me-2">{% trans "Grupo: " %}</i></span>
+                                <span class="fw-semibold text-secondary">{{ estadio.equipo.grupo }}</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-center align-items-center bg-success gap-2">
+                    <h2 class="h4 mb-0 text-info fw-bold">{% trans "Editar Nombre" %}</h2>
+                    <!-- Botón para abrir el modal de edición -->
+                    <button type="button" class="btn btn-link text-info p-0 ms-1" data-bs-toggle="modal"
+                        data-bs-target="#editarNombreModal" title="{% trans 'Editar Nombre' %}">
+                        <i class="bi bi-pencil-square fs-5"></i>
+                    </button>
+                </div>
+            </div> 
+        </div>
+
+        <!-- Modal para editar el nombre del estadio -->
+        <div class="modal fade" id="editarNombreModal" tabindex="-1" aria-labelledby="editarNombreModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <form method="post" action="{% url 'clubs:editar_nombre_estadio' %}">
+                    {% csrf_token %}
+                    <div class="modal-content border-0 shadow">
+                        <div class="modal-header bg-success text-white">
+                            <h5 class="modal-title fw-bold" id="editarNombreModalLabel">{% trans "Editar nombre del estadio" %}</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="{% trans 'Cerrar' %}"></button>
+                        </div>
+                        <div class="modal-body py-4">
+                            <label for="nuevo_nombre" class="form-label fw-semibold">{% trans "Nombre del Estadio" %}</label>
+                            <input type="text" class="form-control form-control-lg" id="nuevo_nombre" name="nuevo_nombre" value="{{ estadio.nombre }}" required>
+                        </div>
+                        <div class="modal-footer bg-light">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Cancelar" %}</button>
+                            <button type="submit" class="btn btn-success">{% trans "Guardar" %}</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+{% endblock contenido %}

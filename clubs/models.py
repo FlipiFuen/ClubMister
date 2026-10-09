@@ -56,3 +56,14 @@ class Futbolista(models.Model):
     
     def __str__(self):
         return self.nombre
+    
+class Estadio(models.Model):
+    """Modelo para registrar estadios."""
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    equipo = models.ForeignKey(Equipo, on_delete=models.CASCADE, related_name='estadios')
+    nombre = models.CharField(max_length=100)
+    precio = models.DecimalField(max_digits=10, decimal_places=2)
+    capacidad = models.IntegerField()
+
+    def __str__(self):
+        return self.nombre

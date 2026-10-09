@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-08 01:21+0200\n"
+"POT-Creation-Date: 2026-10-09 02:01+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -38,30 +38,29 @@ msgstr "Account Settings"
 msgid "Selecciona un idioma"
 msgstr "Select a languaje"
 
-#: .\club_mister\templates\club_mister\base.html:121
+#: .\club_mister\templates\club_mister\base.html:122
 #: .\clubs\templates\clubs\club.html:4
 msgid "Club"
 msgstr "Club"
 
-#: .\club_mister\templates\club_mister\base.html:125
-#, fuzzy
-#| msgid "Mi equipo"
+#: .\club_mister\templates\club_mister\base.html:126
 msgid "Equipo"
 msgstr "My Team"
 
-#: .\club_mister\templates\club_mister\base.html:129
+#: .\club_mister\templates\club_mister\base.html:130
+#: .\clubs\templates\clubs\estadio.html:4
 msgid "Estadio"
 msgstr "Stadium"
 
-#: .\club_mister\templates\club_mister\base.html:134
+#: .\club_mister\templates\club_mister\base.html:135
 msgid "Partidos"
 msgstr "Matchs"
 
-#: .\club_mister\templates\club_mister\base.html:138
+#: .\club_mister\templates\club_mister\base.html:139
 msgid "Divisón"
 msgstr "Division"
 
-#: .\club_mister\templates\club_mister\base.html:142
+#: .\club_mister\templates\club_mister\base.html:143
 msgid "Calendario"
 msgstr "Calendar"
 
@@ -89,119 +88,119 @@ msgstr "LEAD YOUR TEAM"
 msgid "COMPITE ONLINE"
 msgstr "COMPETE ONLINE"
 
-#: .\clubs\services.py:8
+#: .\clubs\services.py:9
 msgid "INUTIL"
 msgstr "USELESS"
 
-#: .\clubs\services.py:10
+#: .\clubs\services.py:11
 msgid "APRENDIZ"
 msgstr "APPRENTICE"
 
-#: .\clubs\services.py:12
+#: .\clubs\services.py:13
 msgid "PRINCIPIANTE"
 msgstr "BEGINNER"
 
-#: .\clubs\services.py:14
+#: .\clubs\services.py:15
 msgid "ACEPTABLE"
 msgstr "ACCEPTABLE"
 
-#: .\clubs\services.py:16
+#: .\clubs\services.py:17
 msgid "BUENO"
 msgstr "GOOD"
 
-#: .\clubs\services.py:18
+#: .\clubs\services.py:19
 msgid "MAGNIFICO"
 msgstr "MAGNIFICENT"
 
-#: .\clubs\services.py:20
+#: .\clubs\services.py:21
 msgid "ESPLENDIDO"
 msgstr "GORGEOUS"
 
-#: .\clubs\services.py:22
+#: .\clubs\services.py:23
 msgid "ELITE"
 msgstr "ELITE"
 
-#: .\clubs\services.py:24
+#: .\clubs\services.py:25
 msgid "MAESTRO"
 msgstr "MASTER"
 
-#: .\clubs\services.py:26
+#: .\clubs\services.py:27
 msgid "ESTRELLA"
 msgstr "STAR"
 
-#: .\clubs\services.py:28
+#: .\clubs\services.py:29
 msgid "CRACK"
 msgstr "CRACK"
 
-#: .\clubs\services.py:30
+#: .\clubs\services.py:31
 msgid "PLATA"
 msgstr "SILVER"
 
-#: .\clubs\services.py:32
+#: .\clubs\services.py:33
 msgid "ORO"
 msgstr "GOLD"
 
-#: .\clubs\services.py:34
+#: .\clubs\services.py:35
 msgid "GOAT"
 msgstr "GOAT"
 
-#: .\clubs\services.py:39
+#: .\clubs\services.py:40
 msgid "AGOTADO"
 msgstr "EXHAUSTED"
 
-#: .\clubs\services.py:41
+#: .\clubs\services.py:42
 msgid "CANSADO"
 msgstr "TIRED"
 
-#: .\clubs\services.py:43
+#: .\clubs\services.py:44
 msgid "EN FORMA"
 msgstr "FIT"
 
-#: .\clubs\services.py:45
+#: .\clubs\services.py:46
 msgid "UN TORO"
 msgstr "A BULL"
 
-#: .\clubs\services.py:47
+#: .\clubs\services.py:48
 msgid "TANQUE"
 msgstr "TANK"
 
-#: .\clubs\services.py:52
+#: .\clubs\services.py:53
 msgid "DERECHA"
 msgstr "RIGHT"
 
-#: .\clubs\services.py:54
+#: .\clubs\services.py:55
 msgid "IZQUIERDA"
 msgstr "LEFT"
 
-#: .\clubs\services.py:56
+#: .\clubs\services.py:57
 msgid "CENTRO"
 msgstr "CENTER"
 
-#: .\clubs\services.py:58
+#: .\clubs\services.py:59
 msgid "IZQUIERDA-DERECHA"
 msgstr "LEFT-RIGHT"
 
-#: .\clubs\services.py:60
+#: .\clubs\services.py:61
 msgid "CENTRO-DERECHA"
 msgstr "CENTER-RIGHT"
 
-#: .\clubs\services.py:62
+#: .\clubs\services.py:63
 msgid "IZQUIERDA-CENTRO"
 msgstr "LEFT-CENTER"
 
-#: .\clubs\services.py:64 .\clubs\services.py:66
+#: .\clubs\services.py:65 .\clubs\services.py:67
 msgid "IZQUIERDA-CENTRO-DERECHA"
 msgstr "LEFT-CENTER-RIGHT"
 
-#: .\clubs\services.py:73
+#: .\clubs\services.py:74
 msgid "Calmado"
 msgstr "Calm"
 
-#: .\clubs\services.py:76
+#: .\clubs\services.py:77
 msgid "Normal"
 msgstr "Normal"
 
-#: .\clubs\services.py:79
+#: .\clubs\services.py:80
 msgid "Agresivo"
 msgstr "Aggressive"
 
@@ -254,8 +253,6 @@ msgid "ESTADISTICAS"
 msgstr "Statistics"
 
 #: .\clubs\templates\clubs\equipo.html:118
-#, fuzzy
-#| msgid "Partidos"
 msgid "Partidos Jugados"
 msgstr "Matchs"
 
@@ -301,6 +298,66 @@ msgstr "He has a temper"
 msgid "Suspendido por:"
 msgstr "Suspended for"
 
+#: .\clubs\templates\clubs\estadio.html:26
+msgid "INFORMACION DEL ESTADIO"
+msgstr "STADIUM INFORMATION"
+
+#: .\clubs\templates\clubs\estadio.html:30
+msgid "Capacidad"
+msgstr "Capacity"
+
+#: .\clubs\templates\clubs\estadio.html:31
+msgid "espectadores"
+msgstr "spectators"
+
+#: .\clubs\templates\clubs\estadio.html:34
+msgid "Precio entrada"
+msgstr "Ticket price"
+
+#: .\clubs\templates\clubs\estadio.html:38
+#, fuzzy
+#| msgid "División"
+msgid "Liga: División - "
+msgstr "Division"
+
+#: .\clubs\templates\clubs\estadio.html:42
+#, fuzzy
+#| msgid "Grupo"
+msgid "Grupo: "
+msgstr "Group"
+
+#: .\clubs\templates\clubs\estadio.html:50
+#: .\clubs\templates\clubs\estadio.html:53
+msgid "Editar Nombre"
+msgstr "Edit Name"
+
+#: .\clubs\templates\clubs\estadio.html:67
+#| msgid "Nombre del equipo"
+msgid "Editar nombre del estadio"
+msgstr "Team's Name"
+
+#: .\clubs\templates\clubs\estadio.html:68
+#| msgid "Cerrar sesión"
+msgid "Cerrar"
+msgstr "Logout"
+
+#: .\clubs\templates\clubs\estadio.html:71
+#| msgid "Nombre del equipo"
+msgid "Nombre del Estadio"
+msgstr "Stadium Name"
+
+#: .\clubs\templates\clubs\estadio.html:75
+msgid "Cancelar"
+msgstr "Cancel"
+
+#: .\clubs\templates\clubs\estadio.html:76
+msgid "Guardar"
+msgstr "Save"
+
+#: .\clubs\views.py:34
+msgid "Estadio Municipal"
+msgstr "City Stadium"
+
 #: .\config\settings.py:129
 msgid "Spanish"
 msgstr "Spanish"
@@ -333,6 +390,14 @@ msgstr "The team name already exists"
 msgid "La abreviatura debe tener exactamente 3 caracteres."
 msgstr "The abbreviation must have exactly 3 characters"
 
+#: .\usuarios\formulario.py:101
+msgid "Este correo electrónico ya está registrado por otro usuario"
+msgstr "This email address is already registered by another user"
+
+#: .\usuarios\formulario.py:107
+msgid "Nuevo Correo Electrónico"
+msgstr "New Email"
+
 #: .\usuarios\templates\usuarios\ajustes_cuenta.html:13
 msgid "Ajustes de Cuenta"
 msgstr "Account Settings"
@@ -359,16 +424,20 @@ msgid "Eliminar Cuenta"
 msgstr "Delete Account"
 
 #: .\usuarios\templates\usuarios\ajustes_cuenta.html:68
-#, fuzzy
-#| msgid "Crear cuenta"
 msgid "Eliminar esta cuenta"
-msgstr "Create account"
+msgstr "Delete account"
 
 #: .\usuarios\templates\usuarios\ajustes_cuenta.html:69
 msgid ""
 "Una vez que elimines tu cuenta no podrás recuperar tu equipo ni tu progreso "
 "en la Temporada"
-msgstr "Once you delete your account, you will not be able to recover your team or your season progress"
+msgstr ""
+"Once you delete your account, you will not be able to recover your team or "
+"your season progress"
+
+#: .\usuarios\templates\usuarios\ajustes_cuenta.html:74
+msgid "Introduce tu Contraseña"
+msgstr "Enter your Password"
 
 #: .\usuarios\templates\usuarios\login.html:14
 msgid "Iniciar Sesión"
@@ -387,8 +456,6 @@ msgid "Crear cuenta"
 msgstr "Create account"
 
 #: .\usuarios\templates\usuarios\registro.html:15
-#, fuzzy
-#| msgid "Registrarse"
 msgid "Registrarme"
 msgstr "Register"
 

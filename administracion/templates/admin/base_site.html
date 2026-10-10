@@ -1,0 +1,12 @@
+{% extends "admin/base.html" %}
+
+{% block userlinks %}
+
+<a href="{% url 'administracion:gestion' %}"
+    style="background-color: #198754; color: #ffffff; padding: 4px 10px; border-radius: 4px; font-weight: bold;
+            text-decoration: none; margin-right: 12px; display: inline-block;">
+            &laquo; Gestión
+</a>
+{{ block.super }}
+
+{% endblock userlinks %}

@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'club_mister',
     'usuarios',
     'clubs',
+    'administracion',
     
     # Aplicaciones Django
     'crispy_forms',

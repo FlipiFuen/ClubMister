@@ -1,0 +1,83 @@
+{%  extends "club_mister/base.html" %}
+
+{% block title %}Panel de Gestión{% endblock title %}
+
+{% block contenido%}
+
+<div class="container-fluid py-4">
+    <!-- Encabezado -->
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <h2><i class="bi bi-sliders me-2 text-succes"></i>
+            Panel de Gestión del Sitio
+        </h2>
+        <span class="badge bg-danger fs-6">Restringisa</span>
+    </div>
+
+    <!-- Grid de Tarjetas de Gestión -->
+    <div class="row g-4">
+        <!-- Tarjeta 1 -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body d-flex flex-column">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="bg-succes text-white rounded p-3 me-3">
+                            <i class="bi bi-calendar-plus fs-3"></i>
+                        </div>
+                        <h5 class="card-title mb-0">Generar Calendario</h5>
+                    </div>
+                    <p class="card-text text-muted flex-grow-1">
+                        Generar los emparejamientos y fechas de la temporada para cada división y grupo
+                    </p>
+                    <a href="#" class="btn btn-outline-succes mt-auto w-100">
+                        <i class="bi bi-play-circle me-1"></i>
+                        Generar Calendarios
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tarjeta 2 -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body d-flex flex-column">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="bg-primary text-white rounded p-3 me-3">
+                            <i class="bi bi-dribbble fs-3"></i>
+                        </div>
+                        <h5 class="card-title mb-0">Gestionar Partidos</h5>
+                    </div>
+                    <p class="card-text text-muted flex-grow-1">
+                        Generar partidos de la jornada
+                    </p>
+                    <a href="#" class="btn btn-outline-primary mt-auto w-100">
+                        <i class="bi bi-pencil-square me-1"></i>
+                        Ir a Partidos
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tarjeta 3 -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body d-flex flex-column">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="bg-primary text-white rounded p-3 me-3">
+                            <i class="bi bi-dribbble fs-3"></i>
+                        </div>
+                        <h5 class="card-title mb-0">Cierre de Temporada</h5>
+                    </div>
+                    <p class="card-text text-muted flex-grow-1">
+                        Gestiona ascensos, descensos y resetea para nueva temporada
+                    </p>
+                    <a href="#" class="btn btn-outline-primary mt-auto w-100">
+                        <i class="bi bi-pencil-square me-1"></i>
+                        Fin Temporada
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock contenido %}

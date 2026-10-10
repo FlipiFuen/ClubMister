@@ -76,11 +76,18 @@
               </form>
             </li>
           <!-- Ajuste de cuenta -->
-           <li class="nav-item">
-             <a href="{% url 'usuarios:ajustes_cuenta' %}" class="nav-link">
-               <i class="bi bi-gear me-1"></i>{% trans "Ajustes de cuenta" %}
-             </a>
-           </li>
+          <li class="nav-item">
+            <a href="{% url 'usuarios:ajustes_cuenta' %}" class="nav-link">
+              <i class="bi bi-gear me-1"></i>{% trans "Ajustes de cuenta" %}
+            </a>
+          </li>
+          {% if user.is_superuser %}
+            <li class="nav-item">
+              <a href="{% url 'admin:index' %}" class="nav-link text-warning fw-bold">
+                Administración
+              </a>
+            </li>
+          {% endif %}
           </ul>
         {% endif %}
 

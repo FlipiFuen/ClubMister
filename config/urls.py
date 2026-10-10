@@ -23,4 +23,5 @@ urlpatterns = [
     path('', include('club_mister.urls')),
     path('', include('usuarios.urls')),
     path('club/', include('clubs.urls')),
+    path('administracion/', include('administracion.urls')),
 ]

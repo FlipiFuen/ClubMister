@@ -52,8 +52,15 @@ class Plantilla:
         """
         ruta_apellidos = Path(__file__).resolve().parent/"futbolistas"/"apellidos.txt"
         
-        with ruta_apellidos.open(encoding="utf-8") as archivo:
-            apellidos = [linea.strip() for linea in archivo if linea.strip()]
+        try:
+            with ruta_apellidos.open(encoding="utf-8") as archivo:
+                apellidos = [linea.strip() for linea in archivo if linea.strip()]
+        except (FileNotFoundError, OSError):
+            # En caso de error asignamos apellidos
+            apellidos = ["García", "López", "Pérez", "Gutierrez", "Smith", "Sevchemko", "Stoichkov"] * 5
+            
+        if len(apellidos) < 29:
+            apellidos = (apellidos * (29 // len(apellidos) + 1))[:29]
             
         apellidos_elegidos = random.sample(apellidos, 29)
         

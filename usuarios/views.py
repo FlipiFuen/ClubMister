@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required 
 from django.contrib.auth.forms import PasswordChangeForm
 from django.db import DatabaseError, transaction
+from django.utils.translation import gettext_lazy as _
 
 from . import services
 from .formulario import FormularioCambiarEmail, FormularioRegistroUsuario
@@ -32,17 +33,20 @@ def registro(request):
 
         if formulario.is_valid():
             # Guardamos el usuario
-            with transaction.atomic():
-                usuario = formulario.save()  
-                crear_equipo_inicial(
-                    usuario = usuario,
-                    nombre_equipo = formulario.cleaned_data["nombre_equipo"],
-                    abreviatura = formulario.cleaned_data["abreviatura"],
-                )
-            
-            # Autenticamos al usuario y redirigimos a la página principal
-            login(request, usuario)
-            return redirect('club_mister:principal')
+            try:
+                with transaction.atomic():
+                    usuario = formulario.save()  
+                    crear_equipo_inicial(
+                        usuario = usuario,
+                        nombre_equipo = formulario.cleaned_data["nombre_equipo"],
+                        abreviatura = formulario.cleaned_data["abreviatura"],
+                    )
+                
+                # Autenticamos al usuario y redirigimos a la página principal
+                login(request, usuario)
+                return redirect('club_mister:principal')
+            except DatabaseError:
+                messages.error(request, _("Error de base de datos al crear tu cuenta. Inténtalo de nuevo"))
         
     return render(request, 'usuarios/registro.html', {'formulario': formulario})
 

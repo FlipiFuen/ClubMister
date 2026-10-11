@@ -13,9 +13,16 @@ def generar_calendario_liga(division, grupo, fecha_inicio_str):
     Returns:
         list: Una lista de jornadas, cada una con los partidos programados.
     """
-    dia_empieza = datetime.strptime(fecha_inicio_str, "%d-%m-%Y")
-    equipos_qs = Equipo.objects.filter(division, grupo)
+    try:
+        dia_empieza = datetime.strptime(fecha_inicio_str, "%d-%m-%Y")
+    except ValueError as e:
+        raise ValueError("El formato de fecha de inicio no es válido. Debe ser: DD-MM-YYYY") from e
+    equipos_qs = Equipo.objects.filter(division=division, grupo=grupo)
     equipos = [equipo.nombre_equipo for equipo in equipos_qs]
+    
+    if not equipos:
+        raise ValueError(f"No hay equipos registrados en la Division {division} - grupo {grupo}")
+    
     jornadas = 7
     partidos = [[] for _ in range(jornadas)]
     

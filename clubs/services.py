@@ -49,24 +49,18 @@ def calcular_resistencia(valor):
     
 def lado_preferido(valor):
     """Devuelve un adjetivo de lado preferido según el valor."""
-    if valor == 'D':
-        mola = _("DERECHA")
-    elif valor == 'I':
-      mola = _("IZQUIERDA")
-    elif valor == 'C':
-      mola = _("CENTRO")
-    elif valor == 'D-I':
-      mola = _("IZQUIERDA-DERECHA")
-    elif valor == 'D-C':
-      mola = _("CENTRO-DERECHA")
-    elif valor == 'I-C':
-      mola = _("IZQUIERDA-CENTRO")
-    elif valor == 'D-L-C':
-      mola = _("IZQUIERDA-CENTRO-DERECHA")
-    elif valor == 'D-I-C':
-      mola = _("IZQUIERDA-CENTRO-DERECHA")
+    lados = {
+      "D": _("DERECHA"),
+      "I": _("IZQUIERDA"),
+      "C": _("CENTRO"),
+      "D-I": _("IZQUIERDA-DERECHA"),
+      "D-C": _("CENTRO-DERECHA"),
+      "I-C": _("IZQUIERDA-CENTRO"),
+      "D-L-C": _("IZQUIERDA-CENTRO-DERECHA"),
+      "D-I-C": _("IZQUIERDA-CENTRO-DERECHA"),
+    }
 
-    return mola
+    return lados.get(valor, _("DESCONOCIDO"))
 
 def calcular_agresividad(valor):
     """Devuelve un adjetivo de agresividad según el valor."""

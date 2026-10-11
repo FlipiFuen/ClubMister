@@ -24,8 +24,13 @@ def generar_calendario(request):
             grupo = formulario.cleaned_data["grupo"]
             fecha_inicio = formulario.cleaned_data["fecha_inicio"].strftime("%d-%m_%Y")
             
-            calendario = generar_calendario_liga(division, grupo, fecha_inicio)
-            messages.success(request, f"Calendario para la División {division} - Grupo {grupo} generado correctamente")
+            try:
+                calendario = generar_calendario_liga(division, grupo, fecha_inicio)
+                messages.success(request, f"Calendario para la División {division} - Grupo {grupo} generado correctamente")
+            except ValueError as e:
+                messages.error(request, str(e))
+            except Exception as e:
+                messages.error(request, "OÇcurrió un error inesperado al generar el calendario")
     else:
         formulario = GenerarCalendarioForm()
             

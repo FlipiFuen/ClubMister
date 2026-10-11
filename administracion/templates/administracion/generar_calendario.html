@@ -1,0 +1,43 @@
+{% extends "club_mister/base.html" %}
+
+{% block contenido %}
+
+<div class="container mt-4">
+    <h2>Generar Calendario de Liga</h2>
+    <form method="post" class="mb-4">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">
+            Generar Calendario
+        </button>
+    </form>
+
+    {% if calendario %}
+        <h3 class="mt-4">Calendario Generado</h3>
+        {% for jornada in calendario %}
+            <h4 class="mt-3">Jornada {{ jornada.0.jornada }}</h4>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Local</th>
+                        <th>Visitante</th>
+                        <th>Fecha</th>
+                        <th>Hora</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for partido in jornada %}
+                        <tr>
+                            <td>{{ partido.local }}</td>
+                            <td>{{ partido.visitante }}</td>
+                            <td>{{ partido.fecha }}</td>
+                            <td>{{ partido.hora }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endfor %}
+    {% endif %}
+</div>
+
+{% endblock contenido %}

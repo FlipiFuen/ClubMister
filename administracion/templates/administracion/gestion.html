@@ -7,7 +7,7 @@
 <div class="container-fluid py-4">
     <!-- Encabezado -->
     <div class="d-flex align-items-center justify-content-between mb-4">
-        <h2><i class="bi bi-sliders me-2 text-succes"></i>
+        <h2><i class="bi bi-sliders me-2 text-success"></i>
             Panel de Gestión del Sitio
         </h2>
         <span class="badge bg-danger fs-6">Restringisa</span>
@@ -20,7 +20,7 @@
             <div class="card h-100 shadow-sm border-0">
                 <div class="card-body d-flex flex-column">
                     <div class="d-flex align-items-center mb-3">
-                        <div class="bg-succes text-white rounded p-3 me-3">
+                        <div class="bg-success text-white rounded p-3 me-3">
                             <i class="bi bi-calendar-plus fs-3"></i>
                         </div>
                         <h5 class="card-title mb-0">Generar Calendario</h5>
@@ -28,7 +28,7 @@
                     <p class="card-text text-muted flex-grow-1">
                         Generar los emparejamientos y fechas de la temporada para cada división y grupo
                     </p>
-                    <a href="#" class="btn btn-outline-succes mt-auto w-100">
+                    <a href={% url "administracion:generar_calendario" %} class="btn btn-outline-success mt-auto w-100">
                         <i class="bi bi-play-circle me-1"></i>
                         Generar Calendarios
                     </a>

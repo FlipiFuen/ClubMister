@@ -60,10 +60,12 @@ body {
 .main-content {
     flex: 1;
     min-height: calc(100vh - 90px);
+    margin-left: 240px;
 }
 
 .main-content.full-width {
     width: 100%;
+    margin-left: 0;
 }
 
 .hero {
@@ -144,6 +146,6 @@ body {
     }
 
     .main-content {
-        min-height: auto;
+        margin-left: 0;
     }
 }

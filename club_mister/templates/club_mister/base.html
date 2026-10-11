@@ -151,14 +151,16 @@
           </a>
         </nav>
       </aside>
-    
   {% endif %}
 
     <main class="{% if user.is_authenticated %}main-content{% else %}main-content full-width{% endif %}"
-          style="margin-left: 240px;">
+          style="{% if user.is_authenticated %}margin-left: 240px;{% else %}margin-left: 0;{% endif %}">
       {% block contenido %}{% endblock contenido %}
     </main>
-  </div>
+  
+  {% if user.is_authenticated %}
+    </div>
+  {% endif %}
   
 </body>
 

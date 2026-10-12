@@ -22,7 +22,7 @@ def generar_calendario(request):
         if formulario.is_valid():
             division = formulario.cleaned_data["division"]
             grupo = formulario.cleaned_data["grupo"]
-            fecha_inicio = formulario.cleaned_data["fecha_inicio"].strftime("%d-%m_%Y")
+            fecha_inicio = formulario.cleaned_data["fecha_inicio"].strftime("%d-%m-%Y")
             
             try:
                 calendario = generar_calendario_liga(division, grupo, fecha_inicio)

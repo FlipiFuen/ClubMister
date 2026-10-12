@@ -4,7 +4,8 @@ from django.db import IntegrityError
 from django.urls import reverse
 
 from clubs.plantilla import Plantilla, fill_gaussian_vars_arr
-from clubs.models import Equipo, Futbolista
+from clubs.models import Equipo, Futbolista, Estadio
+from clubs.services import calcular_calificacion, calcular_resistencia, calcular_agresividad, lado_preferido, enriquecer_jugador, obtener_equipo_plantilla
 
 @pytest.fixture
 def plantilla():
@@ -20,6 +21,39 @@ def usuario_equipo():
 def equipo(usuario_equipo):
     """Crea y devuelve un equipo asociado a un usuario de equipo para pruebas"""
     return Equipo.objects.create(user=usuario_equipo, nombre_equipo="Test Equipo", abreviatura="TEF", temporada=1)
+
+@pytest.fixture
+def futbolista_prueba(equipo):
+    """Devuelve un futbolista con atributos conocidos para probar servicios"""
+    return Futbolista.objects.create(
+        equipo = equipo,
+        nombre = "Carlos Test",
+        nacionalidad = "esp",
+        edad = 24,
+        posicion = "mc",
+        lado_preferido = "D",
+        st = 14, # ELITE
+        tk = 10, # ACEPTABLE
+        ps = 8, # PRINCIPIANTE
+        sh = 5, # INUTIL
+        resistencia = 65, # UN TORO
+        agresividad = 30, # Normal
+        st_hab = 300,
+        tk_hab = 300,
+        ps_hab = 300,
+        sh_hab = 300,
+    )
+    
+@pytest.fixture
+def estadio_prueba(usuario_equipo, equipo):
+    """Devuelve un estadio asociado al usuario y equipo"""
+    return Estadio.objects.create(
+        user = usuario_equipo,
+        equipo = equipo,
+        nombre = "Estadio Viejo",
+        precio = 25.0,
+        capacidad = 8000,
+    )
 
 class TestFillGaussianVarsArr:
     """Pruebas para la función fill_gaussian_vars_arr"""
@@ -234,3 +268,171 @@ class TestClubView:
 
         assert respuesta.status_code == 302
         assert respuesta.url.startswith(reverse("usuarios:login"))
+        
+@pytest.mark.django_db
+class TestClubsServices:
+    """Pruebas para services.py"""
+    
+    # --- Casos Normales
+    @pytest.mark.parametrize(
+        "valor, esperado",
+        [
+            (5, "INUTIL"),
+            (7, "APRENDIZ"),
+            (10, "ACEPTABLE"),
+            (14, "ELITE"),
+            (20, "GOAT"),
+        ]
+    )
+    def test_calcular_calificacion_valores_estandar(self, valor, esperado):
+        """Mapeo correcto de puntuaciones a adjetivos"""
+        assert calcular_calificacion(valor) == esperado
+        
+    def test_enriquecer_jugador_asigna_atributos_dinamicos(self, futbolista_prueba):
+        """Calcula porcentajes y etiquetas cualitativas correctamente"""
+        enriquecer_jugador(futbolista_prueba)
+        
+        assert futbolista_prueba.porcentaje_st == 70
+        assert futbolista_prueba.porcentaje_tk == 50
+        assert futbolista_prueba.porcentaje_ps == 40
+        assert futbolista_prueba.porcentaje_sh == 25
+        assert futbolista_prueba.calificacion_st == "ELITE"
+        assert futbolista_prueba.calificacion_tk == "ACEPTABLE"
+        assert futbolista_prueba.calificacion_resistencia == "UN TORO"
+        assert futbolista_prueba.lado == "DERECHA"
+        assert futbolista_prueba.agresivo == "Normal"
+        
+    def test_obtener_equipo_plantilla_cocn_usuario_equipo(self, usuario_equipo, equipo, futbolista_prueba):
+        """Devuelve el club del usuario y la lista de futbolistas enriquecidos"""
+        club_retornado, plantilla_retornada = obtener_equipo_plantilla(usuario_equipo)
+        
+        assert club_retornado == equipo
+        assert len(plantilla_retornada) >= 1
+        jugador = plantilla_retornada[0]
+        assert hasattr(jugador, "porcentaje_st")
+        assert jugador.calificacion_st == "ELITE"
+        
+    # --- Casos Límite
+    def test_enriquecer_jugador_acota_porcentajes_entre_cero_cien(self, futbolista_prueba):
+        """Si un atributo es anómalo, el porcentaje no debe salir del rango 0 a 100"""
+        futbolista_prueba.st = -5
+        futbolista_prueba.tk = 25 # 25 * 5 = 125 -> debe acotarse a 100
+        enriquecer_jugador(futbolista_prueba)
+        
+        assert futbolista_prueba.porcentaje_st == 0
+        assert futbolista_prueba.porcentaje_tk == 100
+        
+    def test_lado_preferido_desconocido_devuelve_valor_defecto(self):
+        """Un código de lado no registrado debe devolver "DESCONOCIDO"""
+        assert lado_preferido("VALOR_INEXISTENTE") == "DESCONOCIDO"
+        
+    def test_calcular_resistencia_limite_superior(self):
+        """Valor límite de 100 en resistencia debe devolver TANQUE"""
+        assert calcular_resistencia(100) == "TANQUE"
+        
+    def test_obtener_equipo_plantilla_sin_equipo_devuelve_tupla_none(self, django_user_model):
+        """Si el usuario no tiene equipo devuelve None"""
+        usuario_sin_club = django_user_model.objects.create_user(username="sin_club", password="Password123")
+        club, plantilla = obtener_equipo_plantilla(usuario_sin_club)
+        
+        assert club is None
+        assert plantilla is None
+        
+@pytest.mark.django_db
+class TestClubsViews:
+    """Pruebas para las vistas de equipo, estadio y edición de estadio"""
+    
+    # --- VISTA EQUIPO ---
+    
+    # Caso Normal
+    def test_vista_equipo_muestra_plantilla_enriquecida(self, client, usuario_equipo, equipo, futbolista_prueba):
+        """Usuario autenticado con equipo recibe su plantilla"""
+        client.force_login(usuario_equipo)
+        respuesta = client.get(reverse("clubs:equipo"))
+        
+        assert respuesta.status_code == 200
+        assert "clubs/equipo.html" in [t.name for t in respuesta.templates]
+        assert respuesta.context["club"] == equipo
+        plantilla = list(respuesta.context["plantilla"])
+        assert len(plantilla) == 1
+        assert hasattr(plantilla[0], "porcentaje_st")
+        
+    # --- Caso Límite
+    def test_vista_equipo_redirige_usuario_anonimo(self, client):
+        """Un usuario sin autenticar es redirigido al login"""
+        respuesta = client.get(reverse("clubs:equipo"))
+        
+        assert respuesta.status_code == 302
+        assert respuesta.url.startswith(reverse("usuarios:login"))
+        
+    # --- VISTA ESTADIO ---
+    
+    # --- Caso Normal
+    def test_vista_estadio_muestra_estadio_existente(self, client, usuario_equipo, estadio_prueba):
+        """Usuario con estadio ya creado recibe el contexto del estadio correcto"""
+        client.force_login(usuario_equipo)
+        respuesta = client.get(reverse("clubs:estadio"))
+        
+        assert respuesta.status_code == 200
+        assert "clubs/estadio.html" in [t.name for t in respuesta.templates]
+        assert respuesta.context["estadio"].nombre == "Estadio Viejo"
+        
+    # --- Caso Límite
+    def test_vista_estadio_crea_estadio_por_defecto_si_no_existe(self, client, usuario_equipo, equipo):
+        """Si el usuario no tiene estadio, la vista crea uno por defecto con valores predefinidos"""
+        client.force_login(usuario_equipo)
+        respuesta = client.get(reverse("clubs:estadio"))
+        
+        assert respuesta.status_code == 200
+        estadio_creado = respuesta.context["estadio"]
+        assert estadio_creado is not None
+        assert estadio_creado.capacidad == 5000
+        assert estadio_creado.precio == 30
+        
+    # --- Gestión de Errores
+    def test_vista_estadio_redirige_usuario_anonimo(self, client):
+        """Usuario sin autenticar es redirigido al login"""
+        respuesta = client.get(reverse("clubs:estadio"))
+        
+        assert respuesta.status_code == 302
+        assert respuesta.url.startswith(reverse("usuarios:login"))
+        
+    # --- VISTA EDITAR_NOMBRE_ESTADIO
+    
+    # --- Caso Normal
+    def test_post_editar_nombre_estadio_actualiza_nombre(self, client, usuario_equipo, estadio_prueba):
+        """un POST válido debe actualizar el nombre del estadio y redirigir a la vista del estadio"""
+        client.force_login(usuario_equipo)
+        respuesta = client.post(
+            reverse("clubs:editar_nombre_estadio"),
+            {"nuevo_nombre": "Estadio Nuevo"}
+        )
+            
+        assert respuesta.status_code == 302
+        assert respuesta.url == reverse("clubs:estadio")
+        estadio_prueba.refresh_from_db()
+        assert estadio_prueba.nombre == "Estadio Nuevo"
+        
+    # --- Caso Límite
+    def test_post_editar_nombre_estadio_sin_nombre_no_actualiza(self, client, usuario_equipo, estadio_prueba):
+        """Si nuevo_nombre está vacío, el nombre del estadio no debe cambiar"""
+        client.force_login(usuario_equipo)
+        client.post(
+            reverse("clubs:editar_nombre_estadio"),
+            {"nuevo_nombre": ""}
+        )
+        
+        estadio_prueba.refresh_from_db()
+        assert estadio_prueba.nombre == "Estadio Viejo"
+        
+    # --- Gestión de Errores
+    def test_get_editar_nombre_estadio_redirige_sin_actuar(self, client, usuario_equipo, estadio_prueba):
+        """Un GET a esta vista debe redirigir sin modificar el estadio"""
+        client.force_login(usuario_equipo)
+        respuesta = client.get(reverse("clubs:editar_nombre_estadio"))
+        
+        assert respuesta.status_code == 302
+        assert respuesta.url == reverse("clubs:estadio")
+        estadio_prueba.refresh_from_db()
+        assert estadio_prueba.nombre == "Estadio Viejo"
+        

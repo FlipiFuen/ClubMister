@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import gettext_lazy as _
+from django.db.models import F
 
 from clubs.services import obtener_equipo_plantilla
-from clubs.models import Estadio
+from clubs.models import Estadio, Equipo
 
 @login_required
 def club(request):
@@ -49,3 +50,19 @@ def editar_nombre_estadio(request):
         return redirect('clubs:estadio')  # Asegúrate que este nombre de url sea correcto
     return redirect('clubs:estadio')
     
+@login_required
+def division(request):
+    """Vista para mostrar la tabla de clasificacion para una division y grupo especificos."""
+    division_id = request.user.equipo.division
+    grupo_id = request.user.equipo.grupo
+    equipos = Equipo.objects.filter(division=division_id, grupo=grupo_id)\
+                        .annotate(diferencia_goles=F('goles_favor') - F('goles_contra'))\
+                        .order_by('-puntos', '-diferencia_goles', '-goles_favor')
+    context = {
+      'equipos': equipos,
+      'division': division_id,
+      'grupo': grupo_id,
+      'page_title': _("Tabla de clasificación") + f" - {division_id} - {grupo_id}"
+    }
+
+    return render(request, 'clubs/division.html', context)

@@ -1,0 +1,76 @@
+{% extends "club_mister/base.html" %}
+{% load i18n static %}
+
+{% block title %}{{ title|default:page_title }}{% endblock %}
+
+{% block contenido %}
+    <div class="container py-4">
+        <div class="text-center mb-4">
+            <h1 class="display-5 fw-bold text-success">
+                <i class="bi bi-bar-chart-line-fill me-2"></i>
+                {{ page_title }}
+            </h1>
+        </div>
+
+        {% if equipos %}
+            <div class="card shadow-sm border-0">
+
+                <!-- Cabecera de la tarjeta -->
+                <div class="card-header bg-success text-white d-flex align-items-center py-3">
+                    <i class="bi bi-trophy-fill me-2 fs-5"></i>
+                    <h5 class="mb-0 fw-bold">{% trans "Clasificación" %}</h5>
+                </div>
+
+                <!-- Tabla de clasificación -->
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-bordered mb-0">
+                            <thead class="table-success">
+                                <tr class="text-center">
+                                    <th scope="col">#</th>
+                                    <th scope="col">{% trans "Equipo" %}</th>
+                                    <th scope="col">{% trans "PJ" %}</th>
+                                    <th scope="col">{% trans "G" %}</th>
+                                    <th scope="col">{% trans "E" %}</th>
+                                    <th scope="col">{% trans "P" %}</th>
+                                    <th scope="col">{% trans "GF" %}</th>
+                                    <th scope="col">{% trans "GC" %}</th>
+                                    <th scope="col">{% trans "DG" %}</th>
+                                    <th scope="col">{% trans "Pts" %}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for equipo in equipos %}
+                                    <tr class="text-center 
+                                        {% if equipo.nombre_equipo == user.equipo.nombre_equipo %}table-warning fw-bold{% endif %}">
+                                        <td>{{ forloop.counter }}</td>
+                                        <td class="text-start">
+                                            {% if equipo.nombre_equipo == user.equipo.nombre_equipo %}
+                                                <i class="bi bi-shield-shaded text-success me-1"></i>
+                                            {% endif %}
+                                            {{ equipo.nombre_equipo}}
+                                        </td>
+                                        <td>{{ equipo.partidos_jugados|default:0 }}</td>
+                                        <td>{{ equipo.victorias|default:0 }}</td>
+                                        <td>{{ equipo.empates|default:0 }}</td>
+                                        <td>{{ equipo.derrotas|default:0 }}</td>
+                                        <td>{{ equipo.goles_favor|default:0 }}</td>
+                                        <td>{{ equipo.goles_contra|default:0 }}</td>
+                                        <td>{{ equipo.goal_difference|default:0 }}</td>
+                                        <td><strong>{{ equipo.puntos|default:0 }}</strong></td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>                  
+            </div>
+        {% else %}
+        <div class="alert alert-warning d-flex align-items-center gap-2" role="alert">
+            <i class="bi bi-exclamation-triangle-fill fs-5"></i>
+            {% trans "No hay equipos para mostrar en esta división y grupo." %}
+        </div>
+        {% endif %}      
+    </div>
+    
+{% endblock contenido %}

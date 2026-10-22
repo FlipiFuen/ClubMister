@@ -1,3 +1,6 @@
 from django.db import models
 
-# Create your models here.
+from clubs.models import Equipo
+
+class PartidoProgramado(models.Model):
+    

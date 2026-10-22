@@ -1,0 +1,168 @@
+{% extends "club_mister/base.html" %}
+{% load i18n static %}
+
+{% block title %}{% trans "Reporte" %}: {{ local }} vs {{ visitante }}{% endblock %}
+
+{% block contenido %}
+<div class="container py-4">
+    <!-- Marcador y cabecera del partido -->
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-success text-white d-flex align-items-center py-3">
+            <i class="bi bi-dribbble me-2 fs-5"></i>
+            <h5 class="mb-0 fw-bold">{% trans "Reporte del Partido" %}</h5>
+        </div>
+        <div class="card-body text-center py-4 bg-light">
+            <div class="row align-items-center">
+                <div class="col-5">
+                    <h2 class="fw-bold text-success mb-0">{{ local }}</h2>
+                </div>
+                <div class="col-2">
+                    <span class="display-4 fw-bold px-3 py-1 bg-white rounded shadow-sm border">
+                        {{ goles_local }} - {{ goles_visitante }}
+                    </span>
+                </div>
+                <div class="col-5">
+                    <h2 class="fw-bold text-success mb-0">{{ visitante }}</h2>
+                </div>
+            </div>
+
+            <div class="mt-4 text-muted small d-flex justify-content-center flex-wrap gap-4">
+                <span>
+                    <i class="bi bi-calendar-event me-1 text-success"></i>
+                    <strong>{% trans "Fecha" %}:</strong>{{ fecha }}
+                </span>
+                <span>
+                    <i class="bi bi-clock me-1 text-success"></i>
+                    <strong>{% trans "Hora" %}:</strong>{{ hora }}
+                </span>
+                <span>
+                    <i class="bi bi-geo-alt-fill me-1 text-success"></i>
+                    <strong>{% trans "Estadio" %}:</strong>{{ estadio }}
+                </span>
+                <span>
+                    <i class="bi bi-people-fill me-1 text-success"></i>
+                    <strong>{% trans "Asistencia" %}:</strong>{{ asistencia }}
+                </span>
+                <span>
+                    <i class="bi bi-person-badge me-1 text-success"></i>
+                    <strong>{% trans "Arbitro" %}:</strong>{{ arbitro }}
+                </span>
+            </div>
+        </div>
+
+        <!-- MVP -->
+        {% if mejor_jugador and mejor_jugador != "Ninguno" %}
+            <div class="alert alert-succes d-flex align-items-center shadow-sm mb-4" role="alert">
+                <div>
+                    <strong>{% trans "Mejor Jugador del Partido" %}:</strong>{{ mejor_jugador}}
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- Alineaciones -->
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-header bg-succes text-white py-2">
+                <i class="bi bi-people me-2"></i><strong>{% trans "Alineaciones" %}</strong>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6 class="fw-bold text-succes">
+                            <i class="bi bi-shield-shaded me-1"></i>{{ local }}
+                        </h6>
+                        <pre class="bg-light p-3 rounded small mb-0" style="white-space: pre-wrap; font-family: inherit;">{{ alineacion_local }}</pre>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="fw-bold text-succes">
+                            <i class="bi bi-shield-shaded me-1"></i>{{ visitante }}
+                        </h6>
+                        <pre class="bg-light p-3 rounded small mb-0" style="white-space: pre-wrap; font-family: inherit;">{{ alineacion_visitante }}</pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Crónica minuto a minuto-->
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-header bg-succes text-white py-2">
+                <i class="bi bi-clock-history me-2"></i><strong>{% trans "Crónica Minuto a Minuto" %}</strong>
+            </div>
+            <div class="card-body p-0">
+                <div class="list-group list-group-flush" style="max-height:400px; overflow-y: auto;">
+                    {% for evento in eventos %}
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">{{ evento }}</small>
+                        </div>
+                    {% empty %}
+                        <div class="list-group-item text-muted">{% trans "No se han registrado eventos en este partido" %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Resumen de incidencias -->
+        <div class="row g-3">
+            <!-- Goleadores -->
+            <div class="col-md-6 col-lg-3">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-header bg-light fw-bold text-succes">
+                        <i class="bi bi-ballon me-1"></i>{% trans "Goleadores" %}
+                    </div>
+                    <div class="card-body small">
+                        <p class="mb-1"><strong>{{ local }}:</strong></p>
+                        <p class="text-muted">{{ goleadores_local|join:", "|default:"Ninguno" }}</p>
+                        <p class="mb-1"><strong>{{ visitante }}:</strong></p>
+                        <p class="text-muted mb-0">{{ goleadores_visitante|join:", "|default:"Ninguno "}}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tarjetas Amarillas -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-light fw-bold text-warning">
+                    <i class="bi bi-square-fill me-1"></i>{% trans "Amonestados" %}
+                </div>
+                <div class="card-body small">
+                    <p class="mb-1"><strong>{{ local }}:</strong></p>
+                    <p class="text-muted">{{ amonestados_local|join:", "|default:"Ninguno"}}</p>
+                    <p class="mb-1"><strong>{{ visitante }}:</strong></p>
+                    <p class="text-muted">{{ amonestados_visitante|join:", "|default:"Ninguno"}}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tarjetas Rojas -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-light fw-bold text-danger">
+                    <i class="bi bi-square-fill me-1"></i>{% trans "Expulsados" %}
+                </div>
+                <div class="card-body small">
+                    <p class="mb-1"><strong>{{ local }}:</strong></p>
+                    <p class="text-muted">{{ expulsados_local|join:", "|default:"Ninguno"}}</p>
+                    <p class="mb-1"><strong>{{ visitante }}:</strong></p>
+                    <p class="text-muted">{{ expulsados_visitante|join:", "|default:"Ninguno"}}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lesionados -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-light fw-bold text-secondary">
+                    <i class="bi bi-bandaid-fill me-1"></i>{% trans "Lesionados" %}
+                </div>
+                <div class="card-body small">
+                    {% for lesion in lesionados %}
+                        <div class="text-muted">- {{ lesion }}</div>
+                    {% empty %}
+                        <span class="text-muted">{% trans "Ninguno" %}</span>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div> <!-- Contenedor principal -->
+
+{% endblock contenido %}

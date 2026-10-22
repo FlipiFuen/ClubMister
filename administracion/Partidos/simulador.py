@@ -11,6 +11,7 @@ from datetime import datetime
 from collections import defaultdict
 
 from django.db import transaction
+from django.template.loader import render_to_string
 
 # Añadir la ruta del directorio padre al sys.path
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -30,12 +31,13 @@ from administracion.Partidos.entidades import Arbitro, EquipoSimulado, JugadorPa
 from clubs.models import Estadio, Equipo, Futbolista
 
 class Partido:
-    def __init__(self, equipo_local_nombre, equipo_visitante_nombre, fecha_partido_str, hora_partido_str, es_copa=False):
+    def __init__(self, equipo_local_nombre, equipo_visitante_nombre, fecha_partido_str, hora_partido_str, es_copa=False, es_oficial=True):
         self.equipo_local_nombre_str = equipo_local_nombre
         self.equipo_visitante_nombre_str = equipo_visitante_nombre
         self.fecha_partido_str = fecha_partido_str
         self.hora_partido_str = hora_partido_str
         self.es_copa = es_copa
+        self.es_oficial = es_oficial
 
         self.equipo_local_sim = None
         self.equipo_visitante_sim = None
@@ -90,7 +92,7 @@ class Partido:
         self.equipo_visitante_sim = EquipoSimulado(equipo_visitante_django, ruta_alineacion_visitante, False, self)
 
         # Resetear participo_ultimo_partido
-        if self.equipo_local_sim and self.equipo_local_sim.django_equipo and \
+        if self.es_oficial and self.equipo_local_sim and self.equipo_local_sim.django_equipo and \
             self.equipo_visitante_sim and self.equipo_visitante_sim.django_equipo:
             try:
                 ids_futbolistas_locales = list(Futbolista.objects.filter(equipo=self.equipo_local_sim.django_equipo).values_list('id', flat=True))
@@ -132,7 +134,8 @@ class Partido:
         if todos_los_arbitros:
             self.arbitro = Arbitro.seleccionar_arbitro_disponible(todos_los_arbitros)
             if self.arbitro:
-                Arbitro.guardar_arbitros(todos_los_arbitros)
+                if self.es_oficial:
+                    Arbitro.guardar_arbitros(todos_los_arbitros)
             else:
                 print("No se pudo seleccionar un árbitro disponible.")
                 self.eventos_partido.append("No se pudo seleccionar un árbitro disponible.")
@@ -1431,14 +1434,19 @@ class Partido:
         return best_local, best_visit, best_overall
                 
 
-    def guardar_reporte_partido(self, ruta_reportes= os.path.join(PARTIDOS_DIR, "reportes_partidos")):
+    def guardar_reporte_partido(self, ruta_reportes= PARTIDOS_DIR):
         """Guarda el reporte del partido en un archivo."""
         if not self.equipo_local_sim or not self.equipo_visitante_sim:
             print("Error: Equipos no cargados correctamente. No se puede guardar el reporte.")
             return
         
-        nombre_archivo = f"{self.equipo_local_nombre_str}_vs_{self.equipo_visitante_nombre_str}_{self.fecha_partido_str}.txt"
-        ruta_completa = os.path.join(ruta_reportes, nombre_archivo)
+        equipo_django = self.equipo_local_sim.django_equipo
+        nombre_carpeta = (
+            f"reportes_division_{equipo_django.division}_grupo_{equipo_django.grupo}"
+        )
+        ruta_carpeta = os.path.join(ruta_reportes, nombre_carpeta)
+        nombre_archivo = f"{self.equipo_local_nombre_str}_vs_{self.equipo_visitante_nombre_str}_{self.fecha_partido_str}.html"
+        ruta_completa = os.path.join(ruta_carpeta, nombre_archivo)
 
         goleadores_local_list = []
         goleadores_visitante_list = []
@@ -1456,8 +1464,8 @@ class Partido:
                 # Goleadores
                 if jugador.goles_partido > 0:
                     goleadores_list.append(f"{jugador.nombre} ({jugador.goles_partido})")
-                if hasattr(jugador, 'goles_propia') and jugador.goles_propia > 0:
-                    goleadores_list.append(f"{jugador.nombre} ({jugador.goles_propia} p.p)")
+                if jugador.goles_propia_partido > 0:
+                    goleadores_list.append(f"{jugador.nombre} ({jugador.goles_propia_partido} p.p)")
 
                 # Expulsados
                 if jugador.expulsado:
@@ -1470,66 +1478,51 @@ class Partido:
         procesar_jugadores_equipo(self.equipo_local_sim, goleadores_local_list, amonestados_local_list, expulsados_local_list)
         procesar_jugadores_equipo(self.equipo_visitante_sim, goleadores_visitante_list, amonestados_visitante_list, expulsados_visitante_list)       
 
-        os.makedirs(ruta_reportes, exist_ok=True)  # Asegurarse de que el directorio exista
-
+        _, _, mejor_jugador = self._calcular_mvp()
+        jugador_mvp, puntuacion_mvp = mejor_jugador
+        if jugador_mvp:
+            equipo_mvp = self.get_equipo_jugador(jugador_mvp)
+            nombre_mejor_jugador = (
+                f"{jugador_mvp.nombre} - "
+                f"{equipo_mvp.nombre if equipo_mvp else 'N/A'} "
+                f"(Puntuación: {puntuacion_mvp:.1f})"
+            )
+        else:
+            nombre_mejor_jugador = "Ninguno"
+        
+        contexto = {
+            "local": self.equipo_local_nombre_str,
+            "visitante": self.equipo_visitante_nombre_str,
+            "goles_local": self.goles_local,
+            "goles_visitante": self.goles_visitante,
+            "fecha": self.fecha_partido_str,
+            "hora": self.hora_partido_str,
+            "estadio": self.nombre_estadio,
+            "asistencia": self.asistencia,
+            "arbitro": self.arbitro.nombre if self.arbitro else "Árbitro no asignado",
+            "mejor_jugador": nombre_mejor_jugador,
+            "alineacion_local": self.equipo_local_sim.get_alineacion_str(),
+            "alineacion_visitante": self.equipo_visitante_sim.get_alineacion_str(),
+            "eventos": self.eventos_partido_reporte,
+            "goleadores_local": goleadores_local_list,
+            "goleadores_visitante": goleadores_visitante_list,
+            "amonestados_local": amonestados_local_list,
+            "amonestados_visitante": amonestados_visitante_list,
+            "expulsados_local": expulsados_local_list,
+            "expulsados_visitante": expulsados_visitante_list,
+            "lesionados": self.lesionados_partido_info,
+        }
+        contenido_html = render_to_string(
+            "administracion/reporte_partido.html", contexto
+        )
         try:
-            with open(ruta_completa, 'w', encoding='utf-8') as f:
-                f.write(f"=========Partido: {self.equipo_local_nombre_str} vs {self.equipo_visitante_nombre_str}==========\n\n")
-                f.write(f"Fecha: {self.fecha_partido_str}, Hora: {self.hora_partido_str}\n")
-                f.write(f"Árbitro: {self.arbitro.nombre if self.arbitro else 'Árbitro no asignado'}\n")
-                f.write(f"Estadio: {self.nombre_estadio}\n")
-                f.write(f"Asistencia: {self.asistencia}\n\n")
-                f.write("------------Alineaciones------------\n")
-                f.write(f"{self.equipo_local_nombre_str}:\n")
-                f.write(self.equipo_local_sim.get_alineacion_str())
-                f.write(f"\n{self.equipo_visitante_nombre_str}:\n")
-                f.write(self.equipo_visitante_sim.get_alineacion_str())
-                f.write("\n")
-                f.write("----------------------------------------\n\n")
-                for evento_str in self.eventos_partido_reporte:
-                    f.write(f"{evento_str}\n")
-                
-                f.write("----------------------------------------\n")
-                f.write("------------FIN DEL PARTIDO-------------\n")
-                f.write("----------------------------------------\n\n")
-                f.write(f"Marcador final: {self.goles_local} - {self.goles_visitante}\n")
-                f.write("Mejor jugador del partido: \n")
-                if best_overall and best_overall[0]:
-                    f.write(f"    {best_overall[0].nombre} - {self.get_equipo_jugador(best_overall[0]).nombre if self.get_equipo_jugador(best_overall[0]) else 'N/A'} (Puntuación: {best_overall[1]:.1f})\n")
-                else:
-                    f.write("    Ninguno\n")
-                
-                f.write("\nGoleadores: \n")
-                if goleadores_local_list:
-                    f.write(f"    {self.equipo_local_nombre_str}: {', '.join(sorted(list(set(goleadores_local_list))))}\n")
-                if goleadores_visitante_list:
-                    f.write(f"    {self.equipo_visitante_nombre_str}: {', '.join(sorted(list(set(goleadores_visitante_list))))}\n")
-                if not goleadores_local_list and not goleadores_visitante_list:
-                    f.write("    Ninguno\n")
-                f.write("\nAmonestados: \n")
-                if amonestados_local_list:
-                    f.write(f"    {self.equipo_local_nombre_str}: {', '.join(sorted(list(set(amonestados_local_list))))}\n")
-                if amonestados_visitante_list:
-                    f.write(f"    {self.equipo_visitante_nombre_str}: {', '.join(sorted(list(set(amonestados_visitante_list))))}\n")
-                if not amonestados_local_list and not amonestados_visitante_list:
-                    f.write("    Ninguno\n")
-                f.write("\nExpulsados: \n")
-                if expulsados_local_list:
-                    f.write(f"    {self.equipo_local_nombre_str}: {', '.join(sorted(list(set(expulsados_local_list))))}\n")
-                if expulsados_visitante_list:
-                    f.write(f"    {self.equipo_visitante_nombre_str}: {', '.join(sorted(list(set(expulsados_visitante_list))))}\n")
-                if not expulsados_local_list and not expulsados_visitante_list:
-                    f.write("    Ninguno\n")
-
-                f.write("\nLesionados:\n")
-                if self.lesionados_partido_info:
-                    for info_lesion in self.lesionados_partido_info:
-                        f.write(f"    - {info_lesion}\n")
-                else:
-                    f.write("    Ninguno\n")
+            os.makedirs(ruta_carpeta, exist_ok=True)  # Asegurarse de que el directorio exista
+            
+            with open(ruta_completa, 'w', encoding='utf-8') as archivo:
+                archivo.write(contenido_html)
 
             print(f"Reporte del partido guardado en: {ruta_completa}")
-        except Exception as e:
+        except OSError as e:
             print(f"Error al guardar el reporte: {e}")
 
 
@@ -1601,7 +1594,8 @@ class Partido:
             f"Marcador final: {self.goles_local} - {self.goles_visitante}",
             f"Asistencia final: {self.asistencia}"
         ])
-        self._actualizar_habilidades_estadisticas_post_partido()
+        if self.es_oficial:
+            self._actualizar_habilidades_estadisticas_post_partido()
         self.guardar_reporte_partido()
         if self.es_copa and self.goles_local == self.goles_visitante:
             self.eventos_partido.append("El partido ha terminado en empate. Se jugará una prórroga.")

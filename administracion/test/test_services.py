@@ -111,3 +111,43 @@ class TestGenerarCalendarioLigaExcepciones:
                     fecha_erronea
                 )
                 
+
+@pytest.mark.django_db
+class TestIntegridadCalendario:
+    """Comprueba que el calendario es un round-robin válido"""
+    
+    def test_cada_equipo_juega_una_vez_por_jornada(self, bd_equipos_validos):
+        
+        resultado = generar_calendario_liga(
+            bd_equipos_validos["division"],
+            bd_equipos_validos["grupo"],
+            bd_equipos_validos["fecha_inicio_valida"],
+        )
+        
+        for jornada in resultado:
+            equipos_jornada = [p["local"] for p in jornada] + [p["visitante"] for p in jornada]
+            assert len(equipos_jornada) == len(set(equipos_jornada))
+            
+    def test_primera_vuelta_sin_emparejamientos_repetidos(self, bd_equipos_validos):
+        
+        resultado = generar_calendario_liga(
+            bd_equipos_validos["division"],
+            bd_equipos_validos["grupo"],
+            bd_equipos_validos["fecha_inicio_valida"],
+        )
+        emparejamientos = [
+            frozenset((p["local"], p["visitante"]))
+            for jornada in resultado[:7]
+            for p in jornada
+        ]
+        assert len(emparejamientos) == len(set(emparejamientos))
+        
+    def test_generar_dos_veces_lanza_valueerror(self, bd_equipos_validos):
+        
+        fecha = bd_equipos_validos["fecha_inicio_valida"]
+        generar_calendario_liga(bd_equipos_validos["division"], bd_equipos_validos["grupo"], fecha)
+        
+        with pytest.raises(ValueError, match="Ya existe un calendario"):
+            generar_calendario_liga(bd_equipos_validos["division"], bd_equipos_validos["grupo"], fecha)
+            
+    

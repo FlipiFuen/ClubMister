@@ -38,6 +38,7 @@ class Partido:
         self.hora_partido_str = hora_partido_str
         self.es_copa = es_copa
         self.es_oficial = es_oficial
+        self.ruta_reporte = None
 
         self.equipo_local_sim = None
         self.equipo_visitante_sim = None
@@ -1445,7 +1446,8 @@ class Partido:
             f"reportes_division_{equipo_django.division}_grupo_{equipo_django.grupo}"
         )
         ruta_carpeta = os.path.join(ruta_reportes, nombre_carpeta)
-        nombre_archivo = f"{self.equipo_local_nombre_str}_vs_{self.equipo_visitante_nombre_str}_{self.fecha_partido_str}.html"
+        sufijo = "" if self.es_oficial else "_amistoso"
+        nombre_archivo = f"{self.equipo_local_nombre_str}_vs_{self.equipo_visitante_nombre_str}_{self.fecha_partido_str}{sufijo}.html"
         ruta_completa = os.path.join(ruta_carpeta, nombre_archivo)
 
         goleadores_local_list = []
@@ -1521,6 +1523,7 @@ class Partido:
             with open(ruta_completa, 'w', encoding='utf-8') as archivo:
                 archivo.write(contenido_html)
 
+            self.ruta_reporte = ruta_completa
             print(f"Reporte del partido guardado en: {ruta_completa}")
         except OSError as e:
             print(f"Error al guardar el reporte: {e}")

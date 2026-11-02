@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 
-from administracion.models import PartidoProgramado
+from administracion.models import PartidoProgramado, ReportePartido
 from clubs.models import Equipo
 
 def generar_calendario_liga(division, grupo, fecha_inicio_str):
@@ -81,3 +81,122 @@ def generar_calendario_liga(division, grupo, fecha_inicio_str):
     
     PartidoProgramado.objects.bulk_create(partidos_programados)
     return calendario_resultado
+
+def proximo_miercoles_20h(ahora=None):
+    """
+    Devuelve el próximo miércoles a las 20:00 a partir del momento actual o de la fecha proporcionada.
+    
+    Args:
+        ahora (datetime, optional): Momento de referencia. Si no se proporciona, se usa la fecha y hora actual.
+    
+    Returns:
+        datetime: Fecha y hora del próximo miércoles a las 20:00.
+    """
+    ahora = ahora or datetime.now()
+    dias = (2 - ahora.weekday()) % 7
+    fecha = (ahora + timedelta(days=dias)).replace(hour=20, minute=0, second=0, microsecond=0)
+    
+    if fecha <= ahora:
+        fecha += timedelta(days=7)
+    
+    return fecha
+
+def _simular(local, visitante, fecha, hora, es_oficial, competicion, programado=None):
+    """
+    Simula un partido entre dos equipos.
+
+    Args:
+        local (Equipo): Equipo local.
+        visitante (Equipo): Equipo visitante.
+        fecha (date): Fecha del partido.
+        hora (time): Hora del partido.
+        es_oficial (bool): Indica si el partido es oficial.
+        competicion (str): Tipo de competición.
+        programado (PartidoProgramado, optional): Partido programado asociado.
+
+    Returns:
+        ReportePartido: Reporte del partido simulado, o None si no se pudo simular.
+    """
+    # Import diferido: el simulador ejecuta django.setup() al importarse
+    from administracion.Partidos.simulador import Partido
+    
+    partido = Partido(
+        local.nombre_equipo,
+        visitante.nombre_equipo,
+        fecha.strftime("%d-%m-%Y"),
+        hora.strftime("%H:%M"),
+        es_oficial = es_oficial,
+        competicion = competicion,
+        partido_programado = programado,
+    ) 
+    eventos = partido.simular_partido()
+    if eventos is None or not partido.ruta_reporte:
+        return None
+    
+    return ReportePartido.objects.filter(ruta_archivo=partido.ruta_reporte).first()
+
+def simular_jornada(division, grupo, jornada):
+    """
+    Simula todos los partidos de una jornada para una división y grupo específicos.
+
+    Args:
+        division (str): División del torneo.
+        grupo (str): Grupo dentro de la división.
+        jornada (int): Número de la jornada a simular.
+
+    Returns:
+        list: Lista de resultados de la simulación, cada uno con el estado y el reporte correspondiente.
+    """
+    equipo = Equipo.objects.filter(division=division, grupo=grupo).first()
+    if not equipo:
+        raise ValueError(f"No hay equipos en la división {division} - grupo {grupo}")
+    
+    programados = PartidoProgramado.objects.filter(
+        temporada = equipo.temporada, division = division, grupo = grupo, jornada = jornada
+    ).select_related("equipo_local", "equipo_visitante")
+    if not programados:
+        raise ValueError("No hay partidos programados para esa jornada. Generaste el calendario?")
+    
+    resultados = []
+    for p in programados:
+        if ReportePartido.objects.filter(partido_programado=p).exists():
+            resultados.append({"programado": p, "estado": "ya_simulado", "reporte": None})
+            continue
+        
+        reporte = _simular(p.equipo_local, p.equipo_visitante, p.fecha, p.hora, True, "liga", p)
+        resultados.append({
+            "programado": p,
+            "estado": "ok" if reporte else "error",
+            "reporte": reporte,
+        })
+        
+    return resultados
+
+def simular_individual(local, visitante, oficial, fecha=None, hora=None):
+    """
+    Simula un partido individual entre dos equipos.
+
+    Args:
+        local (Equipo): Equipo local.
+        visitante (Equipo): Equipo visitante.
+        oficial (bool): Indica si el partido es oficial.
+        fecha (date, optional): Fecha del partido (solo para amistoso).
+        hora (time, optional): Hora del partido (solo para amistoso).
+
+    Returns:
+        ReportePartido: Reporte del partido simulado.
+
+    Raises:
+        ValueError: Si no se pudo simular el partido.
+    """
+    if oficial:
+        momento = proximo_miercoles_20h()
+        reporte = _simular(local, visitante, momento.date(), momento.time(), True, "independiente")
+    else:
+        reporte = _simular(local, visitante, fecha, hora, False, "amistoso")
+        
+    if not reporte:
+        raise ValueError("No se pudo simular el partido")
+    
+    return reporte
+        

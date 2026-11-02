@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+
+<html lang=""
+  dir="ltr">
+
+<head>
+  
+  
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reporte: FC Parchelona vs Patetico</title>
+
+  <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" rel="stylesheet">
+  <link rel="stylesheet" href="/static/estilo.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <script crossorigin="anonymous" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  
+<style>
+    :root { --c-local: #0d6efd; --c-visit: #dc3545; --c-campo: #146c43; }
+    .rp-cabecera { background: linear-gradient(135deg, #0b3d2e 0%, #146c43 60%, #198754 100%); color: #fff; border-radius: .75rem; }
+    .rp-equipo-local { color: #9ec5fe; }
+    .rp-equipo-visit { color: #f1aeb5; }
+    .rp-marcador { background: #fff; color: #212529; border-radius: .75rem; box-shadow: 0 .25rem .75rem rgba(0,0,0,.3); }
+    .rp-pastilla { background: rgba(255,255,255,.15); border-radius: 2rem; padding: .25rem .8rem; font-size: .85rem; }
+    .rp-mvp { background: linear-gradient(135deg, #ffd43b, #f59f00); color: #3d2c00; border-radius: .75rem; }
+    .rp-evento { border-left: 5px solid #adb5bd; padding: .5rem .75rem; display: flex; align-items: center; gap: .75rem; }
+    .rp-evento.lado-local { border-left-color: var(--c-local); background: rgba(13,110,253,.05); }
+    .rp-evento.lado-visitante { border-left-color: var(--c-visit); background: rgba(220,53,69,.05); }
+    .rp-evento.tipo-gol { background: #d1e7dd !important; font-weight: 700; }
+    .rp-evento.tipo-amarilla { background: #fff3cd !important; }
+    .rp-evento.tipo-roja { background: #f8d7da !important; }
+    .rp-evento.tipo-general, .rp-evento.tipo-falta { opacity: .85; }
+    .rp-minuto { min-width: 3rem; text-align: center; border-radius: 2rem; padding: .15rem .5rem; color: #fff; font-weight: 700; font-size: .8rem; background: #6c757d; }
+    .lado-local .rp-minuto { background: var(--c-local); }
+    .lado-visitante .rp-minuto { background: var(--c-visit); }
+    .rp-separador { text-align: center; background: #e9ecef; color: #495057; font-weight: 700; padding: .5rem; letter-spacing: .05em; }
+    .rp-chip { display: inline-block; border-radius: 2rem; padding: .15rem .6rem; margin: .1rem; font-size: .8rem; color: #fff; }
+    .chip-local { background: var(--c-local); }
+    .chip-visit { background: var(--c-visit); }
+    .rp-cab-local { background: var(--c-local); color: #fff; }
+    .rp-cab-visit { background: var(--c-visit); color: #fff; }
+</style>
+
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-success border fixed-top" style="height: 90px;">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/">
+        <img src="/static/imagenes/logo.png" alt="logo">
+      </a>
+
+      <!--Boton de colapso-->
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
+        aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarCollapse">
+        <ul class="navbar-nav mx-auto d-flex align-items-center gap-5">
+          
+            <li class="nav-item">
+              <b><span class="navbar-text custom-font-size text-info">CLUBMISTER</span></b>
+            </li>
+          
+        </ul>
+
+        <!-- botones de registro y login si el usuario no está autentificado -->
+        
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a href="/login/" class="nav-link">
+                <i class="bi bi-box-arrow-in-right me-1"></i>Iniciar sesión 
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="/registro/" class="nav-link">
+                <i class="bi bi-person-plus-fill me-1"></i>Registrarse 
+              </a>
+            </li>
+          </ul>
+        <!-- Botón de desconexión si el usuario está logueado -->
+        
+
+        <div class="dropdown ms-3 mb-0">
+          <form method="post" action="/i18n/setlang/">
+            
+            <input type="hidden" name="next" value="" />
+            <button class="btn btn-secondary dropdown-toggle d-flex align-items-center gap-2" type="button" id="dropdownMenuButton"
+              data-bs-toggle="dropdown">
+              <i class="bi bi-globe"></i>Selecciona un idioma
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <li>
+                <button type="submit" class="dropdown-item" name="language" value="es">
+                  <img src="/static/imagenes/banderas/spa.jpg" alt="Español"> Español
+                </button>
+              </li>
+              <li>
+                <button type="submit" class="dropdown-item" name="language" value="en">
+                  <img src="/static/imagenes/banderas/england.jpg" alt="Inglés"> English
+                </button>
+              </li>
+            </ul>
+          </form>
+        </div>
+      </div> <!-- navbar de colapso-->
+    </div> <!-- container-fluid -->
+  </nav>
+
+  
+
+    <main class="main-content full-width"
+          style="margin-left: 0;">
+      
+<div class="container py-4">
+    <!-- Marcador y cabecera del partido -->
+    <div class="rp-cabecera shadow p-4 mb-4 text-center">
+        <div class="mb-3">
+            <span class="badge bg-info text-darkfs-6">
+                <i class="bi bi-trophy-fill me-1"></i>Amistoso · No oficial
+            </span>
+        </div>
+
+        <div class="row align-items-center">
+            <div class="col-md-4">
+                <h2 class="fw-bold rp-equipo-local mb-0">FC Parchelona</h2>
+            </div>
+
+            <div class="col-md-4 my-3 my-md-0">
+                <div class="rp-marcador d-inline-block px-4 py-2">
+                    <span class="display-3 fw-bold">0 - 0</span>
+                    <div class="small-text-muted">
+                        Descanso:  - 
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <h2 class="fw-bold rp-equipo-visit mb-0">Patetico</h2>
+            </div>
+        </div>
+        <div class="d-flex justify-content-center flex-wrap gap-2 mt-4">
+            <span class="rp-pastilla"><i class="bi bi-calendar-event me-1"></i>02-11-2026</span>
+            <span class="rp-pastilla"><i class="bi bi-clock me-1"></i>01:21</span>
+            <span class="rp-pastilla"><i class="bi bi-geo-alt-fill me-1"></i>Estadio Joan Gamper</span>
+            <span class="rp-pastilla"><i class="bi bi-people-fill me-1"></i>3391</span>
+            <span class="rp-pastilla"><i class="bi bi-person-badge me-1"></i>Paolo_Baptista</span>
+        </div>
+    </div>
+
+    <!-- MVP -->
+    
+        <div class="rp-mvp shadow-sm p-3 mb-4 d-flex align-items-center">
+            <i class="bi bi-star-fill fs-2 me-3"></i>
+            <div>
+                <div class="small fw-bold text-uppercase">Mejor Jugador del Partido:</div>
+                <div class="fs-5 fw-bold">K. Lemerise - FC Parchelona (Puntuación: 74.5)</div>
+            </div>
+        </div>
+    
+
+    <!-- Alineaciones -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header rp-cab-local fw-bold">
+                    <i class="bi bi-shield-shaded me-1"></i>FC Parchelona
+                </div>
+                <div class="card-body">
+                    <pre class="small mb-0" style="white-space: pre-wrap; font-family: inherit;">Táctica inicial: N
+Alineación titular:
+               - H. Keener (Portero)
+               - O. Wickham (Central-Izquierdo)
+               - O. Kitchenhoff (Central-Derecho)
+               - K. Mcquestion (Lateral Izquierdo)
+               - F. Gibson (Lateral Derecho)
+               - J. Beechum (Medio-Izquierdo)
+               - R. Hayashi (Medio)
+               - K. Lemerise (Medio)
+               - P. Pfiel (Medio-Derecho)
+               - B. Poss (Delantero-Izquierdo)
+               - U. Vartanian (Delantero-Derecho)
+Capitán: O. Wickham
+Lanzador de penaltis: B. Poss
+Jugadores en el banquillo:
+               - E. Conrad (Portero)
+               - K. Quarles (Delantero-Centro)
+               - O. Strang (Central)
+               - D. Bowen (Medio)
+               - N. Lasher (Medio)
+               - S. Tessier (Mediocentro-Defensivo)
+               - G. Di Cicco (Central)
+</pre>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header rp-cab-visit fw-bold">
+                    <i class="bi bi-shield-shaded me-1"></i>FC Parchelona
+                </div>
+                <div class="card-body">
+                    <pre class="small mb-0" style="white-space: pre-wrap; font-family: inherit;">Táctica inicial: N
+Alineación titular:
+               - O. Monohan (Portero)
+               - H. Ransdell (Central-Izquierdo)
+               - L. Lenhart (Central-Derecho)
+               - K. Strobel (Lateral Izquierdo)
+               - A. Milburn (Lateral Derecho)
+               - J. Matthew (Medio-Izquierdo)
+               - H. Gesford (Medio)
+               - K. Gramlich (Medio)
+               - G. Schott (Medio-Derecho)
+               - Y. Floyd (Delantero-Izquierdo)
+               - C. Buono (Delantero-Derecho)
+Capitán: H. Ransdell
+Lanzador de penaltis: Y. Floyd
+Jugadores en el banquillo:
+               - P. Kamplain (Portero)
+               - W. Bain (Central)
+               - K. Prideaux (Medio)
+               - H. Chambless (Medio)
+               - X. Bach (Mediocentro-Defensivo)
+               - K. Tripp (Central)
+               - V. Wendt (Delantero-Centro)
+</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Crónica minuto a minuto-->
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-succes text-white d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <span><i class="bi bi-clock-history me-2"></i><strong>Crónica Minuto a Minuto</strong></span>
+            <div class="btn-group btn-group-sm" role="group">
+                <button type="button" class="btn btn-light" data-filtro="todo">Todo</button>
+                <button type="button" class="btn btn-light" data-filtro="gol">⚽Goles</button>
+                <button type="button" class="btn btn-light" data-filtro="tarjeta">🟨🟥Tarjetas</button>
+                <button type="button" class="btn btn-light" data-filtro="lesion">🩹Lesiones</button>
+            </div>
+        </div>
+        <div class="card-body p-0" style="max-height: 600px; overflow-y: auto;">
+            
+                
+                    <div class="rp-separador" data-tipo="separador">--- INICIO DE LA PRIMERA PARTE: FC PARCHELONA VS PATETICO ---
+</div>
+                
+            
+                
+                    <div class="rp-evento lado-visitante tipo-general" data-tipo="general">
+                        <span class="rp-minuto">6</span>
+                        <span>
+                            
+                             (PTC) 
+J. Matthew avanza
+          ...  Cambia el ritmo ante O. Wickham. Wow eso me recordó a Cruyff!
+          ...  Lo deja atrás!
+          ...  Mete el pase hacia K. Gramlich!
+                        </span>
+                    </div>
+                
+            
+                
+                    <div class="rp-evento lado-visitante tipo-general" data-tipo="general">
+                        <span class="rp-minuto">6</span>
+                        <span>
+                            
+                             (PTC) 
+          ...  K. Gramlich aprovecha un despiste de la defensa. Se va!
+          ...  Se planta ante O. Wickham
+                        </span>
+                    </div>
+                
+            
+                
+                    <div class="rp-evento lado-local tipo-general" data-tipo="general">
+                        <span class="rp-minuto">6</span>
+                        <span>
+                            
+                             (fcp) 
+          ...  O. Wickham corta la jugada con un cabezazo en plancha
+                        </span>
+                    </div>
+                
+            
+                
+                    <div class="rp-evento lado-visitante tipo-general" data-tipo="general">
+                        <span class="rp-minuto">10</span>
+                        <span>
+                            
+                             (PTC) 
+J. Matthew estira la pierna para llegar al pase
+                        </span>
+                    </div>
+                
+            
+                
+                    <div class="rp-evento lado-local tipo-general" data-tipo="general">
+                        <span class="rp-minuto">10</span>
+                        <span>
+                            
+                             (fcp) 
+          ...  K. Lemerise se lanza hacia su oponente
+          ...  Y toca el balón! Que clase!
+                        </span>
+                    </div>
+                
+            
+                
+                    <div class="rp-evento lado-local tipo-general" data-tipo="general">
+                        <span class="rp-minuto">16</span>
+                        <span>
+                            
+                             (fcp) 
+O. Wickham encara al defensa
+          ...  Oh, lo ha dejado sentado con un regate eléctrico
+                        </span>
+                    </div>
+                
+            
+                
+                    <div class="rp-evento lado-visitante tipo-general" data-tipo="general">
+                        <span class="rp-minuto">16</span>
+                        <span>
+                            
+                             (PTC) 
+          ...  El balón golpea a H. Ransdell en la cara!
+          ...  Peligro despejado! Al defensa no le hace ninguna gracia
+                        </span>
+                    </div>
+                
+            
+                
+                    <div class="rp-evento lado-visitante tipo-general" data-tipo="general">
+                        <span class="rp-minuto">18</span>
+                        <span>
+                            
+                             (PTC) 
+H. Gesford con un pase milimétrico 
+          ...  El balón pasa por encima de O. Wickham
+          ...  Y le llega a A. Milburn!
+                        </span>
+                    </div>
+                
+            
+                
+                    <div class="rp-evento lado-visitante tipo-general" data-tipo="general">
+                        <span class="rp-minuto">18</span>
+                        <span>
+                            
+                             (PTC) 
+          ...  Balón bombeado
+          ...  A. Milburn se anticipa al defensa de cabeza!
+          ...  Se va solo hacia O. Wickham
+                        </span>
+                    </div>
+                
+            
+                
+                    <div class="rp-evento lado-local tipo-general" data-tipo="general">
+                        <span class="rp-minuto">18</span>
+                        <span>
+                            
+                             (fcp) 
+          ...  O. Wickham lee la jugada antes de que se produzca y corta el balón
+                        </span>
+                    </div>
+                
+            
+                
+                    <div class="rp-evento lado-local tipo-falta" data-tipo="falta">
+                        <span class="rp-minuto">24</span>
+                        <span>
+                            
+                             (fcp) 
+          ... O. Wickham se lleva bien el balón 
+          ...  Paolo_Baptista pita falta! Bufff, no vale ni para la Segunda B
+                        </span>
+                    </div>
+                
+            
+                
+                    <div class="rp-evento lado-visitante tipo-general" data-tipo="general">
+                        <span class="rp-minuto">25</span>
+                        <span>
+                            
+                             (PTC) 
+H. Gesford hace una vuelta entera pisando el balón y se va solo de cara a puerta
+                        </span>
+                    </div>
+                
+            
+                
+                    <div class="rp-evento lado-local tipo-general" data-tipo="general">
+                        <span class="rp-minuto">25</span>
+                        <span>
+                            
+                             (fcp) 
+          ...  O. Wickham sale al corte... lo logra!
+                        </span>
+                    </div>
+                
+            
+                
+                    <div class="rp-evento lado-local tipo-general" data-tipo="general">
+                        <span class="rp-minuto">28</span>
+                        <span>
+                            
+                             (fcp) 
+R. Hayashi se interna
+          ...  Le hace dos bicicletas a H. Ransdell
+          ...  Lo ha roto. Centra a O. Wickham!
+                        </span>
+                    </div>
+                
+            
+                
+                    <div class="rp-evento lado-local tipo-general" data-tipo="general">
+                        <span class="rp-minuto">28</span>
+                        <span>
+                            
+                             (fcp) 
+          ...  O. Wickham se va solo hacia la portería!
+          ...  El asistente levante la bandera
+          ...  Pero Paolo_Baptista le desautoriza
+          ...  Encara a H. Ransdell
+                        </span>
+                    </div>
+                
+            
+                
+                    <div class="rp-evento lado-visitante tipo-general" data-tipo="general">
+                        <span class="rp-minuto">28</span>
+                        <span>
+                            
+                             (PTC) 
+          ...  Pero H. Ransdell aparece de la nada y corta el balón
+                        </span>
+                    </div>
+                
+            
+                
+                    <div class="rp-evento lado-local tipo-falta" data-tipo="falta">
+                        <span class="rp-minuto">29</span>
+                        <span>
+                            
+                             (fcp) 
+          ...  L. Lenhart suelta una entrada brutal!!! 
+          ...  Los aficionados gritan &quot;FUERA, FUERA&quot;!
+                        </span>
+                    </div>
+                
+            
+                
+                    <div class="rp-evento lado-local tipo-tiro_libre" data-tipo="tiro_libre">
+                        <span class="rp-minuto">30</span>
+                        <span>
+                            🎯
+                            
+                             (fcp) 
+          ...  B. Poss coloca el balón con suavidad por encima de la barrera
+                        </span>
+                    </div>
+                
+            
+                
+                    <div class="rp-evento lado-local tipo-tiro_libre" data-tipo="tiro_libre">
+                        <span class="rp-minuto">30</span>
+                        <span>
+                            🎯
+                            
+                             (fcp) 
+          ...  B. Poss buscó la escuadra pero el balón se fue alto.
+                        </span>
+                    </div>
+                
+            
+                
+                    <div class="rp-evento lado-local tipo-falta" data-tipo="falta">
+                        <span class="rp-minuto">30</span>
+                        <span>
+                            
+                             (fcp) 
+          ... O. Wickham entra y deja la pierna
+          ...  Ohhh! Le ha dejado un recadito
+                        </span>
+                    </div>
+                
+            
+                
+                    <div class="rp-evento lado-visitante tipo-general" data-tipo="general">
+                        <span class="rp-minuto">37</span>
+                        <span>
+                            
+                             (PTC) 
+J. Matthew con un pase milimétrico 
+          ...  El balón pasa por encima de K. Lemerise
+          ...  Y le llega a H. Ransdell!
+                        </span>
+                    </div>
+                
+            
+                
+                    <div class="rp-evento lado-visitante tipo-general" data-tipo="general">
+                        <span class="rp-minuto">37</span>
+                        <span>
+                            
+                             (PTC) 
+          ...  El defensa resbala en el momento de controlar el balón
+          ...  H. Ransdell es más rápido que nadie y controla el cuero
+          ...  Está cara a cara con H. Keener
+                        </span>
+                    </div>
+                
+            
+                
+                    <div class="rp-evento lado-local tipo-general" data-tipo="general">
+                        <span class="rp-minuto">37</span>
+                        <span>
+                            
+                             (fcp) 
+          ...  K. Lemerise controla el balón 
+          ...  Ay va! Vaya cañonazo ha pegado! Si podía salir jugando
+                        </span>
+                    </div>
+                
+            
+                
+                    <div class="rp-evento lado-local tipo-lesion" data-tipo="lesion">
+                        <span class="rp-minuto">40</span>
+                        <span>
+                            🩹
+                            
+                             (fcp) 
+F. Gibson de FC Parchelona ha recibido un golpe, pero parece que podrá continuar.
+                        </span>
+                    </div>
+                
+            
+                
+                    <div class="rp-separador" data-tipo="separador">MIN 43: SE AÑADIRÁN 1 MINUTOS DE TIEMPO EXTRA</div>
+                
+            
+                
+                    <div class="rp-evento lado-local tipo-falta" data-tipo="falta">
+                        <span class="rp-minuto">43</span>
+                        <span>
+                            
+                             (fcp) 
+          ... U. Vartanian corta con limpieza 
+          ...  El asistente indica la falta! Increíble! Ha sido legal!
+                        </span>
+                    </div>
+                
+            
+                
+                    <div class="rp-evento lado-local tipo-general" data-tipo="general">
+                        <span class="rp-minuto">46</span>
+                        <span>
+                            
+                             (fcp) 
+J. Beechum avanza
+          ...  Cambia el ritmo ante J. Matthew. Wow eso me recordó a Cruyff!
+          ...  Lo deja atrás!
+          ...  Mete el pase hacia R. Hayashi!
+                        </span>
+                    </div>
+                
+            
+                
+                    <div class="rp-evento lado-local tipo-general" data-tipo="general">
+                        <span class="rp-minuto">46</span>
+                        <span>
+                            
+                             (fcp) 
+          ...  El defensa estaba despistado
+          ...  R. Hayashi aprovecha el error y se va solo!
+          ... Sólo J. Matthew puede frenarlo
+                        </span>
+                    </div>
+                
+            
+                
+                    <div class="rp-evento lado-visitante tipo-general" data-tipo="general">
+                        <span class="rp-minuto">46</span>
+                        <span>
+                            
+                             (PTC) 
+          ...  Corte finísimo de J. Matthew
+          ...  Y evita el córner! Está en un momento dulce!
+                        </span>
+                    </div>
+                
+            
+                
+                    <div class="rp-evento lado-neutro tipo-general" data-tipo="general">
+                        <span class="rp-minuto">46</span>
+                        <span>
+                            
+                            
+--- Final de la primera parte. Marcador al descanso: FC Parchelona (fcp) 0 - 0 Patetico (PTC)
+---
+                        </span>
+                    </div>
+                
+            
+                
+                    <div class="rp-separador" data-tipo="separador">
+--- INICIO DE LA SEGUNDA PARTE: FC PARCHELONA VS PATETICO ---
+</div>
+                
+            
+                
+                    <div class="rp-evento lado-visitante tipo-general" data-tipo="general">
+                        <span class="rp-minuto">46</span>
+                        <span>
+                            
+                             (PTC) 
+K. Gramlich con un control impresionante
+          ...  Hace la croqueta ante B. Poss
+          ...  Y centra hacia Y. Floyd. Qué clase!!
+                        </span>
+                    </div>
+                
+            
+                
+                    <div class="rp-evento lado-visitante tipo-general" data-tipo="general">
+                        <span class="rp-minuto">46</span>
+                        <span>
+                            
+                             (PTC) 
+          ...  Y. Floyd se anticipa a su marcador
+          ...  Regatea al líbero! Se va!
+          ... Sólo le queda B. Poss!
+                        </span>
+                    </div>
+                
+            
+                
+                    <div class="rp-evento lado-local tipo-general" data-tipo="general">
+                        <span class="rp-minuto">46</span>
+                        <span>
+                            
+                             (fcp) 
+          ...  B. Poss se anticipa la acción 
+          ...  Vaya pedazo de defensa!
+          ...  Los aficionados corean su nombre
+                        </span>
+                    </div>
+                
+            
+                
+                    <div class="rp-evento lado-local tipo-lesion" data-tipo="lesion">
+                        <span class="rp-minuto">53</span>
+                        <span>
+                            🩹
+                            
+                             (fcp) 
+¡Qué mala suerte para H. Gesford! La lesión es seria y estará de baja el jugador semanas.
+                        </span>
+                    </div>
+                
+            
+                
+                    <div class="rp-evento lado-visitante tipo-lesion" data-tipo="lesion">
+                        <span class="rp-minuto">53</span>
+                        <span>
+                            🩹
+                            
+                             (PTC) 
+H. Gesford se ha torcido gravemente la rodilla!
+          ...  El fisio del Patetico entra al campo apresuradamente
+          ...  Pero el Reflex no suerte efecto! Cambio!
+                        </span>
+                    </div>
+                
+            
+                
+                    <div class="rp-evento lado-visitante tipo-lesion" data-tipo="lesion">
+                        <span class="rp-minuto">53</span>
+                        <span>
+                            🩹
+                            
+                             (PTC) 
+Patetico realiza un cambio obligado por la lesión de H. Gesford. Entra K. Prideaux.
+                        </span>
+                    </div>
+                
+            
+                
+                    <div class="rp-evento lado-local tipo-lesion" data-tipo="lesion">
+                        <span class="rp-minuto">58</span>
+                        <span>
+                            🩹
+                            
+                             (fcp) 
+El jugador F. Gibson de FC Parchelona se duele de un lance, pero se recupera.
+                        </span>
+                    </div>
+                
+            
+                
+                    <div class="rp-evento lado-local tipo-lesion" data-tipo="lesion">
+                        <span class="rp-minuto">59</span>
+                        <span>
+                            🩹
+                            
+                             (fcp) 
+O. Wickham cae entre muestras de dolor!
+          ...  Trata de levantarse
+          ...  Hace que &#x27;sí&#x27; con la cabeza hacia el banquillo. Va a seguir!
+                        </span>
+                    </div>
+                
+            
+                
+                    <div class="rp-evento lado-local tipo-general" data-tipo="general">
+                        <span class="rp-minuto">60</span>
+                        <span>
+                            
+                             (fcp) 
+O. Kitchenhoff con el preciso regate
+          ...  Se va de cara a puerta
+                        </span>
+                    </div>
+                
+            
+                
+                    <div class="rp-evento lado-visitante tipo-general" data-tipo="general">
+                        <span class="rp-minuto">60</span>
+                        <span>
+                            
+                             (PTC) 
+          ...  Interceptada por L. Lenhart
+                        </span>
+                    </div>
+                
+            
+                
+                    <div class="rp-evento lado-local tipo-falta" data-tipo="falta">
+                        <span class="rp-minuto">65</span>
+                        <span>
+                            
+                             (fcp) 
+          ... P. Pfiel empuja a ru rival 
+          ...  Qué animal!
+                        </span>
+                    </div>
+                
+            
+                
+                    <div class="rp-evento lado-visitante tipo-falta" data-tipo="falta">
+                        <span class="rp-minuto">67</span>
+                        <span>
+                            
+                             (PTC) 
+          ... O. Monohan con una entrada asesina 
+          ...  Falta! Ha jugado al límite del reglamento!
+                        </span>
+                    </div>
+                
+            
+                
+                    <div class="rp-evento lado-local tipo-general" data-tipo="general">
+                        <span class="rp-minuto">71</span>
+                        <span>
+                            
+                             (fcp) 
+K. Lemerise frena el contraataque y espera algún apoyo
+          ...  Hay un desmarque al otro lado
+          ...  Cambia el juego y corre hacia arriba!
+          ...  Le devuelve el balón, vaya combinación!!
+                        </span>
+                    </div>
+                
+            
+                
+                    <div class="rp-evento lado-local tipo-general" data-tipo="general">
+                        <span class="rp-minuto">71</span>
+                        <span>
+                            
+                             (fcp) 
+K. Lemerise sale lanzado por el carril
+          ...  H. Ransdell intenta cortar su avance con una entrada a ras de suelo!
+          ...  El delantero salta por encima! Qué reflejos!
+                        </span>
+                    </div>
+                
+            
+                
+                    <div class="rp-evento lado-local tipo-general" data-tipo="general">
+                        <span class="rp-minuto">71</span>
+                        <span>
+                            
+                             (fcp) 
+K. Lemerise envía largo para B. Poss
+                        </span>
+                    </div>
+                
+            
+                
+                    <div class="rp-evento lado-local tipo-general" data-tipo="general">
+                        <span class="rp-minuto">71</span>
+                        <span>
+                            
+                             (fcp) 
+          ...  B. Poss regatea a su marcador y busca el gol !
+                        </span>
+                    </div>
+                
+            
+                
+                    <div class="rp-evento lado-visitante tipo-general" data-tipo="general">
+                        <span class="rp-minuto">71</span>
+                        <span>
+                            
+                             (PTC) 
+          ...  O. Monohan ve venir el balón
+          ...  Y lo atrapa con facilidad
+                        </span>
+                    </div>
+                
+            
+                
+                    <div class="rp-evento lado-local tipo-general" data-tipo="general">
+                        <span class="rp-minuto">76</span>
+                        <span>
+                            
+                             (fcp) 
+El balón queda suelto! 
+          ...  K. Lemerise gana la posesión
+                        </span>
+                    </div>
+                
+            
+                
+                    <div class="rp-evento lado-local tipo-general" data-tipo="general">
+                        <span class="rp-minuto">76</span>
+                        <span>
+                            
+                             (fcp) 
+K. Lemerise cambia de dirección
+          ...  L. Lenhart, que lo estaba persiguiendo, resbala!
+                        </span>
+                    </div>
+                
+            
+                
+                    <div class="rp-evento lado-local tipo-general" data-tipo="general">
+                        <span class="rp-minuto">76</span>
+                        <span>
+                            
+                             (fcp) 
+K. Lemerise con un preciso pase hacia B. Poss
+                        </span>
+                    </div>
+                
+            
+                
+                    <div class="rp-evento lado-local tipo-general" data-tipo="general">
+                        <span class="rp-minuto">76</span>
+                        <span>
+                            
+                             (fcp) 
+          ...  Punterazo impresionante de B. Poss !
+                        </span>
+                    </div>
+                
+            
+                
+                    <div class="rp-evento lado-local tipo-general" data-tipo="general">
+                        <span class="rp-minuto">76</span>
+                        <span>
+                            
+                             (fcp) 
+          ...  Es incapaz de chutar a puerta!
+          ...  Ha tardado una eternidad!
+          ...  Será el efecto Matrix????
+                        </span>
+                    </div>
+                
+            
+                
+                    <div class="rp-evento lado-local tipo-general" data-tipo="general">
+                        <span class="rp-minuto">78</span>
+                        <span>
+                            
+                             (fcp) 
+O. Kitchenhoff encara al defensa
+          ...  Se va de K. Gramlich en velocidad
+          ... envía un pase en profundidad hacia F. Gibson!
+                        </span>
+                    </div>
+                
+            
+                
+                    <div class="rp-evento lado-local tipo-general" data-tipo="general">
+                        <span class="rp-minuto">78</span>
+                        <span>
+                            
+                             (fcp) 
+          ...  F. Gibson se va solo hacia la portería!
+          ...  El asistente levante la bandera
+          ...  Pero Paolo_Baptista le desautoriza
+          ...  Encara a K. Gramlich
+                        </span>
+                    </div>
+                
+            
+                
+                    <div class="rp-evento lado-visitante tipo-general" data-tipo="general">
+                        <span class="rp-minuto">78</span>
+                        <span>
+                            
+                             (PTC) 
+          ...  K. Gramlich se juega el físico con una entrada durísima. Era su única opción
+                        </span>
+                    </div>
+                
+            
+                
+                    <div class="rp-evento lado-visitante tipo-general" data-tipo="general">
+                        <span class="rp-minuto">79</span>
+                        <span>
+                            
+                             (PTC) 
+K. Prideaux avanza
+          ...  Cambia el ritmo ante O. Wickham. Wow eso me recordó a Cruyff!
+          ...  Lo deja atrás!
+          ...  Mete el pase hacia H. Ransdell!
+                        </span>
+                    </div>
+                
+            
+                
+                    <div class="rp-evento lado-visitante tipo-general" data-tipo="general">
+                        <span class="rp-minuto">79</span>
+                        <span>
+                            
+                             (PTC) 
+          ...  H. Ransdell se va solo hacia la portería!
+          ...  El asistente levante la bandera
+          ...  Pero Paolo_Baptista le desautoriza
+          ...  Encara a O. Wickham
+                        </span>
+                    </div>
+                
+            
+                
+                    <div class="rp-evento lado-local tipo-general" data-tipo="general">
+                        <span class="rp-minuto">79</span>
+                        <span>
+                            
+                             (fcp) 
+          ...  O. Wickham se lanza hacia su oponente
+          ...  Y toca el balón! Que clase!
+                        </span>
+                    </div>
+                
+            
+                
+                    <div class="rp-evento lado-visitante tipo-falta" data-tipo="falta">
+                        <span class="rp-minuto">82</span>
+                        <span>
+                            
+                             (PTC) 
+          ... Y. Floyd llega segundos tarde al corte 
+          ...  Se levanta y se disculpa de su oponente
+                        </span>
+                    </div>
+                
+            
+                
+                    <div class="rp-separador" data-tipo="separador">MIN 88: SE AÑADIRÁN 4 MINUTOS DE TIEMPO EXTRA</div>
+                
+            
+                
+                    <div class="rp-evento lado-local tipo-general" data-tipo="general">
+                        <span class="rp-minuto">89</span>
+                        <span>
+                            
+                             (fcp) 
+J. Beechum con una croqueta a lo Laudrup
+          ...  Menuda calidad!
+                        </span>
+                    </div>
+                
+            
+                
+                    <div class="rp-evento lado-visitante tipo-general" data-tipo="general">
+                        <span class="rp-minuto">89</span>
+                        <span>
+                            
+                             (PTC) 
+          ...  H. Ransdell mete la puntera de la bota y aleja el cuero
+                        </span>
+                    </div>
+                
+            
+                
+                    <div class="rp-evento lado-visitante tipo-general" data-tipo="general">
+                        <span class="rp-minuto">92</span>
+                        <span>
+                            
+                             (PTC) 
+K. Gramlich hace una inteligente pared con un compañero
+          ...  Busca alguna opción de pase
+          ...  No la hay
+                        </span>
+                    </div>
+                
+            
+                
+                    <div class="rp-evento lado-local tipo-general" data-tipo="general">
+                        <span class="rp-minuto">92</span>
+                        <span>
+                            
+                             (fcp) 
+          ...  Pero O. Wickham aparece a su lado y aborta el ataque
+                        </span>
+                    </div>
+                
+            
+                
+                    <div class="rp-evento lado-local tipo-lesion" data-tipo="lesion">
+                        <span class="rp-minuto">92</span>
+                        <span>
+                            🩹
+                            
+                             (fcp) 
+K. Lemerise se lleva la mano al muslo!
+          ...  Parece que no va a seguir
+          ...  Sí, solo ha sido un susto!
+                        </span>
+                    </div>
+                
+            
+                
+                    <div class="rp-evento lado-local tipo-falta" data-tipo="falta">
+                        <span class="rp-minuto">93</span>
+                        <span>
+                            
+                             (fcp) 
+          ... K. Mcquestion &#x27;placa&#x27; a su oponente 
+          ...  Pero esto es fútbol o hockey sobre hielo???
+                        </span>
+                    </div>
+                
+            
+        </div>
+    </div>
+
+    <!-- Resumen de incidencias -->
+    <div class="row g-3">
+        <!-- Goleadores -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-success fw-bold text-white">
+                    <i class="bi bi-dribbble me-1"></i>Goleadores
+                </div>
+                <div class="card-body small">
+                    <div class="fw-bold">FC Parchelona:</div>
+                    
+                        <span class="text-muted">Ninguno</span>
+                    
+                    <div class="fw-bold mt-2">Patetico:</div>
+                    
+                        <span class="text-muted">Ninguno</span>
+                    
+                </div>
+            </div>
+        </div>
+
+        <!-- Tarjetas Amarillas -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-warning text-dark fw-bold">
+                    <i class="bi bi-square-fill me-1"></i>Amonestados
+                </div>
+                <div class="card-body small">
+                    <div class="fw-bold">FC Parchelona:</div>
+                    
+                        <span class="text-muted">Ninguno</span>             
+                    
+                    <div class="fw-bold mt-2">Patetico</div>
+                    
+                        <span class="text-muted">Ninguno</span>             
+                    
+                </div>
+            </div>
+        </div>
+
+        <!-- Tarjetas Rojas -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-danger fw-bold text-white">
+                    <i class="bi bi-square-fill me-1"></i>Expulsados
+                </div>
+                <div class="card-body small">
+                    <div class="fw-bold">FC Parchelona:</div>
+                    
+                        <span class="text-muted">Ninguno</span>
+                    
+                    <div class="fw-bold">Patetico:</div>
+                    
+                        <span class="text-muted">Ninguno</span>
+                          
+                </div>
+            </div>
+        </div>
+
+        <!-- Lesionados -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-secondary fw-bold text-white">
+                    <i class="bi bi-bandaid-fill me-1"></i>Lesionados
+                </div>
+                <div class="card-body small">
+                    
+                        <div>🩹 H. Gesford (Medio) - Resistencia: 68 (FC Parchelona) - Lesionado en min 53, baja 9 semanas.</div>
+                    
+                </div>
+            </div>
+        </div>
+    </div> <!-- Incidencias -->
+</div> <!-- Contenedor principal -->
+
+<script>
+    // Filtra la crónica por tipo de evento
+    document.querySelectorAll("[data-filtro]").forEach(function (boton) {
+        boton.addEventListener("click", function () {
+            var filtro = boton.dataset.filtro;
+            document.querySelectorAll("[data-tipo]").forEach(function (fila) {
+                var tipo = fila.dataset.tipo;
+                var visible = filtro === "todo" || tipo === filtro ||
+                    (filtro === "tarjeta" && (tipo === "amarilla" || tipo === "roja"));
+                fila.style.display = visible ? "" : "none";
+            });
+        });
+    });
+</script>
+
+
+    </main>
+  
+  
+  
+</body>
+
+</html>

@@ -2,9 +2,7 @@ import os
 import json
 import random
 
-from collections import defaultdict
-
-from clubs.models import Equipo, Futbolista
+from clubs.models import Futbolista
 
 from administracion.Partidos.constantes import *
 
@@ -80,6 +78,82 @@ class Arbitro:
                 file.write(str(arbitro) + "\n")
         print(f"Árbitros guardados en {ruta_archivo}")
 
+POSICION_SIMULADOR = {
+    "por": "Portero", "def": "Central", "mcd": "Mediocentro-Defensivo",
+    "mc": "Medio", "mp": "Medio", "del": "Delantero-Centro"
+}
+
+def _valoracion_para_puesto(f, puesto):
+    
+    if puesto == "por":
+        return f.st
+    if puesto == "def":
+        return f.tk
+    if puesto == "mcd" or puesto == "mc":
+        return f.tk + f.ps
+    if puesto == "mp":
+        return f.ps + f.sh
+    return f.sh
+
+def generar_alineacion_automatica(equipo):
+    """Alineación 4-4-2 en memoria con los mejores jugadores disponibles por posición"""
+    disponibles = list(Futbolista.objects.filter(equipo=equipo, lesion=0, suspension=0, ))
+    if len(disponibles) < 11:
+        return None
+    
+    # Puestos aceptados, nombre de posición en el simulador
+    huecos = [
+        (["por"], "Portero"),
+        (["def"], "Central-Izquierdo"), (["def"], "Central-Derecho"),
+        (["def"], "Lateral Izquierdo"), (["def"], "Lateral Derecho"),
+        (["mcd", "mc"], "Medio-Izquierdo"), (["mc", "mcd"], "Medio"),
+        (["mc", "mp"], "Medio"), (["mp", "mc"], "Medio-Derecho"),
+        (["del"], "Delantero-Izquierdo"), (["del"], "Delantero-Derecho"),
+    ]
+    elegidos = []
+    
+    for puestos, posicion in huecos:
+        candidatos = [f for f in disponibles if f.posicion in puestos]
+        if not candidatos:
+            # Sin jugadores de ese puesto se usa el mejor del resto
+            candidatos = list(disponibles)
+        
+        mejor = max(candidatos, key=lambda f: _valoracion_para_puesto(f, puestos[0]))
+        disponibles.remove(mejor)
+        elegidos.append((mejor, posicion))
+        
+    # Banquillo: un portero si queda y después los mejores del resto
+    suplentes = []
+    porteros = [f for f in disponibles if f.posicion == "por"]
+    if porteros:
+        portero = max(porteros, key=lambda f: f.st)
+        disponibles.remove(portero)
+        suplentes.append(portero)
+        
+    disponibles.sort(key=lambda f: f.st + f.tk + f.ps + f.sh, reverse=True)
+    suplentes.extend(disponibles[:7 - len(suplentes)])
+    
+    jugadores = {}
+    posiciones = {}
+    for i, (f, posicion) in enumerate(elegidos):
+        jugadores[f"jug{i}"] = f.nombre
+        posiciones[f"pos{i}"] = posicion
+    for j, f in enumerate(suplentes, start=len(elegidos)):
+        jugadores[f"jug{j}"] = f.nombre
+        posiciones[f"pos{j}"] = POSICION_SIMULADOR.get(f.posicion, "Medio")
+        
+    # Lanzador de penaltis: mejor tiro entre los titulares que no son portero
+    tirador = max((f for f, _ in elegidos[1:]), key=lambda f: f.sh)
+    
+    return {
+        "tactica": "N",
+        "jugador_seleccionado": jugadores,
+        "posicion_seleccionada": posiciones,
+        "tirador_seleccionado": tirador.nombre,
+        "capitan": elegidos[1][0].nombre,
+        "instrucciones": {"cambiosTactica": [], "substituciones": [], "reposiciones": []},
+    }
+
 class EquipoSimulado:
     def __init__(self, nombre_equipo, ruta_archivo_alineacion, es_local, juego): # juego es una referencia al objeto Partido
         self.django_equipo = nombre_equipo # Objeto Equipo de Django
@@ -129,8 +203,8 @@ class EquipoSimulado:
             with open(ruta_archivo, "r") as file:
                 return json.load(file)
         except FileNotFoundError:
-            print(f"Archivo de alineación no encontrado: {ruta_archivo}")
-            return None
+            print (f"Sin alineación enviada para {self.nombre}: se genera una automática")
+            return generar_alineacion_automatica(self.django_equipo)
         except json.JSONDecodeError as e:
             print(f"Error al decodificar el archivo JSON: {e}")
             return None

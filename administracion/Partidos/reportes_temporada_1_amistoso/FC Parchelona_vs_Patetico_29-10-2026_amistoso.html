@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+
+<html lang=""
+  dir="ltr">
+
+<head>
+  
+  
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reporte: FC Parchelona vs Patetico</title>
+
+  <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" rel="stylesheet">
+  <link rel="stylesheet" href="/static/estilo.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <script crossorigin="anonymous" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-success border fixed-top" style="height: 90px;">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/">
+        <img src="/static/imagenes/logo.png" alt="logo">
+      </a>
+
+      <!--Boton de colapso-->
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
+        aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarCollapse">
+        <ul class="navbar-nav mx-auto d-flex align-items-center gap-5">
+          
+            <li class="nav-item">
+              <b><span class="navbar-text custom-font-size text-info">CLUBMISTER</span></b>
+            </li>
+          
+        </ul>
+
+        <!-- botones de registro y login si el usuario no está autentificado -->
+        
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a href="/login/" class="nav-link">
+                <i class="bi bi-box-arrow-in-right me-1"></i>Iniciar sesión 
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="/registro/" class="nav-link">
+                <i class="bi bi-person-plus-fill me-1"></i>Registrarse 
+              </a>
+            </li>
+          </ul>
+        <!-- Botón de desconexión si el usuario está logueado -->
+        
+
+        <div class="dropdown ms-3 mb-0">
+          <form method="post" action="/i18n/setlang/">
+            
+            <input type="hidden" name="next" value="" />
+            <button class="btn btn-secondary dropdown-toggle d-flex align-items-center gap-2" type="button" id="dropdownMenuButton"
+              data-bs-toggle="dropdown">
+              <i class="bi bi-globe"></i>Selecciona un idioma
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <li>
+                <button type="submit" class="dropdown-item" name="language" value="es">
+                  <img src="/static/imagenes/banderas/spa.jpg" alt="Español"> Español
+                </button>
+              </li>
+              <li>
+                <button type="submit" class="dropdown-item" name="language" value="en">
+                  <img src="/static/imagenes/banderas/england.jpg" alt="Inglés"> English
+                </button>
+              </li>
+            </ul>
+          </form>
+        </div>
+      </div> <!-- navbar de colapso-->
+    </div> <!-- container-fluid -->
+  </nav>
+
+  
+
+    <main class="main-content full-width"
+          style="margin-left: 0;">
+      
+<div class="container py-4">
+    <!-- Marcador y cabecera del partido -->
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-success text-white d-flex align-items-center py-3">
+            <i class="bi bi-dribbble me-2 fs-5"></i>
+            <h5 class="mb-0 fw-bold">Reporte del Partido</h5>
+        </div>
+        <div class="card-body text-center py-4 bg-light">
+            <div class="row align-items-center">
+                <div class="col-5">
+                    <h2 class="fw-bold text-success mb-0">FC Parchelona</h2>
+                </div>
+                <div class="col-2">
+                    <span class="display-4 fw-bold px-3 py-1 bg-white rounded shadow-sm border">
+                        0 - 0
+                    </span>
+                </div>
+                <div class="col-5">
+                    <h2 class="fw-bold text-success mb-0">Patetico</h2>
+                </div>
+            </div>
+
+            <div class="mt-4 text-muted small d-flex justify-content-center flex-wrap gap-4">
+                <span>
+                    <i class="bi bi-calendar-event me-1 text-success"></i>
+                    <strong>Fecha:</strong>29-10-2026
+                </span>
+                <span>
+                    <i class="bi bi-clock me-1 text-success"></i>
+                    <strong>Hora:</strong>01:46
+                </span>
+                <span>
+                    <i class="bi bi-geo-alt-fill me-1 text-success"></i>
+                    <strong>Estadio:</strong>Estadio Joan Gamper
+                </span>
+                <span>
+                    <i class="bi bi-people-fill me-1 text-success"></i>
+                    <strong>Asistencia:</strong>3373
+                </span>
+                <span>
+                    <i class="bi bi-person-badge me-1 text-success"></i>
+                    <strong>Arbitro:</strong>Undiano_Mallenco
+                </span>
+            </div>
+        </div>
+
+        <!-- MVP -->
+        
+            <div class="alert alert-succes d-flex align-items-center shadow-sm mb-4" role="alert">
+                <div>
+                    <strong>Mejor Jugador del Partido:</strong>R. Hayashi - FC Parchelona (Puntuación: 111.7)
+                </div>
+            </div>
+        
+
+        <!-- Alineaciones -->
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-header bg-succes text-white py-2">
+                <i class="bi bi-people me-2"></i><strong>Alineaciones</strong>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6 class="fw-bold text-succes">
+                            <i class="bi bi-shield-shaded me-1"></i>FC Parchelona
+                        </h6>
+                        <pre class="bg-light p-3 rounded small mb-0" style="white-space: pre-wrap; font-family: inherit;">Táctica inicial: N
+Alineación titular:
+               - H. Keener (Portero)
+               - O. Wickham (Central-Izquierdo)
+               - O. Kitchenhoff (Central-Derecho)
+               - K. Mcquestion (Lateral Izquierdo)
+               - F. Gibson (Lateral Derecho)
+               - J. Beechum (Medio-Izquierdo)
+               - R. Hayashi (Medio)
+               - K. Lemerise (Medio)
+               - P. Pfiel (Medio-Derecho)
+               - B. Poss (Delantero-Izquierdo)
+               - U. Vartanian (Delantero-Derecho)
+Capitán: O. Wickham
+Lanzador de penaltis: B. Poss
+Jugadores en el banquillo:
+               - E. Conrad (Portero)
+               - K. Quarles (Delantero-Centro)
+               - O. Strang (Central)
+               - D. Bowen (Medio)
+               - N. Lasher (Medio)
+               - S. Tessier (Mediocentro-Defensivo)
+               - G. Di Cicco (Central)
+</pre>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="fw-bold text-succes">
+                            <i class="bi bi-shield-shaded me-1"></i>Patetico
+                        </h6>
+                        <pre class="bg-light p-3 rounded small mb-0" style="white-space: pre-wrap; font-family: inherit;">Táctica inicial: N
+Alineación titular:
+               - O. Monohan (Portero)
+               - H. Ransdell (Central-Izquierdo)
+               - L. Lenhart (Central-Derecho)
+               - K. Strobel (Lateral Izquierdo)
+               - A. Milburn (Lateral Derecho)
+               - J. Matthew (Medio-Izquierdo)
+               - H. Gesford (Medio)
+               - K. Gramlich (Medio)
+               - G. Schott (Medio-Derecho)
+               - Y. Floyd (Delantero-Izquierdo)
+               - C. Buono (Delantero-Derecho)
+Capitán: H. Ransdell
+Lanzador de penaltis: Y. Floyd
+Jugadores en el banquillo:
+               - P. Kamplain (Portero)
+               - W. Bain (Central)
+               - K. Prideaux (Medio)
+               - H. Chambless (Medio)
+               - X. Bach (Mediocentro-Defensivo)
+               - K. Tripp (Central)
+               - V. Wendt (Delantero-Centro)
+</pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Crónica minuto a minuto-->
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-header bg-succes text-white py-2">
+                <i class="bi bi-clock-history me-2"></i><strong>Crónica Minuto a Minuto</strong>
+            </div>
+            <div class="card-body p-0">
+                <div class="list-group list-group-flush" style="max-height:400px; overflow-y: auto;">
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">--- Inicio de la primera parte: FC Parchelona vs Patetico ---
+</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 2:  (PTC) 
+El jugador G. Schott de Patetico se duele de un lance, pero se recupera.</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 11:  (PTC) 
+H. Gesford mete el pase
+          ...  O. Kitchenhoff resbala
+          ...  G. Schott se apodera del balón!</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 11:  (PTC) 
+          ...  G. Schott se cuela entre los dos centrales!
+          ...  Mano a mano con O. Kitchenhoff</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 11:  (fcp) 
+          ...  O. Kitchenhoff despeja el balón con un verdadero cirio. Esa va a caer con nieve!</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 21:  (PTC) 
+K. Gramlich se interna
+          ...  Le hace dos bicicletas a F. Gibson
+          ...  Lo ha roto. Centra a H. Gesford!</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 21:  (PTC) 
+          ...  H. Gesford rompe el intento de fuera de juego rival!
+          ...  Creo que estaba más adelante que el último defensa
+          ... F. Gibson sale a la desesperada</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 21:  (fcp) 
+          ...  F. Gibson sega el césped con una entrada terrorífica!</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 22:  (PTC) 
+H. Gesford se anticipa a su marcador!
+          ...  Le ha ganado la espalda</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 22:  (PTC) 
+H. Gesford se le cuela a U. Vartanian por dentro
+          ...  Le ha dado demasiado espacio</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 22:  (PTC) 
+H. Gesford tiene espacio y tiempo
+          ...  A ver qué inventa!
+          ...  Amaga el disparo y mete un pase
+          ...  C. Buono controla con el pecho
+          ...  Encara puerta!</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 22:  (PTC) 
+          ...  C. Buono encara a H. Keener ! Es medio gol! 
+          ...  Trata de regatear el portero! Falló!</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 25:  (fcp) 
+O. Kitchenhoff mete el pase
+          ...  H. Ransdell resbala
+          ...  K. Mcquestion se apodera del balón!</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 25:  (fcp) 
+          ...  K. Mcquestion rompe el sistema defensivo rival!
+          ...  Trata de rodear a H. Ransdell</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 25:  (PTC) 
+          ...  H. Ransdell intuye el peligro y corta la acción</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 29:  (PTC) 
+          ... K. Gramlich se lleva bien el balón 
+          ...  Undiano_Mallenco pita falta! Bufff, no vale ni para la Segunda B</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 31:  (fcp) 
+R. Hayashi con el regate
+          ...  Oportunidad clarísima</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 31:  (fcp) 
+R. Hayashi va flechado hacia la portería
+          ...  Sortea a L. Lenhart
+          ...  Encara portería!</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 31:  (fcp) 
+R. Hayashi tiene campo por delante
+          ...  Sigue avanzando. Nadie le sale al paso!
+          ...  Con todo el tiempo del mundo pone el balón para U. Vartanian</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 31:  (fcp) 
+          ...  Envenenado trallazo de U. Vartanian !</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 31:  (fcp) 
+          ...  La red se mueve!
+          ...  OH!! Pegó en el lateral
+          ...  Parte de la grada cantó GOL!</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 34:  (PTC) 
+H. Gesford controla el balón con facilidad</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 34:  (fcp) 
+          ...  O. Wickham envía al delantero al suelo y el balón sale fuera de banda  
+          ...  El asistente indica... 
+          ...  Saque de banda!</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 37:  (PTC) 
+H. Ransdell se cuela por la banda
+          ...  Quiebra a O. Kitchenhoff en velocidad
+          ...  Mete un pase raso hacia C. Buono!</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 37:  (PTC) 
+          ...  El balón queda muerto! 
+          ...  C. Buono lo controla y prepara el disparo
+          ... O. Kitchenhoff se anticipa a la jugada</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 37:  (fcp) 
+          ...  O. Kitchenhoff va al choque 
+    ...  Y se lleva el cuero. El delantero no sabe si ha sido un contrario o un tren de mercancías!</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 39:  (PTC) 
+          ... J. Matthew entra con una dureza desmedida!!
+          ...  El atacante de retuerce de dolor!!</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 41:  (fcp) 
+          ... U. Vartanian entra con una dureza desmedida!!
+          ...  El atacante de retuerce de dolor!!</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 43: Se añadirán 2 minutos de tiempo extra</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 47: 
+--- Final de la primera parte. Marcador al descanso: FC Parchelona (fcp) 0 - 0 Patetico (PTC)
+---</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">
+--- Inicio de la segunda parte: FC Parchelona vs Patetico ---
+</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 46:  (PTC) 
+A. Milburn recoge el rebote</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 46:  (fcp) 
+          ...  F. Gibson corta la jugada con un cabezazo en plancha</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 47:  (PTC) 
+K. Gramlich con un impresionante desmarque</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 47:  (PTC) 
+K. Gramlich evita la entrada a ras de suelo de O. Kitchenhoff con un giro
+          ...  Pisa el balón y sigue adelante
+          ...  Estoy soñando? Han visto lo mismo que yo?</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 47:  (PTC) 
+K. Gramlich cambia de dirección
+          ...  Ve a un compañero desdoblándolo
+          ...  Le cede el cuero a H. Gesford, que va lanzado en carrera</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 47:  (PTC) 
+          ...  El lanzamiento rebota en el muslo de H. Gesford y se encamina a puerta !</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 47:  (PTC) 
+          ...  Golpea en el larguero 
+          ...  Bota hacia abajo 
+          ...  H. Keener la atrapa 
+          ...  Evitó el gol! 
+          ...  Parte de la grada reclama el tanto!!!</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 52:  (fcp) 
+          ... J. Beechum choca con su oponente y lo envía al césped!!
+          ...  Hubo obstrucción! Falta!</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 55:  (PTC) 
+K. Gramlich encuentra el pasadizo
+          ...  Por ahí no pasaba ni un alfiler!</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 55:  (PTC) 
+K. Gramlich despista a O. Kitchenhoff con una rapísima bicicleta. Es futbolista o Lance Armstrong?</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 55:  (PTC) 
+K. Gramlich tira la pared con su delantero
+          ...  C. Buono se la queda!
+          ...  Encara a puerta!</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 55:  (PTC) 
+          ...  C. Buono se precipita en su remate!</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 55:  (fcp) 
+          ...  H. Keener cierra el ángulo y atrapa la pelota con facilidad</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 56:  (fcp) 
+          ... P. Pfiel salta de cabeza con su rival 
+          ...  Falta, le ha impedido saltar</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 56:  (fcp) 
+          ...  Undiano_Mallenco lo reclama
+          ...  No hay tarjeta!</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 58:  (fcp) 
+          ... B. Poss se lanza al corte 
+          ...  Ohhh! Le ha dejado un recadito</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 59:  (fcp) 
+R. Hayashi gana metros
+          ...  Va de cara a puerta!</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 59:  (PTC) 
+          ...  H. Ransdell agarra a su rival en el área
+          ...  El delantero pide penalti desesperdamente!
+          ...  Pero Undiano_Mallenco hace que &#x27;no&#x27; con la cabeza!!!</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 60:  (fcp) 
+O. Wickham coge el cuero en el flanco
+          ...  Se deshace de H. Gesford con una bicicleta
+          ...  Y pasa atrás hacia U. Vartanian. Qué jugada!!</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 60:  (fcp) 
+          ...  U. Vartanian se anticipa a la defensa!
+          ...  Me pareció fuera de juego
+          ...  H. Gesford trata de salvar una situación desesperada</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 60:  (PTC) 
+          ...  H. Gesford va al suelo con los dos pies por delante
+          ...  Undiano_Mallenco estaba encima, pero no ha visto falta</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 61:  (fcp) 
+U. Vartanian hace una inteligente pared con un compañero
+          ...  Le sale al paso un defensa
+          ...  Se va de él y mira la portería!</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 61:  (fcp) 
+U. Vartanian engaña a K. Gramlich con una finta de cuerpo</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 61:  (fcp) 
+U. Vartanian acelera por la banda derecha
+          ...  Hace la pared con el delantero!
+          ...  Quiebra al lateral!
+          ...  K. Lemerise se la pide dentro del área
+          ...  Le pone el balón en el pie! Qué pase!</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 61:  (fcp) 
+          ...  K. Lemerise sienta a O. Monohan con una bicicleta 
+          ...  Oh! Qué hace! La defensa se le ha hechado encima
+          ...  Busca el disparo
+          ...  Imposible! Impacta en su marcador!</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 61:  (fcp) 
+          ...  El disparo agarra un efecto endiablado
+          ...  Un defensa mete la cabeza !!
+          ...  Y envía a córner</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 78:  (PTC) 
+          ... A. Milburn le pone la zancadilla!!
+          ...  Qué entrada más ruin!</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 78:  (PTC) 
+          ...  El colegiado le muestra la cartulina AMARILLA!!
+          ...  Chico, frena que te vas a la calle</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 82:  (fcp) 
+R. Hayashi controla un balón que bajaba con nieve
+          ...  Arranca en un suspiro y se planta en el área</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 82:  (fcp) 
+R. Hayashi hace una bicicleta y descoloca a A. Milburn</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 82:  (fcp) 
+R. Hayashi tiene campo por delante
+          ...  Pasa a U. Vartanian</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 82:  (fcp) 
+          ...  U. Vartanian se saca una vaselina magistral de la chistera !</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 82:  (PTC) 
+          ...  O. Monohan rechaza el balón con los pies 
+          ...  Su defensa cierra el rebote y envía el balón al centro del campo</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 83:  (fcp) 
+P. Pfiel encuentra el pasadizo
+          ...  La defensa buscó el fuera de juego pero no lo hizo bien</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 83:  (fcp) 
+P. Pfiel supera a L. Lenhart
+          ...  Lleva loco a su marcador</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 83:  (fcp) 
+P. Pfiel inicia el contraataque
+          ...  Sale rápidamente!
+          ...  Y envía un gran pase con la defensa descolocada. U. Vartanian recibe solo</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 83:  (fcp) 
+          ...  U. Vartanian acomoda su cuerpo y suelta... uau! Qué cañonazo!</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 83:  (fcp) 
+          ...  Pero el balón se va lejos del marco</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 84:  (fcp) 
+K. Lemerise se revuelve en la frontal
+          ...  Se ha quitado a su marcador de encima
+          ...  Acomoda el cuerpo</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 84:  (fcp) 
+K. Lemerise se aprovecha de un error de H. Ransdell</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 84:  (fcp) 
+K. Lemerise avanza con el balón controlado
+          ...  Ve el desmarque de un compañero!
+          ...  Cruza el pase!
+          ...  B. Poss con un control facilísimo</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 84:  (fcp) 
+          ...  B. Poss se deshace de su marcador ! 
+          ...  Buen movimiento! Y dispara!</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 84:  (PTC) 
+          ...  Regatea a H. Keener 
+          ...  H. Keener mete el pie y aleja el balón! O. Monohan lo mira sorprendido!</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 88: Se añadirán 5 minutos de tiempo extra</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 91:  (PTC) 
+H. Ransdell se interna
+          ...  Le hace dos bicicletas a K. Lemerise
+          ...  Lo ha roto. Centra a Y. Floyd!</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 91:  (PTC) 
+          ...  Y. Floyd ha roto el fuera de juego!
+          ...  Se va solo!
+          ...  K. Lemerise inicia la salida</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 91:  (fcp) 
+          ...  K. Lemerise envía al delantero al suelo y el balón sale fuera de banda  
+          ...  El asistente indica... 
+          ...  Saque de banda!</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 92:  (fcp) 
+          ... P. Pfiel realiza una entrada terrible</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 92:  (fcp) 
+          ...  Habrá tarjeta para P. Pfiel y será...
+          ...  AMARILLA!!</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 93:  (fcp) 
+R. Hayashi tiene el cuero
+          ...  Le hace un túnel a L. Lenhart!!! Ohhh
+          ...  Esto es caviar del bueno!
+          ...  Y pasa a J. Beechum!</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 93:  (fcp) 
+          ...  J. Beechum ha roto el fuera de juego!
+          ...  Se va solo!
+          ...  L. Lenhart inicia la salida</small>
+                        </div>
+                    
+                        <div class="list-group-item list-group-item-action py-2">
+                            <small class="text-dark">Min 93:  (PTC) 
+          ...  L. Lenhart patina por el césped... y corta el cuero</small>
+                        </div>
+                    
+                </div>
+            </div>
+        </div>
+
+        <!-- Resumen de incidencias -->
+        <div class="row g-3">
+            <!-- Goleadores -->
+            <div class="col-md-6 col-lg-3">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-header bg-light fw-bold text-succes">
+                        <i class="bi bi-ballon me-1"></i>Goleadores
+                    </div>
+                    <div class="card-body small">
+                        <p class="mb-1"><strong>FC Parchelona:</strong></p>
+                        <p class="text-muted">Ninguno</p>
+                        <p class="mb-1"><strong>Patetico:</strong></p>
+                        <p class="text-muted mb-0">Ninguno </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tarjetas Amarillas -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-light fw-bold text-warning">
+                    <i class="bi bi-square-fill me-1"></i>Amonestados
+                </div>
+                <div class="card-body small">
+                    <p class="mb-1"><strong>FC Parchelona:</strong></p>
+                    <p class="text-muted">P. Pfiel</p>
+                    <p class="mb-1"><strong>Patetico:</strong></p>
+                    <p class="text-muted">A. Milburn</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tarjetas Rojas -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-light fw-bold text-danger">
+                    <i class="bi bi-square-fill me-1"></i>Expulsados
+                </div>
+                <div class="card-body small">
+                    <p class="mb-1"><strong>FC Parchelona:</strong></p>
+                    <p class="text-muted">Ninguno</p>
+                    <p class="mb-1"><strong>Patetico:</strong></p>
+                    <p class="text-muted">Ninguno</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lesionados -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-light fw-bold text-secondary">
+                    <i class="bi bi-bandaid-fill me-1"></i>Lesionados
+                </div>
+                <div class="card-body small">
+                    
+                        <span class="text-muted">Ninguno</span>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div> <!-- Contenedor principal -->
+
+
+    </main>
+  
+  
+  
+</body>
+
+</html>

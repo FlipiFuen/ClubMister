@@ -26,18 +26,30 @@ django.setup()
 from administracion.Partidos.calcular_asistencia import calcular_asistencia
 from administracion.Partidos.constantes import *
 from administracion.Partidos.entidades import Arbitro, EquipoSimulado, JugadorPartido
+from administracion.models import ReportePartido, EstadisticaJugadorPartido
 
 # Importar el modelo Equipo, Futbolista y Estadio
 from clubs.models import Estadio, Equipo, Futbolista
 
 class Partido:
-    def __init__(self, equipo_local_nombre, equipo_visitante_nombre, fecha_partido_str, hora_partido_str, es_copa=False, es_oficial=True):
+    def __init__(
+        self, equipo_local_nombre, 
+        equipo_visitante_nombre, 
+        fecha_partido_str, 
+        hora_partido_str, 
+        es_copa=False, 
+        es_oficial=True,
+        competicion = None,
+        partido_programado = None,
+        ):
         self.equipo_local_nombre_str = equipo_local_nombre
         self.equipo_visitante_nombre_str = equipo_visitante_nombre
         self.fecha_partido_str = fecha_partido_str
         self.hora_partido_str = hora_partido_str
         self.es_copa = es_copa
         self.es_oficial = es_oficial
+        self.competicion = competicion or ("copa" if es_copa else "liga" if es_oficial else "amistoso")
+        self.partido_programado = partido_programado
         self.ruta_reporte = None
 
         self.equipo_local_sim = None
@@ -369,7 +381,12 @@ class Partido:
                 fallback_comentario += f" Jugador: {jugador_principal}."
             if equipo_evento:
                 fallback_comentario += f" Equipo: {equipo_evento.nombre}."
-            self.registrar_evento_reporte(fallback_comentario, self.minuto_actual_display)
+            self.registrar_evento_reporte(
+                fallback_comentario, 
+                self.minuto_actual_display,
+                tipo_evento = tipo_evento,
+                equipo_evento = equipo_evento,
+                )
             return
 
         frase_seleccionada = random.choice(self.comentarios_cargados[tipo_evento])
@@ -435,16 +452,83 @@ class Partido:
         # Reemplazar \n por saltos de línea reales para la consola/reporte
         comentario_formateado = comentario_formateado.replace("\\n", "\n").replace("\\t", "\t")
 
-        self.registrar_evento_reporte(comentario_formateado, self.minuto_actual_display)
+        self.registrar_evento_reporte(comentario_formateado, 
+                                      self.minuto_actual_display,
+                                      tipo_evento = tipo_evento,
+                                      equipo_evento = equipo_evento,
+                                      )
+        
+    def _obtener_lado_evento (self, equipo_evento):
+        """Determina el lado del evento en el partido (local, visitante o neutro) según el equipo que realiza el evento."""
+        if not equipo_evento:
+            return "neutro"
+        
+        if equipo_evento is self.equipo_local_sim:
+            return "local"
+        if equipo_evento is self.equipo_visitante_sim:
+            return "visitante"
+        
+        nombre = getattr(equipo_evento, "nombre", None)
+        
+        if self.equipo_local_sim and nombre == self.equipo_local_sim.nombre:
+            return "local"
+        if self.equipo_visitante_sim and nombre == self.equipo_visitante_sim.nombre:
+            return "visitante"
+        
+        return "neutro"
+    
+    def _normalizar_tipo_evento_reporte(self, tipo_evento):
+        """Normaliza el tipo de evento para el reporte del partido.
 
-    def registrar_evento_reporte(self, evento_descripcion, minuto_display=None):
+        Args:
+            tipo_evento (str): Tipo de evento a normalizar.
+
+        Returns:
+            str: Tipo de evento normalizado para el reporte.
+        """
+        
+        if not tipo_evento:
+            return "general"
+        
+        t = str(tipo_evento).upper()
+        
+        if "GOAL" in t:
+            return "gol"
+        if "RED" in t:
+            return "roja"
+        if "YELLOW" in t or t == "WARNED":
+            return "amarilla"
+        if "INJURY" in t or "KNOCK" in t:
+            return "lesion"
+        if "SUB" in t or "CHANGE" in t:
+            return "cambio"
+        if "FOUL" in t:
+            return "falta"
+        if "PEN" in t:
+            return "penalti"
+        if "FREEKICK" in t:
+            return "tiro_libre"
+        if "CORNER" in t:
+            return "corner"
+        
+        return "general"
+
+    def registrar_evento_reporte(self, evento_descripcion, minuto_display=None, tipo_evento=None, equipo_evento=None):
         """Registra un evento en la lista de eventos del partido para el reporte final."""
         if minuto_display is not None:
             mensaje_completo = f"Min {minuto_display}: {evento_descripcion}"
         else:
             mensaje_completo = evento_descripcion
 
-        self.eventos_partido_reporte.append(mensaje_completo)
+        evento_data = {
+            "minuto": minuto_display,
+            "lado": self._obtener_lado_evento(equipo_evento),
+            "tipo": self._normalizar_tipo_evento_reporte(tipo_evento),
+            "tipo_evento": tipo_evento or "GENERAL",
+            "texto": str(evento_descripcion),
+            "texto_plano": mensaje_completo,
+        }
+        self.eventos_partido_reporte.append(evento_data)
         print(mensaje_completo) # para imprimir el evento en la consola en fase de desarrollo
 
     def _simular_eventos_minuto(self):
@@ -1392,13 +1476,13 @@ class Partido:
         best_visit = (None, 0.0)
         
         if self.equipo_local_sim:
-            for jp in self.equipo_local_sim.jugadores_campo.values() + list(self.equipo_local_jugadores_banquillo.values()):
+            for jp in list(self.equipo_local_sim.jugadores_campo.values()) + list(self.equipo_local_sim.jugadores_banquillo.values()):
                 s = score_jugador(jp)
                 if s > best_local[1]:
                     best_local = (jp, s)
                     
         if self.equipo_visitante_sim:
-            for jp in self.equipo_visitante_sim.jugadores_campo.values() + list(self.equipo_visitante_jugadores_banquillo.values()):
+            for jp in list(self.equipo_visitante_sim.jugadores_campo.values()) + list(self.equipo_visitante_sim.jugadores_banquillo.values()):
                 s = score_jugador(jp)
                 if s > best_visit[1]:
                     best_visit = (jp, s)
@@ -1442,9 +1526,14 @@ class Partido:
             return
         
         equipo_django = self.equipo_local_sim.django_equipo
-        nombre_carpeta = (
-            f"reportes_division_{equipo_django.division}_grupo_{equipo_django.grupo}"
-        )
+        if self.competicion == "liga":
+            nombre_carpeta = (
+                f"reportes_temporada_{equipo_django.temporada}_"
+                f"division_{equipo_django.division}_grupo_{equipo_django.grupo}"
+            )
+        else:
+            nombre_carpeta = f"reportes_temporada_{equipo_django.temporada}_{self.competicion}"
+        
         ruta_carpeta = os.path.join(ruta_reportes, nombre_carpeta)
         sufijo = "" if self.es_oficial else "_amistoso"
         nombre_archivo = f"{self.equipo_local_nombre_str}_vs_{self.equipo_visitante_nombre_str}_{self.fecha_partido_str}{sufijo}.html"
@@ -1503,9 +1592,17 @@ class Partido:
             "asistencia": self.asistencia,
             "arbitro": self.arbitro.nombre if self.arbitro else "Árbitro no asignado",
             "mejor_jugador": nombre_mejor_jugador,
+            "competicion": self.competicion,
+            "es_oficial": self.es_oficial,
+            "goles_descanso_local": self.goles_descanso_local,
+            "goles_descanso_visitante": self.goles_descanso_visitante,
             "alineacion_local": self.equipo_local_sim.get_alineacion_str(),
             "alineacion_visitante": self.equipo_visitante_sim.get_alineacion_str(),
-            "eventos": self.eventos_partido_reporte,
+            "eventos": [
+                e.get("texto_plano", str(e)) if isinstance(e, dict) else str(e)
+                for e in self.eventos_partido_reporte
+                ],
+            "eventos_detalle": self.eventos_partido_reporte,
             "goleadores_local": goleadores_local_list,
             "goleadores_visitante": goleadores_visitante_list,
             "amonestados_local": amonestados_local_list,
@@ -1527,7 +1624,68 @@ class Partido:
             print(f"Reporte del partido guardado en: {ruta_completa}")
         except OSError as e:
             print(f"Error al guardar el reporte: {e}")
-
+            
+    @transaction.atomic
+    def _registrar_reporte_bd(self):
+        """Registra el reporte del partido en la base de datos."""
+        if not self.ruta_reporte:
+            return
+        
+        equipo_local = self.equipo_local_sim.django_equipo
+        equipo_visitante = self.equipo_visitante_sim.django_equipo
+        fecha_partido = datetime.strptime(self.fecha_partido_str, "%d-%m-%Y").date()
+        hora_partido = datetime.strptime(self.hora_partido_str, "%H:%M").time()
+        reporte = ReportePartido.objects.create(
+            partido_programado = self.partido_programado,
+            equipo_local = equipo_local,
+            equipo_visitante = equipo_visitante,
+            division = equipo_local.division,
+            grupo = equipo_local.grupo,
+            temporada = equipo_local.temporada,
+            fecha = fecha_partido,
+            hora = hora_partido,
+            competicion = self.competicion,
+            es_oficial = self.es_oficial,
+            goles_local = self.goles_local,
+            goles_visitante = self.goles_visitante,
+            ruta_archivo = self.ruta_reporte,
+        )
+        
+        if not self.es_oficial:
+            return
+        
+        for equipo_sim in [self.equipo_local_sim, self.equipo_visitante_sim]:
+            if not equipo_sim:
+                continue
+            
+            jugadores = list(equipo_sim.jugadores_campo.values()) + list(equipo_sim.jugadores_banquillo.values())
+            for jug in jugadores:
+                if not jug.django_futbolista:
+                    continue
+                if jug.minutos_jugados <= 0 and not jug.lesionado and not jug.expulsado:
+                    continue
+                
+                EstadisticaJugadorPartido.objects.create(
+                    reporte = reporte,
+                    futbolista = jug.django_futbolista,
+                    nombre_jugador = jug.nombre,
+                    equipo = equipo_sim.django_equipo,
+                    nombre_equipo = equipo_sim.nombre,
+                    minutos_jugados = jug.minutos_jugados,
+                    goles = jug.goles_partido,
+                    goles_en_propia = jug.goles_propia_partido,
+                    asistencias = jug.asistencias_partido,
+                    tarjetas_amarillas = jug.tarjeta_amarilla_partido,
+                    tarjetas_rojas = jug.tarjeta_roja_partido,
+                    tiros_a_puerta = jug.disparos_puerta_partido,
+                    tiros_fuera = jug.disparos_fuera_partido,
+                    pases_completados = jug.pases_completados_partido,
+                    intercepciones = jug.intercepciones_partido,
+                    paradas = jug.paradas_partido,
+                    goles_concedidos = jug.goles_concedidos_partido,
+                    lesionado = jug.lesionado,
+                    semanas_lesionado = jug.semanas_lesionado,
+                )
 
     def simular_parte(self, duracion_minutos, es_primera_parte=True, tiempo_añadido=0):
         """Simula una parte del partido."""
@@ -1600,6 +1758,7 @@ class Partido:
         if self.es_oficial:
             self._actualizar_habilidades_estadisticas_post_partido()
         self.guardar_reporte_partido()
+        self._registrar_reporte_bd()
         if self.es_copa and self.goles_local == self.goles_visitante:
             self.eventos_partido.append("El partido ha terminado en empate. Se jugará una prórroga.")
             self.simular_prorroga()

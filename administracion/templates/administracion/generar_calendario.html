@@ -4,6 +4,11 @@
 
 <div class="container mt-4">
     <h2>Generar Calendario de Liga</h2>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{% if messages.tag == 'error' %}danger{% else %}{{ message.tags }}{% endif %}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
     <form method="post" class="mb-4">
         {% csrf_token %}
         {{ form.as_p }}

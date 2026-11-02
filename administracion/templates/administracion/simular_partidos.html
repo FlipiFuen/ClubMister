@@ -1,0 +1,53 @@
+{% extends "club_mister/base.html" %}
+
+{% block contenido %}
+
+<div class="container mt-4">
+    <h2>Simular Partidos</h2>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+    <form method="post" class="mb-4">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Simular</button>
+    </form>
+
+    {% if reporte %}
+        <div class="alert alert-success">
+            {{ reporte.equipo_local }} {{ reporte.goles_local }} - {{ reporte.goles_visitante}} {{ reporte.equipo_visitante }}
+            ({{ reporte.get_competicion_display }}, {{ reporte.fecha }})
+                        <a href="{% url 'administracion:ver_reporte' reporte.id %}" class="alert-link ms-2" target="_blank">Ver reporte</a>
+        </div>
+    {% endif %}
+
+    {% if resultados %}
+        <table class="table table-bordered">
+            <thead>
+                <tr><th>Local</th><th>Resultado</th><th>Visitante</th><th>Estado</th></tr>
+            </thead>
+            <tbody>
+                {% for r in resultados %}
+                    <tr>
+                        <td>{{ r.programado.equipo_local }}</td>
+                        <td>
+                            {% if r.reporte %}
+                                <a href="{% url 'administracion:ver_reporte' r.reporte.id %}" target="_blank">
+                                    {{ r.reporte.goles_local }} - {{ r.reporte.goles_visitante }}
+                                </a>
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                        <td>{{ r.programado.equipo_visitante }}</td>
+                        <td>{{ r.estado }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+</div>
+
+{% endblock contenido %}

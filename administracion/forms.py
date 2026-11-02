@@ -24,10 +24,23 @@ class SimularPartidosForm(forms.Form):
     equipo_visitante = forms.ModelChoiceField(
             label="Equipo Visitante", queryset=Equipo.objects.order_by("nombre_equipo"), required=False
         )
+    fecha_amistoso = forms.DateField(
+        label = "Fecha del amistoso",
+        required = False,
+        widget = forms.DateInput(attrs={"type": "date", "class": "form-control"}),
+    )
+    hora_amistoso = forms.TimeField(
+            label = "Hora del amistoso",
+            required = False,
+            widget = forms.TimeInput(attrs={"type": "time", "class": "form-control"}),
+        )
     
     def clean(self):
         
         datos = super().clean()
+        if datos.get("modo") == "jornada" and datos.get("tipo") == "amistoso":
+            self.add_error("tipo", "Las jornadas del calendario son partidos oficiales de Liga")
+            
         if datos.get("modo") == "jornada":
             for campo in ("division", "grupo", "jornada"):
                 if datos.get(campo) is None:
@@ -41,6 +54,11 @@ class SimularPartidosForm(forms.Form):
                 self.add_error("equipo_visitante", "Elige el equipo visitante")
             if local and visitante and local == visitante:
                 self.add_error("equipo_visitante", "Debe ser distinto del equipo local")
+            
+            if datos.get("tipo") == "amistoso":
+                for campo in ("fecha_amistoso", "hora_amistoso"):
+                    if datos.get(campo) is None:
+                        self.add_error(campo, "Obligatorio para un amistoso individual")
                 
         return datos
     

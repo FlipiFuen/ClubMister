@@ -25,7 +25,7 @@ django.setup()
 
 from administracion.Partidos.calcular_asistencia import calcular_asistencia
 from administracion.Partidos.constantes import *
-from administracion.Partidos.entidades import Arbitro, EquipoSimulado, JugadorPartido
+from administracion.Partidos.entidades import EquipoSimulado, JugadorPartido
 from administracion.models import ReportePartido, EstadisticaJugadorPartido
 
 # Importar el modelo Equipo, Futbolista y Estadio
@@ -41,6 +41,7 @@ class Partido:
         es_oficial=True,
         competicion = None,
         partido_programado = None,
+        arbitro = None,
         ):
         self.equipo_local_nombre_str = equipo_local_nombre
         self.equipo_visitante_nombre_str = equipo_visitante_nombre
@@ -55,7 +56,7 @@ class Partido:
         self.equipo_local_sim = None
         self.equipo_visitante_sim = None
         self.nombre_estadio = "Estadio Municipal"
-        self.arbitro = None
+        self.arbitro = arbitro
 
         self.goles_local = 0
         self.goles_visitante = 0
@@ -143,15 +144,11 @@ class Partido:
                 print(f"Error al obtener el estadio: {e}")
                 self.nombre_estadio = "Estadio Municipal"
         # Cargar árbitros y seleccionar uno disponible
-        todos_los_arbitros = Arbitro.cargar_arbitros()
-        if todos_los_arbitros:
-            self.arbitro = Arbitro.seleccionar_arbitro_disponible(todos_los_arbitros)
-            if self.arbitro:
-                if self.es_oficial:
-                    Arbitro.guardar_arbitros(todos_los_arbitros)
-            else:
-                print("No se pudo seleccionar un árbitro disponible.")
-                self.eventos_partido.append("No se pudo seleccionar un árbitro disponible.")
+        if self.arbitro is None:
+            msg = "No hay árbitro asignado al partido"
+            print(msg)
+            self.eventos_partido.append(msg)
+            return False
         else:
             self.eventos_partido.append("No se pudieron cargar los árbitros.")
         self.asistencia = calcular_asistencia(self.equipo_local_nombre_str, self.equipo_visitante_nombre_str)
@@ -1646,6 +1643,7 @@ class Partido:
             hora = hora_partido,
             competicion = self.competicion,
             es_oficial = self.es_oficial,
+            arbitro = self.arbitro,
             goles_local = self.goles_local,
             goles_visitante = self.goles_visitante,
             ruta_archivo = self.ruta_reporte,

@@ -1,10 +1,12 @@
 import pytest
 
 from django.contrib.auth.models import User
+
 from clubs.models import Equipo
+from administracion.models import Arbitro
 
 @pytest.fixture
-def bd_equipos_validos(db):
+def bd_equipos_validos(db, bd_arbitros):
     """Crea 8 equipos en la base de datos para la División 1, Grupo 1"""
     division = "1"
     grupo = "1"
@@ -31,7 +33,7 @@ def bd_equipos_validos(db):
     }
     
 @pytest.fixture
-def bd_equipos_impar(db):
+def bd_equipos_impar(db, bd_arbitros):
     """Caso límite. Crea un número impar de equipos (3) para evaluar comportamientos límite en la división de parejas"""
     division = "2"
     grupo = "1"
@@ -84,3 +86,11 @@ def usuario_normal(db):
             password = "Password123",
             is_staff = False,
         )
+    
+@pytest.fixture
+def bd_arbitros(db):
+    """Crea 4 árbitros activos"""
+    return [
+        Arbitro.objects.create(nombre=f"Arbitro{i}", severidad=10, origen="España")
+        for i in range(1, 5)
+    ]

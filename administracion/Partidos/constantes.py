@@ -3,7 +3,6 @@ import random
 
 # Ruta de la carpeta Partidos
 PARTIDOS_DIR = os.path.dirname(os.path.abspath(__file__))
-RUTA_ARBITROS = os.path.join(PARTIDOS_DIR, "Referees.dat")
 RUTA_COMENTARIOS = os.path.join(PARTIDOS_DIR, "comentarios.dat")
 
 # Indice de habilidades para tact_array

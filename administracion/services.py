@@ -1,6 +1,11 @@
-from datetime import datetime, timedelta
+import random
 
-from administracion.models import PartidoProgramado, ReportePartido
+from datetime import datetime, timedelta
+from pathlib import Path
+
+from django.db.models import Count, Q
+
+from administracion.models import Arbitro, PartidoProgramado, ReportePartido
 from clubs.models import Equipo
 
 def generar_calendario_liga(division, grupo, fecha_inicio_str):
@@ -54,12 +59,14 @@ def generar_calendario_liga(division, grupo, fecha_inicio_str):
     # --- Asignar fechas y hora
     calendario_resultado = []
     partidos_programados = []
+    carga = carga_arbitros(temporada)
     for i, jornada in enumerate(partidos):
         jornada_datos = []
         fecha_jornada = dia_empieza + timedelta(days=i * 7)
+        arbitros_jornada = elegir_arbitros(temporada, len(jornada), carga)
         hora_partido = "20:00"
         
-        for local, visitante in jornada:
+        for (local, visitante), arbitro in zip(jornada, arbitros_jornada):
             jornada_datos.append({
                 "jornada": i + 1,
                 "local": local,
@@ -76,6 +83,7 @@ def generar_calendario_liga(division, grupo, fecha_inicio_str):
                 equipo_visitante = equipos_por_nombre[visitante],
                 fecha = fecha_jornada.date(),
                 hora = datetime.strptime(hora_partido, "%H:%M").time(),
+                arbitro = arbitro,
             ))
         calendario_resultado.append(jornada_datos)
     
@@ -119,7 +127,12 @@ def _simular(local, visitante, fecha, hora, es_oficial, competicion, programado=
     """
     # Import diferido: el simulador ejecuta django.setup() al importarse
     from administracion.Partidos.simulador import Partido
-    
+    # Partido de liga: el árbitro ya viene asignado. Amistoso: se elige ahora
+    if programado and programado.arbitro_id:
+        arbitro = programado.arbitro
+    else:
+        arbitro = asignar_arbitro(local.temporada)
+        
     partido = Partido(
         local.nombre_equipo,
         visitante.nombre_equipo,
@@ -128,6 +141,7 @@ def _simular(local, visitante, fecha, hora, es_oficial, competicion, programado=
         es_oficial = es_oficial,
         competicion = competicion,
         partido_programado = programado,
+        arbitro = arbitro,
     ) 
     eventos = partido.simular_partido()
     if eventos is None or not partido.ruta_reporte:
@@ -199,4 +213,129 @@ def simular_individual(local, visitante, oficial, fecha=None, hora=None):
         raise ValueError("No se pudo simular el partido")
     
     return reporte
+
+
+ORIGENES_ARBITROS = [
+    "España", "Inglaterra", "Francia", "Italia", "Alemania", "Portugal",
+    "Argentina", "Brasil", "Chile", "Croacia", "Dinamarca", "Bulgaria",
+]
+
+def generar_arbitros(cantidad):
+    """
+    Genera árbitros aleatorios y los guarda en la base de datos.
+    El nombre se forma con dos apellidos de apellidos.txt (formato Apellido_Apellido)
+    evitando los nombres que ya existen. La severidad (1-20) y el origen son aleatorios.
+
+    Args:
+        cantidad (int): Número de árbitros a crear.
+
+    Returns:
+        list: Lista de objetos Arbitro creados.
+
+    Raises:
+        ValueError: Si la cantidad no es mayor que 0.
+    """
+    if cantidad < 1:
+        raise ValueError("La cantidad de árbitros debe ser mayor que 0")
+    
+    ruta_apellidos = Path(__file__).resolve().parent.parent / "clubs" / "futbolistas" / "apellidos.txt"
+    try:
+        with ruta_apellidos.open(encoding="utf-8-sig") as archivo:
+            apellidos = [linea.strip() for linea in archivo if linea.strip()]
+    except OSError:
+        # En caso de error usamos unos apellidos por defecto
+        apellidos = ["García", "López", "Pérez", "Gutierrez", "Smith", "Sevchenko", "Maldini"]
         
+    existentes = set(Arbitro.objects.values_list("nombre", flat=True))
+    nuevos = []
+    intentos = 0
+    while len(nuevos) < cantidad and intentos < cantidad * 50:
+        intentos += 1
+        nombre = f"{random.choice(apellidos)}"
+        if nombre in existentes:
+            continue
+        existentes.add(nombre)
+        nuevos.append(Arbitro(
+            nombre = nombre,
+            severidad = random.randint(1, 20),
+            origen = random.choice(ORIGENES_ARBITROS)
+        ))
+        
+    return Arbitro.objects.bulk_create(nuevos)
+ 
+def carga_arbitros(temporada):
+    """
+    Calcula cuántos partidos tiene asignados cada árbitro activo en una temporada.
+    Cuenta los partidos programados y los reportes sin partido programado
+    (amistosos e independientes).
+
+    Args:
+        temporada (int): Temporada a consultar.
+
+    Returns:
+        dict: Diccionario {id_arbitro: numero_de_partidos}.
+    """
+    arbitros = Arbitro.objects.filter(activo=True).annotate(
+        n_programados = Count(
+            "partidos_programados",
+            filter = Q(partidos_programados__temporada=temporada),
+            distinct = True,
+        ),
+        n_reportes = Count(
+            "reportes",
+            filter = Q(partidos_programados__temporada = temporada),
+            distinct = True
+        )
+    )
+    return {a.id: a.n_programados + a.n_reportes for a in arbitros}
+
+def elegir_arbitros(temporada, cantidad, carga=None):
+    """
+    Elige árbitros para un grupo de partidos (por ejemplo, una jornada).
+    Se eligen primero los árbitros con menos partidos en la temporada, desempatando
+    al azar. No se repite árbitro dentro del grupo salvo que no haya suficientes.
+
+    Args:
+        temporada (int): Temporada de los partidos.
+        cantidad (int): Número de árbitros a elegir.
+        carga (dict, optional): Carga actual {id_arbitro: partidos}. Se actualiza con
+            las nuevas asignaciones para poder encadenar varias jornadas sin consultar la BD.
+
+    Returns:
+        list: Lista de objetos Arbitro, uno por partido.
+
+    Raises:
+        ValueError: Si no hay árbitros activos.
+    """
+    arbitros = list(Arbitro.objects.filter(activo=True))
+    if not arbitros:
+        raise ValueError("No hay árbitros activos. Importa o genera primero")
+    if carga is None:
+        carga = carga_arbitros(temporada)
+        
+    elegidos = []
+    for _ in range(cantidad):
+        usados = {a.id for a in elegidos}
+        candidatos = [a for a in arbitros if a.id not in usados] or arbitros
+        minimo = min(carga.get(a.id, 0) for a in candidatos)
+        elegido = random.choice([a for a in candidatos if carga.get(a.id, 0) == minimo])
+        carga[elegido.id] = carga.get(elegido.id, 0) + 1
+        elegidos.append(elegido)
+        
+    return elegidos
+
+def asignar_arbitro(temporada):
+    """
+    Elige un único árbitro para un partido suelto (amistoso o independiente).
+
+    Args:
+        temporada (int): Temporada del partido.
+
+    Returns:
+        Arbitro: Árbitro menos usado de la temporada.
+
+    Raises:
+        ValueError: Si no hay árbitros activos.
+    """
+    return elegir_arbitros(temporada, 1)[0]
+            

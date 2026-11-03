@@ -1,7 +1,24 @@
 from django.db import models
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 from clubs.models import Equipo, Futbolista
 
+class Arbitro(models.Model):
+    
+    nombre = models.CharField(max_length=100, unique=True)
+    severidad = models.PositiveSmallIntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(20)],
+        help_text="1 (muy permisivo) a 20 (muy estricto)",
+    )
+    origen = models.CharField(max_length=100)
+    activo = models.BooleanField(default=True)
+    
+    class Meta:
+        ordering = ["nombre"]
+        
+    def __str__(self):
+        return f"{self.nombre} ({self.origen})"
+    
 class PartidoProgramado(models.Model):
     division = models.PositiveBigIntegerField()
     grupo = models.PositiveBigIntegerField()
@@ -15,6 +32,13 @@ class PartidoProgramado(models.Model):
     )
     fecha = models.DateField()
     hora = models.TimeField()
+    arbitro = models.ForeignKey(
+        Arbitro,
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name="partidos_programados",
+    )
     
     class Meta:
         ordering = ["jornada", "fecha", "hora"]
@@ -61,6 +85,13 @@ class ReportePartido(models.Model):
     hora = models.TimeField()
     competicion = models.CharField(max_length=20, choices=Competicion.choices)
     es_oficial = models.BooleanField()
+    arbitro = models.ForeignKey(
+        Arbitro,
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name="reportes"
+    )
     goles_local = models.PositiveSmallIntegerField()
     goles_visitante = models.PositiveSmallIntegerField()
     ruta_archivo = models.CharField(max_length=500, unique=True)
@@ -115,4 +146,6 @@ class EstadisticaJugadorPartido(models.Model):
         
     def __str__(self):
         return f"{self.nombre_jugador} - {self.reporte}"
+    
+
     

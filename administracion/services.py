@@ -40,7 +40,7 @@ def guardar_calendario_html(division, grupo, temporada, calendario):
     os.makedirs(carpeta, exist_ok=True)
     ruta = os.path.join(carpeta, "calendario.html")
     
-    with open(ruta, encoding="utf-8") as archivo:
+    with open(ruta, "w", encoding="utf-8") as archivo:
         archivo.write(html)
         
     # Si ya había registro sólo se actualiza la ruta

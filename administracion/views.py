@@ -121,13 +121,13 @@ def usuario_puede_ver_calendario(usuario, calendario):
         return True
     return Equipo.objects.filter(
         user=usuario, division=calendario.division, grupo=calendario.grupo
-    ). exists()
+    ).exists()
     
 @login_required
 def ver_calendario(request, calendario_id):
     """Muestra el calendario de una temporada si el usuario pertenece a su división y grupo"""
-    calendario = get_object_or_404(CalendarioTemporada, pk=calendario.id)
-    # Se responde 404 y no 403 para no revelar que el calendario exiate
+    calendario = get_object_or_404(CalendarioTemporada, pk=calendario_id)
+    # Se responde 404 y no 403 para no revelar que el calendario existe
     if not usuario_puede_ver_calendario(request.user, calendario):
         raise Http404("Calendario no disponible")
     

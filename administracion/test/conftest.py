@@ -94,3 +94,33 @@ def bd_arbitros(db):
         Arbitro.objects.create(nombre=f"Arbitro{i}", severidad=10, origen="España")
         for i in range(1, 5)
     ]
+    
+@pytest.fixture(autouse=True)
+def partidos_dir_temporal(tmp_path, monkeypatch):
+    """Redirige los HTML generados a una carpeta temporal para no ensuciar PARTIDOS_DIR"""
+    monkeypatch.setattr("administracion.services.PARTIDOS_DIR", str(tmp_path))
+    
+    return tmp_path
+
+@pytest.fixture
+def calendario_generado(bd_equipos_validos):
+    """Genera el calendario de la división 1, grupo 1 y devuelve su registro"""
+    from administracion.models import CalendarioTemporada
+    from administracion.services import generar_calendario_liga
+    
+    generar_calendario_liga(
+        bd_equipos_validos["division"],
+        bd_equipos_validos["grupo"],
+        bd_equipos_validos["fecha_inicio_valida"],
+    )
+    return CalendarioTemporada.objects.get()
+
+@pytest.fixture
+def equipo_otro_grupo(db):
+    """Usuario con equipo en la división 1, grupo 2 (distinto grupo al calendario)"""
+    usuario = User.objects.create_user(username="manager_otro_grupo", password="Password123")
+    
+    return Equipo.objects.create(
+        user=usuario, nombre_equipo="Otro Grupo FC", abreviatura="OGR",
+        division=1, grupo=2, temporada=1,
+    )

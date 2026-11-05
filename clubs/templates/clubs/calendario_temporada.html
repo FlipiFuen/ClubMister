@@ -1,0 +1,58 @@
+{% extends "club_mister/base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Calendario" %} · {% trans "División" %} {{ division }} - {% trans "Grupo" %} {{ grupo }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Cabecera de la página, mismo degradado verde que el reporte de partido */
+    .cal-cabecera { background: linear-gradient(135deg, #0b3d2e 0%, #146c43 60%, #198754 100%); color: #fff; border-radius: .75rem; }
+    .cal-pastilla { background: rgba(255,255,255,.15); border-radius: 2rem; padding: .25rem .8rem; font-size: .85rem; }
+    /* Tarjeta de cada jornada */
+    .cal-jornada-cab { background: #146c43; color: #fff; font-weight: 700; }
+    /* Resalta el partido en el que juega el equipo del usuario */
+    .cal-propio { background: #d1e7dd !important; font-weight: 700; }
+</style>
+{% endblock %}
+
+{% block contenido %}
+<div class="container py-4">
+    <!-- Cabecera con división, grupo y temporada -->
+    <div class="cal-cabecera shadow p-4 mb-4 text-center">
+        <h2 class="mb-3">{% trans "Calendario de la temporada" %} {{ temporada }}</h2>
+        <span class="cal-pastilla">{% trans "División" %} {{ division }}</span>
+        <span class="cal-pastilla">{% trans "Grupo" %} {{ grupo }}</span>
+    </div>
+
+    <!-- Una tabla por jornada -->
+    {% for jornada in calendario%}
+        <div class="card mb-4 shadow-sm">
+            <div class="cal-jornada-cab card-header">
+                {% trans "Jornada" %} {{ jornada.0.jornada }}
+            </div>
+            <div class="table-responsive">
+                <table class="table table-striped mb-0">
+                    <thead>
+                        <tr>
+                            <th>{% trans "Local" %}</th>
+                            <th>{% trans "Visitante" %}</th>
+                            <th>{% trans "Fecha" %}</th>
+                            <th>{% trans "Hora" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for partido in jornada %}
+                            <tr>
+                                <td>{{ partido.local }}</td>
+                                <td>{{ partido.visitante }}</td>
+                                <td>{{ partido.fecha }}</td>
+                                <td>{{ partido.hora }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% endfor %}
+</div> <!-- Contenedor principal -->
+{% endblock contenido %}

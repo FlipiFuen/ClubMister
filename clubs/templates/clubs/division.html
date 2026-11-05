@@ -5,6 +5,12 @@
 
 {% block contenido %}
     <div class="container py-4">
+        <!-- Avisos de la sesión, p. ej. cuando aún no hay calendario -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
         <div class="text-center mb-4">
             <h1 class="display-5 fw-bold text-success">
                 <i class="bi bi-bar-chart-line-fill me-2"></i>

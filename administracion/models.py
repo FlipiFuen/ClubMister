@@ -61,6 +61,29 @@ class PartidoProgramado(models.Model):
             f"Jornada {self.jornada}: {self.equipo_local} vs "
             f"{self.equipo_visitante}"
         )
+        
+class CalendarioTemporada(models.Model):
+    """Registra el HTML generado con el calendario de una temporada, división y grupo"""
+    division = models.PositiveBigIntegerField()
+    grupo = models.PositiveBigIntegerField()
+    temporada = models.PositiveBigIntegerField()
+    ruta_archivo = models.CharField(max_length=500, unique=True)
+    fecha_generacion = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        constraints = [
+            # Sólo puede existir un calendario por temporada, división y grupo
+            models.UniqueConstraint(
+                fields=["temporada", "division", "grupo"],
+                name="calendario_temporada_unico",
+            )
+        ]
+        
+    def __str__(self):
+        return (
+            f"Calendario temporada {self.temporada} - "
+            f"División {self.division} - Grupo {self.grupo}"
+        )
 
 class ReportePartido(models.Model):
     class Competicion(models.TextChoices):

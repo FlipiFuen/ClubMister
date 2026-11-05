@@ -1,6 +1,6 @@
 import os
 
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
@@ -8,9 +8,11 @@ from django.http import FileResponse, Http404
 
 from clubs.models import Equipo
 
-from .models import ReportePartido
+from .models import CalendarioTemporada, ReportePartido
 from .forms import GenerarCalendarioForm, SimularPartidosForm
-from .services import generar_calendario_liga, simular_individual, simular_jornada
+from .services import (
+    calendario_desde_bd, generar_calendario_liga, simular_individual, simular_jornada,
+    )
 from .Partidos.constantes import PARTIDOS_DIR
 
 @staff_member_required
@@ -109,3 +111,47 @@ def ver_reporte(request, reporte_id):
         raise Http404("Archivo de reporte no encontrado")
     
     return FileResponse(open(ruta, "rb"), content_type="text/html; charset=utf-8")
+
+def usuario_puede_ver_calendario(usuario, calendario):
+    """
+    Indica si el usuario tiene permiso para ver el calendario de una división y grupo
+    Puede verlo el staff y los usuarios con un equipo en esa misma división y grupo
+    """
+    if usuario.is_staff:
+        return True
+    return Equipo.objects.filter(
+        user=usuario, division=calendario.division, grupo=calendario.grupo
+    ). exists()
+    
+@login_required
+def ver_calendario(request, calendario_id):
+    """Muestra el calendario de una temporada si el usuario pertenece a su división y grupo"""
+    calendario = get_object_or_404(CalendarioTemporada, pk=calendario.id)
+    # Se responde 404 y no 403 para no revelar que el calendario exiate
+    if not usuario_puede_ver_calendario(request.user, calendario):
+        raise Http404("Calendario no disponible")
+    
+    return render(request, "clubs/calendario_temporada.html", {
+        "division": calendario.division,
+        "grupo": calendario.grupo,
+        "temporada": calendario.temporada,
+        "calendario": calendario_desde_bd(
+            calendario.temporada, calendario.division, calendario.grupo
+        ),
+    })
+    
+@login_required
+def mi_calendario(request):
+    """Redirige al calendario de la temporada actual de la división y grupo del usuario"""
+    equipo = getattr(request.user, "equipo", None)
+    if equipo is None:
+        raise Http404("El usuario no tiene equipo")
+    
+    calendario = CalendarioTemporada.objects.filter(
+        temporada=equipo.temporada, division=equipo.division, grupo=equipo.grupo,
+    ).first()
+    if calendario is None:
+        messages.info(request, "Todavía no se ha generado el calendario de tu división y grupo")
+        return redirect("clubs:division")
+    
+    return redirect("administracion:ver_calendario", calendario_id=calendario.id)

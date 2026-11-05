@@ -1,12 +1,77 @@
+import os
 import random
 
 from datetime import datetime, timedelta
 from pathlib import Path
 
+from django.db import transaction
 from django.db.models import Count, Q
+from django.template.loader import render_to_string
 
-from administracion.models import Arbitro, PartidoProgramado, ReportePartido
+from administracion.models import Arbitro, CalendarioTemporada, PartidoProgramado, ReportePartido
+from administracion.Partidos.constantes import PARTIDOS_DIR
 from clubs.models import Equipo
+
+def guardar_calendario_html(division, grupo, temporada, calendario):
+    """
+    Renderiza el calendario a HTML, lo guarda en disco y registra su ruta en la Base de datos
+    
+    Args:
+        division (int): División del calendario.
+        grupo (int): Grupo del calendario.
+        temporada (int): Temporada del calendario.
+        calendario (list): Lista de jornadas, cada una con sus partidos (dicts).
+
+    Returns:
+        CalendarioTemporada: Registro con la ruta del archivo generado.
+    """
+    html = render_to_string("clubs/calendario_temporada.html", {
+        "division": division,
+        "grupo": grupo,
+        "temporada": temporada,
+        "calendario": calendario,
+    })
+    
+    # Misma carpeta que los reportes de liga de esa temporada, división y grupo
+    carpeta = os.path.join(
+        PARTIDOS_DIR,
+        f"reportes_temporada_{temporada}_division_{division}_grupo_{grupo}",
+    )
+    os.makedirs(carpeta, exist_ok=True)
+    ruta = os.path.join(carpeta, "calendario.html")
+    
+    with open(ruta, encoding="utf-8") as archivo:
+        archivo.write(html)
+        
+    # Si ya había registro sólo se actualiza la ruta
+    registro, _ = CalendarioTemporada.objects.update_or_create(
+        temporada = temporada, division = division, grupo = grupo,
+        defaults = {"ruta_archivo": ruta},
+    )
+    return registro
+
+def calendario_desde_bd(temporada, division, grupo):
+    """
+    Reconstruye desde la BD el calendario de una temporada, división y grupo
+    
+    Devuelve la misma estructura que generar_calendario_liga: una lista de jornadas,
+    cada una con los partidos como diccionarios
+    """
+    partidos = PartidoProgramado.objects.filter(
+        temporada=temporada, division=division, grupo=grupo,
+    ).select_related("equipo_local", "equipo_visitante")
+    
+    jornadas = {}
+    for partido in partidos:
+        jornadas.setdefault(partido.jornada, []).append({
+            "jornada": partido.jornada,
+            "local": partido.equipo_local.nombre_equipo,
+            "visitante": partido.equipo_visitante.nombre_equipo,
+            "fecha": partido.fecha.strftime("%d-%m-%Y"),
+            "hora": partido.hora.strftime("%H:%M"),
+        })
+        
+    return list(jornadas.values())
 
 def generar_calendario_liga(division, grupo, fecha_inicio_str):
     """
@@ -87,7 +152,11 @@ def generar_calendario_liga(division, grupo, fecha_inicio_str):
             ))
         calendario_resultado.append(jornada_datos)
     
-    PartidoProgramado.objects.bulk_create(partidos_programados)
+    # Si falla el guardado del HTML se revierten también los partidos
+    with transaction.atomic():
+        PartidoProgramado.objects.bulk_create(partidos_programados)
+        guardar_calendario_html(division, grupo, temporada, calendario_resultado)
+        
     return calendario_resultado
 
 def proximo_miercoles_20h(ahora=None):

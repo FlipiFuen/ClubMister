@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-09 02:01+0200\n"
+"POT-Creation-Date: 2026-11-06 23:56+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,79 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: .\administracion\templates\administracion\reporte_partido.html:4
+msgid "Reporte"
+msgstr "Report"
+
+#: .\administracion\templates\administracion\reporte_partido.html:40
+msgid "No oficial"
+msgstr "Unofficial"
+
+#: .\administracion\templates\administracion\reporte_partido.html:53
+msgid "Descanso"
+msgstr "Half Time"
+
+#: .\administracion\templates\administracion\reporte_partido.html:76
+msgid "Mejor Jugador del Partido"
+msgstr "Best Player of the Match"
+
+#: .\administracion\templates\administracion\reporte_partido.html:109
+msgid "Crónica Minuto a Minuto"
+msgstr "Minute-by-Minute account"
+
+#: .\administracion\templates\administracion\reporte_partido.html:111
+msgid "Todo"
+msgstr "All"
+
+#: .\administracion\templates\administracion\reporte_partido.html:112
+#: .\clubs\templates\clubs\equipo.html:126
+msgid "Goles"
+msgstr "Goals"
+
+#: .\administracion\templates\administracion\reporte_partido.html:113
+msgid "Tarjetas"
+msgstr "Cards"
+
+#: .\administracion\templates\administracion\reporte_partido.html:114
+msgid "Lesiones"
+msgstr "Injuries"
+
+#: .\administracion\templates\administracion\reporte_partido.html:138
+msgid "No se han registrado eventos en este partido"
+msgstr "No events have been recorded in this match"
+
+#: .\administracion\templates\administracion\reporte_partido.html:149
+#, fuzzy
+#| msgid "Goles"
+msgid "Goleadores"
+msgstr "Goals"
+
+#: .\administracion\templates\administracion\reporte_partido.html:156
+#: .\administracion\templates\administracion\reporte_partido.html:162
+#: .\administracion\templates\administracion\reporte_partido.html:179
+#: .\administracion\templates\administracion\reporte_partido.html:185
+#: .\administracion\templates\administracion\reporte_partido.html:202
+#: .\administracion\templates\administracion\reporte_partido.html:208
+#: .\administracion\templates\administracion\reporte_partido.html:224
+msgid "Ninguno"
+msgstr "None"
+
+#: .\administracion\templates\administracion\reporte_partido.html:172
+#, fuzzy
+#| msgid "espectadores"
+msgid "Amonestados"
+msgstr "spectators"
+
+#: .\administracion\templates\administracion\reporte_partido.html:195
+msgid "Expulsados"
+msgstr "Expelled"
+
+#: .\administracion\templates\administracion\reporte_partido.html:218
+#, fuzzy
+#| msgid "Lesionado por"
+msgid "Lesionados"
+msgstr "Injured by"
 
 #: .\club_mister\templates\club_mister\base.html:58
 msgid "Iniciar sesión"
@@ -34,33 +107,35 @@ msgstr "Logout"
 msgid "Ajustes de cuenta"
 msgstr "Account Settings"
 
-#: .\club_mister\templates\club_mister\base.html:93
+#: .\club_mister\templates\club_mister\base.html:100
 msgid "Selecciona un idioma"
 msgstr "Select a languaje"
 
-#: .\club_mister\templates\club_mister\base.html:122
+#: .\club_mister\templates\club_mister\base.html:129
 #: .\clubs\templates\clubs\club.html:4
 msgid "Club"
 msgstr "Club"
 
-#: .\club_mister\templates\club_mister\base.html:126
+#: .\club_mister\templates\club_mister\base.html:133
+#: .\clubs\templates\clubs\division.html:37
 msgid "Equipo"
 msgstr "My Team"
 
-#: .\club_mister\templates\club_mister\base.html:130
+#: .\club_mister\templates\club_mister\base.html:137
 #: .\clubs\templates\clubs\estadio.html:4
 msgid "Estadio"
 msgstr "Stadium"
 
-#: .\club_mister\templates\club_mister\base.html:135
+#: .\club_mister\templates\club_mister\base.html:142
 msgid "Partidos"
 msgstr "Matchs"
 
-#: .\club_mister\templates\club_mister\base.html:139
+#: .\club_mister\templates\club_mister\base.html:146
 msgid "Divisón"
 msgstr "Division"
 
-#: .\club_mister\templates\club_mister\base.html:143
+#: .\club_mister\templates\club_mister\base.html:150
+#: .\clubs\templates\clubs\calendario_temporada.html:4
 msgid "Calendario"
 msgstr "Calendar"
 
@@ -168,53 +243,125 @@ msgstr "TANK"
 msgid "DERECHA"
 msgstr "RIGHT"
 
-#: .\clubs\services.py:55
+#: .\clubs\services.py:54
 msgid "IZQUIERDA"
 msgstr "LEFT"
 
-#: .\clubs\services.py:57
+#: .\clubs\services.py:55
 msgid "CENTRO"
 msgstr "CENTER"
 
-#: .\clubs\services.py:59
+#: .\clubs\services.py:56
 msgid "IZQUIERDA-DERECHA"
 msgstr "LEFT-RIGHT"
 
-#: .\clubs\services.py:61
+#: .\clubs\services.py:57
 msgid "CENTRO-DERECHA"
 msgstr "CENTER-RIGHT"
 
-#: .\clubs\services.py:63
+#: .\clubs\services.py:58
 msgid "IZQUIERDA-CENTRO"
 msgstr "LEFT-CENTER"
 
-#: .\clubs\services.py:65 .\clubs\services.py:67
+#: .\clubs\services.py:59 .\clubs\services.py:60
 msgid "IZQUIERDA-CENTRO-DERECHA"
 msgstr "LEFT-CENTER-RIGHT"
 
-#: .\clubs\services.py:74
+#: .\clubs\services.py:63
+msgid "DESCONOCIDO"
+msgstr ""
+
+#: .\clubs\services.py:68
 msgid "Calmado"
 msgstr "Calm"
 
-#: .\clubs\services.py:77
+#: .\clubs\services.py:71
 msgid "Normal"
 msgstr "Normal"
 
-#: .\clubs\services.py:80
+#: .\clubs\services.py:74
 msgid "Agresivo"
 msgstr "Aggressive"
+
+#: .\clubs\templates\clubs\calendario_temporada.html:4
+#: .\clubs\templates\clubs\calendario_temporada.html:23
+#: .\clubs\templates\clubs\club.html:13
+msgid "División"
+msgstr "Division"
+
+#: .\clubs\templates\clubs\calendario_temporada.html:4
+#: .\clubs\templates\clubs\calendario_temporada.html:24
+#: .\clubs\templates\clubs\club.html:14
+msgid "Grupo"
+msgstr "Group"
+
+#: .\clubs\templates\clubs\calendario_temporada.html:22
+msgid "Calendario de la temporada"
+msgstr "Season Schedule"
+
+#: .\clubs\templates\clubs\calendario_temporada.html:31
+msgid "Jornada"
+msgstr "Matchday"
+
+#: .\clubs\templates\clubs\calendario_temporada.html:37
+msgid "Local"
+msgstr "Home Team"
+
+#: .\clubs\templates\clubs\calendario_temporada.html:38
+msgid "Visitante"
+msgstr "Away Team"
+
+#: .\clubs\templates\clubs\calendario_temporada.html:39
+msgid "Fecha"
+msgstr "Date"
+
+#: .\clubs\templates\clubs\calendario_temporada.html:40
+msgid "Hora"
+msgstr "Hour"
 
 #: .\clubs\templates\clubs\club.html:12
 msgid "Temporada"
 msgstr "Season"
 
-#: .\clubs\templates\clubs\club.html:13
-msgid "División"
-msgstr "Division"
+#: .\clubs\templates\clubs\division.html:27
+msgid "Clasificación"
+msgstr "Team Standings"
 
-#: .\clubs\templates\clubs\club.html:14
-msgid "Grupo"
-msgstr "Group"
+#: .\clubs\templates\clubs\division.html:38
+msgid "PJ"
+msgstr "MP"
+
+#: .\clubs\templates\clubs\division.html:39
+msgid "G"
+msgstr "W"
+
+#: .\clubs\templates\clubs\division.html:40
+msgid "D"
+msgstr ""
+
+#: .\clubs\templates\clubs\division.html:41
+msgid "P"
+msgstr "L"
+
+#: .\clubs\templates\clubs\division.html:42
+msgid "GF"
+msgstr "GF"
+
+#: .\clubs\templates\clubs\division.html:43
+msgid "GC"
+msgstr "GC"
+
+#: .\clubs\templates\clubs\division.html:44
+msgid "DG"
+msgstr "GD"
+
+#: .\clubs\templates\clubs\division.html:45
+msgid "Pts"
+msgstr "Pts"
+
+#: .\clubs\templates\clubs\division.html:77
+msgid "No hay equipos para mostrar en esta división y grupo."
+msgstr "There are no teams to display in this division and group"
 
 #: .\clubs\templates\clubs\equipo.html:23
 msgid "años"
@@ -259,10 +406,6 @@ msgstr "Matchs"
 #: .\clubs\templates\clubs\equipo.html:122
 msgid "Paradas"
 msgstr "Saves"
-
-#: .\clubs\templates\clubs\equipo.html:126
-msgid "Goles"
-msgstr "Goals"
 
 #: .\clubs\templates\clubs\equipo.html:130
 msgid "Asistencias"
@@ -332,17 +475,14 @@ msgid "Editar Nombre"
 msgstr "Edit Name"
 
 #: .\clubs\templates\clubs\estadio.html:67
-#| msgid "Nombre del equipo"
 msgid "Editar nombre del estadio"
 msgstr "Team's Name"
 
 #: .\clubs\templates\clubs\estadio.html:68
-#| msgid "Cerrar sesión"
 msgid "Cerrar"
 msgstr "Logout"
 
 #: .\clubs\templates\clubs\estadio.html:71
-#| msgid "Nombre del equipo"
 msgid "Nombre del Estadio"
 msgstr "Stadium Name"
 
@@ -354,15 +494,19 @@ msgstr "Cancel"
 msgid "Guardar"
 msgstr "Save"
 
-#: .\clubs\views.py:34
+#: .\clubs\views.py:35
 msgid "Estadio Municipal"
 msgstr "City Stadium"
 
-#: .\config\settings.py:129
+#: .\clubs\views.py:65
+msgid "Tabla de clasificación"
+msgstr ""
+
+#: .\config\settings.py:130
 msgid "Spanish"
 msgstr "Spanish"
 
-#: .\config\settings.py:130
+#: .\config\settings.py:131
 msgid "English"
 msgstr "English"
 
@@ -458,6 +602,10 @@ msgstr "Create account"
 #: .\usuarios\templates\usuarios\registro.html:15
 msgid "Registrarme"
 msgstr "Register"
+
+#: .\usuarios\views.py:49
+msgid "Error de base de datos al crear tu cuenta. Inténtalo de nuevo"
+msgstr "Database error while creating your account. Please try again"
 
 #~ msgid "Futbolistas"
 #~ msgstr "Players"

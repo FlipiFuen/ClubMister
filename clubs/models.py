@@ -66,3 +66,20 @@ class Estadio(models.Model):
 
     def __str__(self):
         return self.nombre
+
+class Alineacion(models.Model):
+    """MOdelo para las alineaciones de cada equipo para el partido de la jornada"""
+    
+    equipo = models.ForeignKey(Equipo, on_delete=models.CASCADE, related_name='alineaciones')
+    partido = models.ForeignKey('administracion.PartidoProgramado', on_delete=models.CASCADE, related_name='alineaciones')
+    datos = models.JSONField(help_text="Diccionario con jugadores, posiciones, táctica e instrucciones")
+    actualizado_en = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['equipo', 'partido'], name='alineacion_unica_por_partido')
+        ]
+        
+    def __str__(self):
+        return f"Alineacion {self.equipo} - Partido {self.partido_id}"
+    

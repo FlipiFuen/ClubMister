@@ -1,0 +1,1195 @@
+
+{% extends "club_mister_base.html" %}
+{% load custom_filters query_utils i18n static %}
+
+{% block title %}{% trans "Alineación" %}{% endblock %}
+
+{% block contenido %}
+<style>
+    .custom-tooltip {
+        --bs-tooltip-bg: #692d81; /* Color de fondo personalizado */
+        --bs-tooltip-color: #ffffff; /* Color del texto */
+        --bs-tooltip-border-color: #343a40; /* Color del borde */
+        --bs-tooltip-border-width: 1px;
+        --bs-tooltip-padding-x: 0.5rem;
+        --bs-tooltip-padding-y: 0.25rem;
+        --bs-tooltip-font-size: 0.875rem;
+    }
+</style>
+
+ 
+    <div class= 'encjugadores2'><div class= 'futi'></div>
+        <div class= 'dorsal'>
+            <H1>{% trans "Alineacion" %}</H1>
+        </div>
+        <div class= 'posi'><p>proximo</p></div>
+    </div>
+    <div class= 'abajo3'>
+        <div class= 'titupos'>
+            <div class = 'primero' style="height: 70px;">
+                <!--explicacion de las abreviaturas -->
+                <pre style= 'font-size: 13px; color: green; margin-bottom: 5px;
+                    margin-top: 5px'>
+                    {% trans "GK = Portero    TK = Defensa     PS = Pases"%}</pre>
+                <pre style= 'font-size: 13px; color: green; margin-bottom: 5px; margin-top: 0px'>
+                        {% trans "SH = Tiro     ST = Resistencia" %}</pre>
+                <pre style= 'font-size: 13px; color: green; margin-bottom: 5px;
+                     margin-top: 0px;'>
+                    {% trans "SD = Lado -> D = Derecha   C = Centro   I = Izquierda" %}</pre>
+            </div>
+            <hr style= 'width: 100%; height: 1px; background-color: green; margin-top: 5px; margin-bottom: 0px'>
+            <div class= 'enctitular' style= 'margin-top: 0px; margin-bottom: 0px'>
+                <span style="margin-left: 150px;">{% trans "Posicion" %}</span><span style= 'margin-left: 150px'>{% trans "Jugador" %}</span>
+            </div>        
+            <div class= 'jugadores3' id= 'jugadores'>
+                <div class= 'container text-center'>
+                <!--select para el portero -->
+                    <div class= 'row g-0' style="width: 100%; height: 35px;">
+                        <div class= 'col'>
+                            <p style= 'padding-left: 30px; margin-bottom: 5px; margin-top: 0px'>{% trans "Portero" %}</p>
+                        </div>
+                        <div class='col ps-2'>
+                            <div class="btn-group w-100" style="height: 30px;">
+                              <button  name= "portero" type="button" class="btn btn-primary dropdown-toggle w-100"
+                                 data-bs-toggle="dropdown" aria-expanded="false"
+                                 style="height: 30px;">
+                                {{ jugador_seleccionado.jug0|default:_("Seleccionar jugador") }}
+                              </button>
+                                <ul class="dropdown-menu w-100">
+                                    {% for jugador in plantilla %}
+                                        <li><a class="dropdown-item" href="?{% update_query_params jug0=jugador.nombre %}"
+                                            data-bs-toggle="tooltip" data-bs-placement="top"
+                                             data-bs-custom-class="custom-tooltip"
+                                             data-bs-title="GK = {{ jugador.st }}&nbsp;&nbsp;&nbsp;&nbsp;ST = {{ jugador.resistencia }}">
+                                            {{ jugador.nombre }}</a></li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+            <!-- Selects para las posiciones y jugadores -->
+                {% for sel in selectores %}  
+                    {% if forloop.counter == 11 %}
+                        <div class='row g-0' style="margin-top: 5px; height: 15px;">
+                            <div class='col'>
+                            <p style= 'font-size: 12px; margin-top: 0px; margin-bottom: 0px; text-align: center;'>
+                            {% trans "Reservas" %}</p></div> 
+                            <div class="col">&nbsp</div>                                                 
+                        </div>
+                    {% elif forloop.counter < 11 %}
+                        <div class='row' style="margin-top: 5px; height: 35px;">
+                            <div class='col'>
+                                <div class="btn-group w-100" style="height: 30px;">
+                                    {% with pos_key=forloop.counter|format_pos_key %}
+                                    <button type="button" class="btn btn-success dropdown-toggle w-100"
+                                            data-bs-toggle="dropdown" aria-expanded="false"
+                                            style="height: 30px;" data-type="posicion">
+                                            {{ posicion_seleccionada|dict_key:pos_key|default:_("Seleccionar posición") }}
+                                    </button>
+                                    <ul class="dropdown-menu w-100">
+                                        {% for posicion in posiciones %}
+                                            <li id="item-{{ forloop.counter }}">
+                                                <a class="dropdown-item" href="?{% update_query_params_dynamic pos_key posicion.codigo %}">{{ posicion.nombre }}</a>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                    {% endwith %}
+                                </div>
+                            </div>
+                            <div class='col'>
+                                <div class="btn-group w-100" style="height: 30px;">
+                                    {% with jug_key=forloop.counter|format_jug_key %}
+                                        <button type="button" class="btn btn-primary dropdown-toggle w-100"
+                                                data-bs-toggle="dropdown" aria-expanded="false"
+                                                style="height: 30px;">
+                                                {{ jugador_seleccionado|dict_key:jug_key|default:_("Seleccionar jugador") }}
+                                        </button>
+                                        <ul class="dropdown-menu w-100">
+                                            {% for jugador in plantilla %}
+                                                <li><a class="dropdown-item" href="?{% update_query_params_dynamic jug_key jugador.nombre %}" 
+                                                        data-bs-toggle="tooltip" data-bs-placement="top"
+                                                        data-bs-custom-class="custom-tooltip"
+                                                        data-bs-title="TK = {{ jugador.tk }}&nbsp;&nbsp;&nbsp;PS = {{ jugador.ps }}<br>
+                                                        SD---> {{ jugador.lado_preferido }}<br>
+                                                        SH = {{ jugador.sh }}&nbsp;&nbsp;&nbsp;ST = {{ jugador.resistencia }}">
+                                                        {{ jugador.nombre }}</a></li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% endwith %}
+                                </div>                                 
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            <!-- Selects para los reservas -->
+                {% for iter in iteraciones %}
+                    <div class='row' style="margin-top: 3px; height: 35px;">
+                        <div class='col'>
+                            <div class="btn-group w-100" style="height: 30px;">
+                                {% with pos_key=iter.pos_key %}
+                                  <button type="button" class="btn btn-success dropdown-toggle w-100"
+                                       data-bs-toggle="dropdown" aria-expanded="false"
+                                       style="height: 30px;" id = "posicion_{{ iter.index }}" data-type="posicion">
+                                      {{ posicion_seleccionada|dict_key:pos_key|default:_("Seleccionar posición") }}
+                                  </button>
+                                    <ul class="dropdown-menu w-100">
+                                        <li><a class="dropdown-item" href="?{% update_query_params_dynamic pos_key 'GK' %}">{% trans "Portero" %}</a></li>
+                                        {% for posicion in posiciones %}
+                                            <li><a class="dropdown-item" href="?{% update_query_params_dynamic pos_key posicion.codigo %}">{{ posicion.nombre }}</a></li>
+                                        {% endfor %}
+                                    </ul>
+                                {% endwith %}
+                            </div>
+                        </div>
+                        <div class='col'>
+                            <div class="btn-group w-100" style="height: 30px;">
+                                {% with jug_key=iter.index|format_jug_key %}
+                                  <button type="button" class="btn btn-primary dropdown-toggle w-100"
+                                       data-bs-toggle="dropdown" aria-expanded="false"
+                                       style="height: 30px;">
+                                       {{ jugador_seleccionado|dict_key:jug_key|default:_("Seleccionar jugador") }}
+                                  </button>
+                                        <ul class="dropdown-menu w-100">
+                                            {% for jugador in plantilla %}
+                                                <li><a class="dropdown-item" href="?{% update_query_params_dynamic jug_key jugador.nombre %}" 
+                                                    data-bs-toggle="tooltip" data-bs-placement="top"
+                                                    data-bs-custom-class="custom-tooltip"
+                                                    data-bs-title="TK = {{ jugador.tk }}&nbsp;&nbsp;&nbsp;PS = {{ jugador.ps }}<br>
+                                                    SH = {{ jugador.sh }}&nbsp;&nbsp;&nbsp;ST = {{ jugador.resistencia }}<br>
+                                                    GK = {{ jugador.st }}&nbsp;&nbsp;&nbsp;SD---> {{ jugador.lado_preferido }}">
+                                                {{ jugador.nombre }}</a></li>
+                                            {% endfor %}
+                                        </ul>
+                                {% endwith %}
+                            </div>        
+                        </div>
+                    </div>
+                {% endfor %}
+                </div> <!-- fin container text-center-->
+            </div>
+        </div>
+        <!-- colocar dorsales y nombres en el campo -->
+        <div class= 'camp'>  
+            <div class= 'campo'>
+                <div class= 'dorsal1' id="dorsal1">
+                    <img src= "{% static 'imagenes/1.png' %}" alt= '1'></div>
+                <div class= 'defensa' id="defensa"></div>
+                <div class= 'mediaDefensiva' id="mediaDefensiva"></div>
+                <div class= 'media' id="media"></div>
+                <div class= 'mediaPunta' id="mediaPunta"></div>
+                <div class= 'delantera' id="delantera"></div>
+                <!-- colocar dorsales y nombres en el campo -->
+                {{ posiciones|json_script:"posiciones-data" }}
+                {{ posicion_seleccionada|json_script:"posicion-seleccionada-data" }}
+                {{ jugador_seleccionado|json_script:"jugador-seleccionado-data" }}
+            </div>
+            <!-- Capitan, formacion y tirador de penalty-->
+            <div class= 'roles'>
+                <p style= 'padding-left: 10px; margin-top: 0px;
+                         color: darkblue; background-color: forestgreen'>{{ nombre_usuario }}</p>
+                <div class= 'alineacion' style= 'height:100px'>
+                    <div class= 'col' style= 'padding-left: 100px; height: 30%'>
+                        <p style= 'font-size: 15px; margin-bottom: 0px'>{% trans "Formación" %}</p>
+                    </div>
+                    <div class= 'col' id= 'formacion' style = 'height: 30%'></div>
+                    <div class= 'col' style= 'padding-left: 100px; height: 30%'>
+                        <p style= 'font-size: 15px; margin-top: 0px; margin-bottom: 0px'>{% trans "Capitán" %}</p>
+                    </div>
+                    <div class='col' style= 'height: 30%'>
+                        {% with cap_key="capitan" %}
+                            <div class="btn-group" id="capitan" style="height: 30px; min-width: 245px;">
+                                <button type="button" class="btn btn-primary dropdown-toggle"
+                                data-bs-toggle="dropdown" aria-expanded="false"
+                                style="height: 30px;">
+                                {{ jugador_seleccionado.capitan|default:_("Seleccionar capitan") }}
+                                </button>
+                                <ul class="dropdown-menu">
+                                    {% get_jugador_seleccionado jugador_seleccionado as alineacion %}
+                                    {% for jugador_obj in plantilla %}
+                                        {% if jugador_obj.nombre in alineacion %}
+                                            <li><a class="dropdown-item" href="?{% update_query_params_dynamic cap_key jugador_obj.nombre %}"
+                                                data-bs-toggle="tooltip" data-bs-placement="top"
+                                                data-bs-custom-class="custom-tooltip"
+                                                data-bs-title="TK = {{ jugador_obj.tk }}&nbsp;&nbsp;&nbsp;PS = {{ jugador_obj.ps }}<br>
+                                                SH = {{ jugador_obj.sh }}&nbsp;&nbsp;&nbsp;ST = {{ jugador_obj.resistencia }}<br>
+                                                GK = {{ jugador_obj.st }}&nbsp;&nbsp;&nbsp;SD---> {{ jugador_obj.lado_preferido }}">
+                                                {{ jugador_obj.nombre }}</a></li>
+                                        {% endif %}
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endwith %}
+                    </div>
+                    <div class= 'col' style= 'padding-left: 30px; height: 30%'>
+                        <p style= 'font-size: 15px; margin-top: 0px; margin-bottom: 0px'>{% trans "Tirador de penalty" %}</p>
+                    </div>
+                    <div class='col' style= 'height: 30%'>
+                        {% with pen_key="penal" %}
+                            <div class="btn-group" id="tpenal" style="height: 30px; min-width: 245px;">
+                                <button type="button" class="btn btn-primary dropdown-toggle"
+                                data-bs-toggle="dropdown" aria-expanded="false"
+                                style="height: 30px;">
+                                {{ jugador_seleccionado.penal|default:_("Seleccionar tirador") }}
+                                </button>
+                                <ul class="dropdown-menu">
+                                    {% get_jugador_seleccionado jugador_seleccionado as alineacion %}
+                                    {% for jugador_obj in plantilla %}
+                                        {% if jugador_obj.nombre in alineacion %}
+                                            <li><a class="dropdown-item" href="?{% update_query_params_dynamic pen_key jugador_obj.nombre %}"
+                                                data-bs-toggle="tooltip" data-bs-placement="top"
+                                                data-bs-custom-class="custom-tooltip"
+                                                data-bs-title="TK = {{ jugador_obj.tk }}&nbsp;&nbsp;&nbsp;PS = {{ jugador_obj.ps }}<br>
+                                                SH = {{ jugador_obj.sh }}&nbsp;&nbsp;&nbsp;ST = {{ jugador_obj.resistencia }}<br>
+                                                GK = {{ jugador_obj.st }}&nbsp;&nbsp;&nbsp;SD---> {{ jugador_obj.lado_preferido }}">
+                                                {{ jugador_obj.nombre }}</a></li>
+                                        {% endif %}
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endwith %}
+                    </div>
+                </div>
+            </div>
+        </div> <!-- fin campo -->
+
+        <!-- Instrucciones -->
+        <div class= 'titupos' style= 'margin-right: 15px; margin-left: 0px'>
+            <p style= 'background-color: brown; font-size: 20px; color: springgreen;
+               margin-top: 0px; height: 30px; text-align: center;'>{% trans "Instrucciones" %}</p>
+            <div class = 'primero' style="height: 260px; text-align: center;">
+                <!--explicacion de las abreviaturas de posiciones -->
+                <span style="text-align: center;">{% trans "Abreviaturas para cada posición" %}</span>
+                <div class="row">
+                    <div class="col">
+                        <p style= 'font-size: 13px; color: green; margin-bottom: 5px;
+                            margin-top: 5px'>{% trans "GK = Portero" %}</p>
+                    </div>
+                    <div class="col">
+                        <p style= 'font-size: 13px; color: green; margin-bottom: 5px;
+                            margin-top: 5px'>{% trans "DFL = Lateral Izquierdo" %}</p>
+                    </div>
+                    <div class="col">
+                        <p style= 'font-size: 13px; color: green; margin-bottom: 5px;
+                            margin-top: 5px'>{% trans "DFC = Central" %}</p>
+                    </div>
+                    <div class="col">
+                        <p style= 'font-size: 13px; color: green; margin-bottom: 5px;
+                            margin-top: 5px'>{% trans "DFR = Lateral Derecho" %}</p>
+                    </div>"
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <p style= 'font-size: 13px; color: green; margin-bottom: 5px;
+                            margin-top: 5px'>{% trans "DML = Mediocentro Defensivo Izquierdo" %}</p>
+                    </div>
+                    <div class="col">
+                        <p style= 'font-size: 13px; color: green; margin-bottom: 5px;
+                            margin-top: 5px'>{% trans "DMR = Mediocentro Defensivo Derecho" %}</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <p style= 'font-size: 13px; color: green; margin-bottom: 5px;
+                            margin-top: 5px'>{% trans "DMC = Mediocentro Defensivo" %}</p>
+                    </div>
+                    <div class="col">
+                        <p style= 'font-size: 13px; color: green; margin-bottom: 5px;
+                            margin-top: 5px'>{% trans "MFC = Mediocentro" %}</p>
+                    </div>
+                    <div class="col">
+                        <p style= 'font-size: 13px; color: green; margin-bottom: 5px;
+                            margin-top: 5px'>{% trans "MFL = Medio Izquierdo" %}</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <p style= 'font-size: 13px; color: green; margin-bottom: 5px;
+                            margin-top: 5px'>{% trans "MFR = Medio Derecho" %}</p>
+                    </div>
+                    <div class="col">
+                        <p style= 'font-size: 13px; color: green; margin-bottom: 5px;
+                            margin-top: 5px'>{% trans "AML = Mediapunta Izquierdo" %}</p>
+                    </div>
+                    <div class="col">
+                        <p style= 'font-size: 13px; color: green; margin-bottom: 5px;
+                            margin-top: 5px'>{% trans "AMC = Mediapunta" %}</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <p style= 'font-size: 13px; color: green; margin-bottom: 5px;
+                            margin-top: 5px'>{% trans "AMR = Mediapunta Derecho" %}</p>
+                    </div>
+                    <div class="col">
+                        <p style= 'font-size: 13px; color: green; margin-bottom: 5px;
+                            margin-top: 5px'>{% trans "FWR = Extremo Derecho" %}</p>
+                    </div>
+                    <div class="col">
+                        <p style= 'font-size: 13px; color: green; margin-bottom: 5px;
+                            margin-top: 5px'>{% trans "FWL = Extremo Izquierdo" %}</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <p style= 'font-size: 13px; color: green; margin-bottom: 5px;
+                            margin-top: 5px'>{% trans "FWC = Delantero Centro" %}</p>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class= 'tercero'>
+                <!-- Tactica -->
+                <div class= 'row' style="margin-left: 50px;">
+                    <div class= 'col'>
+                        <p style= 'font-size: 15px; margin-top: 0px; margin-bottom: 0px'>{% trans "Táctica" %}</p>
+                    </div>
+                    <div class= 'col' style= 'padding-right: 35px; width: 350px'>
+                        <select class= 'form-select form-select sm ' id= 'tactica' style="height: 25px;
+                            margin-bottom: 15px; padding-left: 3px; padding-bottom: 5px; padding-top: 0px;">
+                            <option></option>
+                            <option style="font-size: 10px;">{% trans "Ataque--------->A" %}</option>
+                                <option style="font-size: 10px;">{% trans "Defensa-------->D" %}</option>
+                                <option style="font-size: 10px;">{% trans "Normal--------->N" %}</option>
+                                <option style="font-size: 10px;">{% trans "Pases---------->P" %}</option>
+                                <option style="font-size: 10px;">{% trans "Contraataque--->C" %}</option>
+                                <option style="font-size: 10px;">{% trans "Balón largo---->L" %}</option>
+                        </select>
+                    </div>        
+                </div>
+            </div>
+            <!-- Cambio de tactica -->
+            <div class= 'tactica'>
+                <div class = 'full' style="text-align: center">
+                    <p style= 'margin-top: 0px; color: darkmagenta'>{% trans "Cambio de táctica" %}</p>
+                </div>
+
+                <div class= 'col' style="height: 20px;">
+                    <p style= 'font-size: 10px; margin-top: 0px; margin-bottom: 0px'>{% trans "Nueva táctica &nbsp;&nbsp;" %}</p>
+                </div>
+                 <div class = 'col' style = "height: 20px">
+                    <p style= 'font-size: 10px; margin-top: 0px; margin-bottom: 0px'>{% trans "Si minutos" %}</p>
+                </div>
+                <div class = 'col' style = "height: 20px; width:30px"></div>
+                <div class = 'col' style = "height: 20px">
+                    <p style= 'font-size: 10px; margin-top: 0px; margin-bottom: 0px'>{% trans "Si resultado" %}</p>
+                </div>
+                <div class = 'col' style = "height: 20px">
+                    <p style= 'font-size: 10px; margin-top: 0px; margin-bottom: 0px'>&nbsp</p>
+                </div>
+                <div class = 'col' style = "height: 20px">
+                    <p style= 'font-size: 10px; margin-top: 0px; margin-bottom: 0px'>{% trans "Si amarilla" %}</p>
+                </div>
+                <div class = 'col' style = "height: 20px">
+                    <p style= 'font-size: 10px; margin-top: 0px; margin-bottom: 0px'>{% trans "Si roja" %}</p>
+                </div>
+                <div class = 'col' style = "height: 20px">
+                    <p style= 'font-size: 10px; margin-top: 0px; margin-bottom: 0px'>{% trans "Si lesionado" %}</p>
+                </div>
+                <div class= 'col' style= 'padding-right: 5px; height: 30px'>
+                    <select class= 'form-select form-select sm ' id= 'ct-tactica' style="height: 25px;
+                                margin-bottom: 15px; padding-left: 10px; padding-bottom: 5px; padding-top: 0px;
+                                padding-right: 25px; width: 60px; color: darkgreen">
+                                <option></option>
+                                <option style="font-size: 10px;">{% trans "A" %}</option>
+                                <option style="font-size: 10px;">{% trans "D" %}</option>
+                                <option style="font-size: 10px;">{% trans "N" %}</option>
+                                <option style="font-size: 10px;">{% trans "P" %}</option>
+                                <option style="font-size: 10px;">{% trans "C" %}</option>
+                                <option style="font-size: 10px;">{% trans "L" %}</option>
+                            </select>
+                </div>
+                <div class= 'col' style= 'padding-right: 5px; height: 30px'>
+                    <select class= 'form-select' id= 'ct-opMinuto' style="height: 25px;
+                                margin-bottom: 15px; padding-left: 3px; padding-bottom: 5px;
+                                padding-top: 0px; width: 60px; color: darkgreen">
+                        <option></option>
+                        <option style="font-size: 10px;">=</option>
+                        <option style="font-size: 10px;"><=</option>
+                        <option style="font-size: 10px;">>=</option>
+                    </select>
+                </div>
+                <div class= 'col' style= 'padding-right: 5px; height: 30px'>           
+                    <select class= 'form-select' id= 'ct-minuto' style="height: 25px;
+                            margin-bottom: 15px; padding-left: 3px; padding-bottom: 5px;
+                            padding-top: 0px; width: 60px; font-size: 10px; color: darkgreen">
+                        <option></option>
+                        {% for i in rango_minutos %}
+                            <option style="font-size: 10px;">{{ i }}</option>
+                        {% endfor %}
+                    </select>         
+                </div>
+                <div class= 'col' style= 'padding-right: 5px; height: 30px'>
+                    <select class= 'form-select' id= 'ct-opResultado' style="height: 25px;
+                                margin-bottom: 15px; padding-left: 3px; padding-bottom: 5px;
+                                padding-top: 0px; width: 60px; color: darkgreen">
+                        <option></option>
+                        <option style="font-size: 10px;">=</option>
+                        <option style="font-size: 10px;"><=</option>
+                        <option style="font-size: 10px;">>=</option>
+                    </select>
+                </div>
+                <div class= 'col' style= 'padding-right: 5px; height: 30px'>           
+                    <select class= 'form-select' id= 'ct-resultado' style="height: 25px;
+                            margin-bottom: 15px; padding-left: 3px; padding-bottom: 5px;
+                            padding-top: 0px; width: 60px; font-size: 10px; color: darkgreen">
+                        <option></option>
+                        {% for i in rango_resultado %}
+                            <option style="font-size: 10px;">{{ i }}</option>
+                        {% endfor %}
+                    </select>         
+                </div>
+                <div class= 'col' style= 'padding-right: 5px; height: 30px'>           
+                    <select class= 'form-select' id= 'ct-amarilla' style="height: 25px;
+                            margin-bottom: 15px; padding-left: 3px; padding-bottom: 5px;
+                            padding-top: 0px; padding-right: 25px; width: 60px; font-size: 10px; color: darkgreen">
+                        <option></option>
+                        {% for pos in abrev_pos %}
+                            <option style="font-size: 10px;">{{ pos }}</option>
+                        {% endfor %}
+                        {% for i in rango_dorsales %}
+                            <option style="font-size: 10px;">{{ i }}</option>
+                        {% endfor %}
+                    </select>         
+                </div>  
+                <div class= 'col' style= 'padding-right: 5px; height: 30px'>           
+                    <select class= 'form-select' id= 'ct-roja' style="height: 25px;
+                            margin-bottom: 15px; padding-left: 3px; padding-bottom: 5px;
+                            padding-top: 0px; padding-right: 25px; width: 60px; font-size: 10px; color: darkgreen">
+                        <option></option>
+                        {% for pos in abrev_pos %}
+                            <option style="font-size: 10px;">{{ pos }}</option>
+                        {% endfor %}
+                        {% for i in rango_dorsales %}
+                            <option style="font-size: 10px;">{{ i }}</option>
+                        {% endfor %}
+                    </select>         
+                </div> 
+                <div class= 'col' style= 'padding-right: 5px; height: 30px'>           
+                    <select class= 'form-select' id= 'ct-lesionado' style="height: 25px;
+                            margin-bottom: 15px; padding-left: 3px; padding-bottom: 5px;
+                            padding-top: 0px; padding-right: 25px; width: 60px; font-size: 10px; color: darkgreen">
+                        <option></option>
+                        {% for pos in abrev_pos %}
+                            <option style="font-size: 10px;">{{ pos }}</option>
+                        {% endfor %}
+                        {% for i in rango_dorsales %}
+                            <option style="font-size: 10px;">{{ i }}</option>
+                        {% endfor %}
+                    </select>         
+                </div> 
+                <div class="full" style="text-align: center; margin-top: 5px;">
+                    <button type="button" class="btn btn-outline-success" id="guardarTactica" style="width: 100px;
+                     height: 25px; font-size: 10px;">
+                        {% trans "Guardar" %}
+                    </button>
+                </div>
+            </div>
+            <!-- Substituciones -->
+            <div class= 'tactica2'>
+                <div class = 'full2' style="text-align: center">
+                    <p style= 'margin-top: 0px; color: darkmagenta'>{% trans "Substituciones" %}</p>
+                </div>
+                <div class= 'col' style="height: 20px;">
+                    <p style= 'font-size: 10px; margin-top: 0px; margin-bottom: 0px'>{% trans "Sale" %}</p>
+                </div>
+                <div class= 'col' style="height: 20px;">
+                    <p style= 'font-size: 10px; margin-top: 0px; margin-bottom: 0px'>{% trans "Entra" %}</p>
+                </div>
+                <div class= 'col' style="height: 20px;">
+                    <p style= 'font-size: 10px; margin-top: 0px; margin-bottom: 0px'>{% trans "Posición" %}</p>
+                </div>
+                <div class= 'col' style="height: 20px;">
+                    <p style= 'font-size: 10px; margin-top: 0px; margin-bottom: 0px'>{% trans "Si minuto" %}</p>
+                </div>
+                <div class = 'col' style = "height: 20px">
+                    <p style= 'font-size: 10px; margin-top: 0px; margin-bottom: 0px'>&nbsp</p>
+                </div>
+                <div class= 'col' style="height: 20px;">
+                    <p style= 'font-size: 10px; margin-top: 0px; margin-bottom: 0px'>{% trans "Si resultado" %}</p>
+                </div>
+                <div class = 'col' style = "height: 20px">
+                    <p style= 'font-size: 10px; margin-top: 0px; margin-bottom: 0px'>&nbsp</p>
+                </div>
+                <div class= 'col' style="height: 20px;">
+                    <p style= 'font-size: 10px; margin-top: 0px; margin-bottom: 0px'>{% trans "Si amarilla" %}</p>
+                </div>
+                <div class = 'col' style = "height: 20px">
+                    <p style= 'font-size: 10px; margin-top: 0px; margin-bottom: 0px'>{% trans "Si roja" %}</p>
+                </div>
+                <div class = 'col' style = "height: 20px">
+                    <p style= 'font-size: 10px; margin-top: 0px; margin-bottom: 0px'>{% trans "Si lesion" %}</p>
+                </div>
+                <div class= 'col' style= 'padding-right: 5px; height: 30px'>           
+                    <select class= 'form-select custom-select-no-arrow' id= 'sb-sale' 
+                            style="height: 25px; width: 100%; margin-bottom: 15px; padding-left: 3px; padding-bottom: 5px;
+                            padding-top: 0px; padding-right: 5px; font-size: 10px; 
+                            color: darkgreen">
+                        <option></option>
+                        {% for pos in abrev_pos %}
+                            <option style="font-size: 10px;">{{ pos }}</option>
+                        {% endfor %}
+                        {% for i in rango_dorsales %}
+                            <option style="font-size: 10px;">{{ i }}</option>
+                        {% endfor %}
+                    </select>         
+                </div> 
+                <div class= 'col' style= 'padding-right: 5px; height: 30px'>           
+                    <select class= 'form-select custom-select-no-arrow' id= 'sb-entra' 
+                            style="height: 25px; width: 100%; margin-bottom: 15px; padding-left: 3px; padding-bottom: 5px;
+                            padding-top: 0px; padding-right: 5px; font-size: 10px; color: darkgreen">
+                        <option></option>
+                        {% for i in rango_reservas %}
+                            <option style="font-size: 10px;">{{ i }}</option>
+                        {% endfor %}
+                    </select>         
+                </div> 
+                <div class= 'col' style= 'padding-right: 5px; height: 30px'>           
+                    <select class= 'form-select custom-select-no-arrow' id= 'sb-posicion' 
+                            style="height: 25px; width: 100%; margin-bottom: 15px; padding-left: 3px; padding-bottom: 5px;
+                            padding-top: 0px; padding-right: 5px; font-size: 10px; color: darkgreen">
+                        <option></option>
+                        {% for pos in abrev_pos %}
+                            <option style="font-size: 10px;">{{ pos }}</option>
+                        {% endfor %}
+                    </select>         
+                </div>
+                <div class= 'col' style= 'padding-right: 5px; height: 30px'>
+                    <select class= 'form-select custom-select-no-arrow' id= 'sb-opMinuto' 
+                            style="height: 25px; width: 100%; margin-bottom: 15px; padding-left: 3px; padding-bottom: 5px;
+                            padding-top: 0px; padding-right: 5px; font-size: 10px; color: darkgreen">
+                        <option></option>
+                        <option style="font-size: 10px;">=</option>
+                        <option style="font-size: 10px;"><=</option>
+                        <option style="font-size: 10px;">>=</option>
+                    </select>
+                </div> 
+                <div class= 'col' style= 'padding-right: 5px; height: 30px'>           
+                    <select class= 'form-select custom-select-no-arrow' id= 'sb-minuto' 
+                            style="height: 25px; width: 100%; margin-bottom: 15px; padding-left: 3px; padding-bottom: 5px;
+                            padding-top: 0px; padding-right: 5px; font-size: 10px; color: darkgreen">
+                        <option></option>
+                        {% for i in rango_minutos %}
+                            <option style="font-size: 10px;">{{ i }}</option>
+                        {% endfor %}
+                    </select>         
+                </div>
+                <div class= 'col' style= 'padding-right: 5px; height: 30px'>
+                    <select class= 'form-select custom-select-no-arrow' id= 'sb-opResultado' 
+                            style="height: 25px; width: 100%; margin-bottom: 15px; padding-left: 3px; padding-bottom: 5px;
+                            padding-top: 0px; padding-right: 5px; font-size: 10px; color: darkgreen">
+                        <option></option>
+                        <option style="font-size: 10px;">=</option>
+                        <option style="font-size: 10px;"><=</option>
+                        <option style="font-size: 10px;">>=</option>
+                    </select>
+                </div>
+                <div class= 'col' style= 'padding-right: 5px; height: 30px'>           
+                    <select class= 'form-select custom-select-no-arrow' id= 'sb-resultado' 
+                            style="height: 25px; width: 100%; margin-bottom: 15px; padding-left: 3px; padding-bottom: 5px;
+                            padding-top: 0px; padding-right: 5px; font-size: 10px; color: darkgreen">
+                        <option></option>
+                        {% for i in rango_resultado %}
+                            <option style="font-size: 10px;">{{ i }}</option>
+                        {% endfor %}
+                    </select>         
+                </div>
+                <div class= 'col' style= 'padding-right: 5px; height: 30px'>           
+                    <select class= 'form-select custom-select-no-arrow' id= 'tsb-amarilla' 
+                            style="height: 25px; width: 100%; margin-bottom: 15px; padding-left: 3px; padding-bottom: 5px;
+                            padding-top: 0px; padding-right: 5px; font-size: 10px; 
+                            color: darkgreen">
+                        <option></option>
+                        {% for pos in abrev_pos %}
+                            <option style="font-size: 10px;">{{ pos }}</option>
+                        {% endfor %}
+                        {% for i in rango_dorsales %}
+                            <option style="font-size: 10px;">{{ i }}</option>
+                        {% endfor %}
+                    </select>         
+                </div>
+                <div class= 'col' style= 'padding-right: 5px; height: 30px'>           
+                    <select class= 'form-select custom-select-no-arrow' id= 'sb-roja' 
+                            style="height: 25px; width: 100%; margin-bottom: 15px; padding-left: 3px; padding-bottom: 5px;
+                            padding-top: 0px; padding-right: 5px; font-size: 10px; 
+                            color: darkgreen">
+                        <option></option>
+                        {% for pos in abrev_pos %}
+                            <option style="font-size: 10px;">{{ pos }}</option>
+                        {% endfor %}
+                        {% for i in rango_dorsales %}
+                            <option style="font-size: 10px;">{{ i }}</option>
+                        {% endfor %}
+                    </select>         
+                </div>
+                <div class= 'col' style= 'padding-right: 5px; height: 30px'>           
+                    <select class= 'form-select custom-select-no-arrow' id= 'sb-lesionado' 
+                            style="height: 25px; width: 100%; margin-bottom: 15px; padding-left: 3px; padding-bottom: 5px;
+                            padding-top: 0px; padding-right: 5px; font-size: 10px; 
+                            color: darkgreen">
+                        <option></option>
+                        {% for pos in abrev_pos %}
+                            <option style="font-size: 10px;">{{ pos }}</option>
+                        {% endfor %}
+                        {% for i in rango_dorsales %}
+                            <option style="font-size: 10px;">{{ i }}</option>
+                        {% endfor %}
+                    </select>         
+                </div>
+                <div class="full2" style="text-align: center; margin-top: 5px;">
+                    <button type="button" class="btn btn-outline-success" id="guardarSubstitucion" style="width: 100px;
+                     height: 25px; font-size: 10px;">
+                        {% trans "Guardar" %}
+                    </button>
+                </div>
+            </div>
+            <!-- Reposiciones -->
+            <div class= 'tactica3'>
+                <div class = 'full3' style="text-align: center">
+                    <p style= 'margin-top: 0px; color: darkmagenta'>{% trans "Reposicionar jugadores" %}</p>
+                </div>
+                <div class= 'col' style="height: 20px;">
+                    <p style= 'font-size: 10px; margin-top: 0px; margin-bottom: 0px'>{% trans "Jugador" %}</p>
+                </div>
+                <div class= 'col' style="height: 20px;">
+                    <p style= 'font-size: 10px; margin-top: 0px; margin-bottom: 0px'>{% trans "Posición" %}</p>
+                </div>
+                <div class= 'col' style="height: 20px;">
+                    <p style= 'font-size: 10px; margin-top: 0px; margin-bottom: 0px'>{% trans "Si minuto" %}</p>
+                </div>
+                <div class = 'col' style = "height: 20px">
+                    <p style= 'font-size: 10px; margin-top: 0px; margin-bottom: 0px'>&nbsp</p>
+                </div>
+                <div class= 'col' style="height: 20px;">
+                    <p style= 'font-size: 10px; margin-top: 0px; margin-bottom: 0px'>{% trans "Si resultado" %}</p>
+                </div>
+                <div class = 'col' style = "height: 20px">
+                    <p style= 'font-size: 10px; margin-top: 0px; margin-bottom: 0px'>&nbsp</p>
+                </div>
+                <div class= 'col' style="height: 20px;">
+                    <p style= 'font-size: 10px; margin-top: 0px; margin-bottom: 0px'>{% trans "Si amarilla" %}</p>
+                </div>
+                <div class = 'col' style = "height: 20px">
+                    <p style= 'font-size: 10px; margin-top: 0px; margin-bottom: 0px'>{% trans "Si roja" %}</p>
+                </div>
+                <div class = 'col' style = "height: 20px">
+                    <p style= 'font-size: 10px; margin-top: 0px; margin-bottom: 0px'>{% trans "Si lesion" %}</p>
+                </div>
+                <div class= 'col' style= 'height: 20px'>           
+                    <select class= 'form-select custom-select-no-arrow' id= 'rp-jugador' 
+                            style="height: 25px; width: 100%; margin-bottom: 15px; padding-left: 3px; padding-bottom: 5px;
+                            padding-top: 0px; padding-right: 5px; font-size: 10px; color: darkgreen">
+                        <option></option>
+                        {% for i in rango_dorsales %}
+                            <option style="font-size: 10px;">{{ i }}</option>
+                        {% endfor %}
+                    </select>         
+                </div>
+                <div class= 'col' style= 'height: 20px'>           
+                    <select class= 'form-select custom-select-no-arrow' id= 'rp-posicion' 
+                            style="height: 25px; width: 100%; margin-bottom: 15px; padding-left: 3px; padding-bottom: 5px;
+                            padding-top: 0px; padding-right: 5px; font-size: 10px; color: darkgreen">
+                        <option></option>
+                        {% for pos in abrev_pos %}
+                            <option style="font-size: 10px;">{{ pos }}</option>
+                        {% endfor %}
+                    </select>         
+                </div>
+                <div class= 'col' style= 'height: 20px'>
+                    <select class= 'form-select custom-select-no-arrow' id= 'rp-opMinutos' 
+                            style="height: 25px; width: 100%; margin-bottom: 15px; padding-left: 3px; padding-bottom: 5px;
+                            padding-top: 0px; padding-right: 5px; font-size: 10px; color: darkgreen">
+                        <option></option>
+                        <option style="font-size: 10px;">=</option>
+                        <option style="font-size: 10px;"><=</option>
+                        <option style="font-size: 10px;">>=</option>
+                    </select>
+                </div>
+                <div class= 'col' style= 'padding-right: 5px; height: 30px'>           
+                    <select class= 'form-select custom-select-no-arrow' id= 'rp-minuto' 
+                            style="height: 25px; width: 100%; margin-bottom: 15px; padding-left: 3px; padding-bottom: 5px;
+                            padding-top: 0px; padding-right: 5px; font-size: 10px; color: darkgreen">
+                        <option></option>
+                        {% for i in rango_minutos %}
+                            <option style="font-size: 10px;">{{ i }}</option>
+                        {% endfor %}
+                    </select>         
+                </div>
+                <div class= 'col' style= 'height: 20px'>
+                    <select class= 'form-select custom-select-no-arrow' id= 'rp-opResultado' 
+                            style="height: 25px; width: 100%; margin-bottom: 15px; padding-left: 3px; padding-bottom: 5px;
+                            padding-top: 0px; padding-right: 5px; font-size: 10px; color: darkgreen">
+                        <option></option>
+                        <option style="font-size: 10px;">=</option>
+                        <option style="font-size: 10px;"><=</option>
+                        <option style="font-size: 10px;">>=</option>
+                    </select>
+                </div>
+                <div class= 'col' style= 'padding-right: 5px; height: 30px'>           
+                    <select class= 'form-select custom-select-no-arrow' id= 'rp-resultado' 
+                            style="height: 25px; width: 100%; margin-bottom: 15px; padding-left: 3px; padding-bottom: 5px;
+                            padding-top: 0px; padding-right: 5px; font-size: 10px; color: darkgreen">
+                        <option></option>
+                        {% for i in rango_resultado %}
+                            <option style="font-size: 10px;">{{ i }}</option>
+                        {% endfor %}
+                    </select>         
+                </div>
+                <div class= 'col' style= 'padding-right: 5px; height: 30px'>           
+                    <select class= 'form-select custom-select-no-arrow' id= 'rp-amarilla' 
+                            style="height: 25px; width: 100%; margin-bottom: 15px; padding-left: 3px; padding-bottom: 5px;
+                            padding-top: 0px; padding-right: 5px; font-size: 10px; 
+                            color: darkgreen">
+                        <option></option>
+                        {% for pos in abrev_pos %}
+                            <option style="font-size: 10px;">{{ pos }}</option>
+                        {% endfor %}
+                        {% for i in rango_dorsales %}
+                            <option style="font-size: 10px;">{{ i }}</option>
+                        {% endfor %}
+                    </select>         
+                </div>
+                <div class= 'col' style= 'padding-right: 5px; height: 30px'>           
+                    <select class= 'form-select custom-select-no-arrow' id= 'rp-roja' 
+                            style="height: 25px; width: 100%; margin-bottom: 15px; padding-left: 3px; padding-bottom: 5px;
+                            padding-top: 0px; padding-right: 5px; font-size: 10px; 
+                            color: darkgreen">
+                        <option></option>
+                        {% for pos in abrev_pos %}
+                            <option style="font-size: 10px;">{{ pos }}</option>
+                        {% endfor %}
+                        {% for i in rango_dorsales %}
+                            <option style="font-size: 10px;">{{ i }}</option>
+                        {% endfor %}
+                    </select>         
+                </div>
+                <div class= 'col' style= 'padding-right: 5px; height: 30px'>           
+                    <select class= 'form-select custom-select-no-arrow' id= 'rp-lesionado' 
+                            style="height: 25px; width: 100%; margin-bottom: 15px; padding-left: 3px; padding-bottom: 5px;
+                            padding-top: 0px; padding-right: 5px; font-size: 10px; 
+                            color: darkgreen">
+                        <option></option>
+                        {% for pos in abrev_pos %}
+                            <option style="font-size: 10px;">{{ pos }}</option>
+                        {% endfor %}
+                        {% for i in rango_dorsales %}
+                            <option style="font-size: 10px;">{{ i }}</option>
+                        {% endfor %}
+                    </select>         
+                </div>
+                <div class="full3" style="text-align: center; margin-top: 5px;">
+                    <button type="button" class="btn btn-outline-success" id="guardarReposicion" style="width: 100px;
+                     height: 25px; font-size: 10px; padding-top: 5px;">
+                        {% trans "Guardar" %}
+                    </button>
+                </div>
+            </div>
+            <div class="d-grid gap-2" style="margin-top: 5px;">
+                <button class="btn btn-warning" id="enviarAlineacion" type="button">{% trans "Enviar Alineación" %}</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+        const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+        const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl, {
+            html: true}));
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const posicionesData = JSON.parse(document.getElementById('posiciones-data').textContent);
+            const posicionSeleccionada = JSON.parse(document.getElementById('posicion-seleccionada-data').textContent);
+            const jugadorSeleccionado = JSON.parse(document.getElementById('jugador-seleccionado-data').textContent);
+
+            // Crear un mapa para buscar el codigo a partir del nombre
+            const nombreACodigoMap = {};
+            posicionesData.forEach(p => { nombreACodigoMap[p.nombre] = p.codigo; });
+                
+            const dropdowns = document.querySelectorAll('.dropdown-menu');
+            let defensa = 0, media = 0, delantera = 0;
+    
+            function placeMarker(targetId, markerHtml) {
+                const targetElement = document.getElementById(targetId);
+                if (targetElement) {
+                    targetElement.insertAdjacentHTML('beforeend', markerHtml);
+                } else {
+                    console.error(`Elemento con ID "${targetId}" no encontrado.`);
+                }
+            }
+
+            function formacion(objetivo, html) {
+                const targetElement = document.getElementById(objetivo);
+                if (targetElement) {
+                    targetElement.innerHTML = html;
+                } else {
+                    console.error(`Elemento con ID "${objetivo}" no encontrado.`);
+                }
+            }
+
+            // Funcion para actualizar los selectores de jugadores y posiciones
+            function actualizarSelectores() {
+                // Obtener todos los jugadores seleccionados
+                const jugadoresSeleccionados = Array.from(dropdowns).map(dropdown => {
+                    const selectedButton = dropdown.parentElement.querySelector('.dropdown-toggle');
+                    return selectedButton ? selectedButton.textContent.trim() : null;
+                });
+            // Recorre todos los selectores y actualiza las opciones
+                dropdowns.forEach((dropdown => {
+                    // Omite el dropdown del capitán y los de posiciones
+                if (dropdown.parentElement.id === "capitan" || 
+                    dropdown.parentElement.querySelector('.dropdown-toggle').dataset.type === "posicion" ||
+                    dropdown.parentElement.id === "tpenal") {
+                    return; // No aplicar lógica de deshabilitación al dropdown del capitán
+        }
+                    const opciones = dropdown.querySelectorAll('a.dropdown-item');
+                    opciones.forEach(opcion => {
+                        const jugador = opcion.textContent.trim();
+                        if (jugadoresSeleccionados.includes(jugador)) {
+                            // Si el jugador esta seleccionado, deshabilitar y poner en rojo
+                            opcion.style.color = 'red';
+                            opcion.style.pointerEvents = 'none'; // Deshabilitar el click
+                        }else {
+                            // Si el jugador no esta seleccionado, habilitar y poner en negro
+                            opcion.style.color = 'blue';
+                            opcion.style.pointerEvents = '';
+                        }
+                    });
+                }));
+            }
+            // Agrega el evento de cambio a cada selector
+            dropdowns.forEach(dropdown => {
+                dropdown.addEventListener('click', function (event) {
+                    const clickedItem = event.target;
+                    if (clickedItem.classList.contains('dropdown-item')) {
+                        // Actualiza el texto del botón del dropdown
+                        const button = dropdown.parentElement.querySelector('.dropdown-toggle');
+                        button.textContent = clickedItem.textContent.trim();
+                        // Actualiza los selectores 
+                        actualizarSelectores();
+                    }
+                });
+            });
+            // Inicializa los selectores al cargar la página
+            actualizarSelectores();
+
+            // Colocar dorsales y nombres en el campo
+           for (let i = 0; i < 11; i++) {
+                const posKey = `pos${i}`;
+                const jugKey = `jug${i}`;
+                const selectedPosName = posicionSeleccionada[posKey];
+                const selectedJug = jugadorSeleccionado[jugKey];
+                const selectedPosCode = nombreACodigoMap[selectedPosName] || null;
+                let camiseta = `${i + 1}`;
+
+                let clase, targetDiv, markerHtml;
+    
+                if (selectedPosCode || selectedJug) {
+                    console.log(`Generando para i=${i}, posNombre=${selectedPosName}, jug=${selectedJug}`);
+                    if ( jugKey == "jug0"){
+                        const porteroHtml = `
+                            <div class="port">
+                                <p>${selectedJug || ''}</p>
+                            </div>`;
+                        placeMarker('dorsal1', porteroHtml);
+                        continue;
+                    }
+    
+                    // Determinar la zona correcta
+                    if (["DFR"].includes(selectedPosCode)) {
+                        clase = "dorsal2";
+                        targetDiv = 'defensa';
+                        defensa += 1;
+                    } else if (["DFL"].includes(selectedPosCode)) {
+                        clase = "dorsal3";
+                        targetDiv = 'defensa';
+                        defensa += 1;
+                    } else if (["DFC"].includes(selectedPosCode)) {
+                        clase = "dorsalC";
+                        targetDiv = 'defensa';
+                        defensa += 1;
+                    } else if (["DFCR"].includes(selectedPosCode)) {
+                        clase = "dorsal4";
+                        targetDiv = 'defensa';
+                        defensa += 1;
+                    } else if (["DFCL"].includes(selectedPosCode)) {
+                        clase = "dorsal5";
+                        targetDiv = 'defensa';
+                        defensa += 1;
+                    } else if (["DMR"].includes(selectedPosCode)) {
+                        clase = "dorsal6a";
+                        targetDiv = 'mediaDefensiva';
+                        media += 1;
+                    } else if (["DMC"].includes(selectedPosCode)) {
+                        clase = "dorsal6";
+                        targetDiv = 'mediaDefensiva';
+                        media += 1;
+                    } else if (["DML"].includes(selectedPosCode)) {
+                        clase = "dorsal6b";
+                        targetDiv = 'mediaDefensiva';
+                        media += 1;
+                    } else if (["MFR"].includes(selectedPosCode)) {
+                        clase = "dorsal6a";
+                        targetDiv = 'media';
+                        media += 1;
+                    } else if (["MFC"].includes(selectedPosCode)) {
+                        clase = "dorsal6";
+                        targetDiv = 'media';
+                        media += 1;
+                    } else if (["MFL"].includes(selectedPosCode)) {
+                        clase = "dorsal6b";
+                        targetDiv = 'media';
+                        media += 1;
+                    } else if (["AMR"].includes(selectedPosCode)) {
+                        clase = "dorsal6a";
+                        targetDiv = 'mediaPunta';
+                        media += 1;
+                    } else if (["AMC"].includes(selectedPosCode)) {
+                        clase = "dorsal6";
+                        targetDiv = 'mediaPunta';
+                        media += 1;
+                    } else if (["AML"].includes(selectedPosCode)) {
+                        clase = "dorsal6b";
+                        targetDiv = 'mediaPunta';
+                        media += 1;
+                    } else if (["FWR"].includes(selectedPosCode)) {
+                        clase = "dorsal2";
+                        targetDiv = 'delantera';
+                        delantera += 1;
+                    } else if (["FWC"].includes(selectedPosCode)) {
+                        clase = "dorsalC";
+                        targetDiv = 'delantera';
+                        delantera += 1;
+                    } else if (["FWCL"].includes(selectedPosCode)) {
+                        clase = "dorsal5";
+                        targetDiv = 'delantera';
+                        delantera += 1;
+                    } else if (["FWCR"].includes(selectedPosCode)) {
+                        clase = "dorsal4";
+                        targetDiv = 'delantera';
+                        delantera += 1;
+                    } else if (["FWL"].includes(selectedPosCode)) {
+                        clase = "dorsal3";
+                        targetDiv = 'delantera';
+                        delantera += 1;
+                    }else{
+                        console.error(`Posición no reconocida: ${selectedPosName}`);
+                        continue; // Salir del bucle si la posición no es válida
+                    }
+                    const markerHtml = `
+                        <div class='${clase}'>
+                            <div class = 'fut'>
+                                <p>${selectedJug || ''}</p></div>
+                            <img src="{% static 'imagenes/' %}${camiseta}.png" alt="${i}">
+                        </div>`;
+
+                    const html = `
+                        <p style= "margin-bottom: 0px; color: darkgreen">${defensa}-${media}-${delantera}</p>`;
+                            
+                    placeMarker(targetDiv, markerHtml);
+                    formacion('formacion', html);
+                }
+            }
+
+            const botonEnviar = document.getElementById('enviarAlineacion');
+            const dropdownCapitan = document.querySelector('#capitan .dropdown-menu');
+            const dropdownTirador = document.querySelector('#tpenal .dropdown-menu');
+            if (dropdownCapitan) {
+                dropdownCapitan.addEventListener('click', function (event) {
+                    const clickedItem = event.target;
+                    if (clickedItem.classList.contains('dropdown-item')) {
+                        console.log(`Jugador seleccionado: ${clickedItem.textContent.trim()}`);
+                        const button = document.querySelector('#capitan .dropdown-toggle');
+                        if (button) {
+                            button.textContent = clickedItem.textContent.trim();
+                        }
+                    }
+                });
+            } else {
+                console.error('Dropdown del capitán no encontrado.');
+            }
+            if (dropdownTirador) {
+                dropdownTirador.addEventListener('click', function (event) {
+                    const clickedItem = event.target;
+                    if (clickedItem.classList.contains('dropdown-item')) {
+                        console.log(`Jugador seleccionado: ${clickedItem.textContent.trim()}`);
+                        const button = document.querySelector('#tpenal .dropdown-toggle');
+                        if (button) {
+                            button.textContent = clickedItem.textContent.trim();
+                        }
+                    }
+                });
+            }else {
+                console.error('Dropdown del tirador no encontrado.');
+            }
+
+            botonEnviar.addEventListener('click', function () {
+                // Recopilar datos de los dropdowns
+                console.log('este es el {{ jugador_seleccionado|escapejs }}');
+                console.log('en la {{ posicion_seleccionada|escapejs }}');
+                const instrucciones_actuales = getAllInstructions();
+                const datosAlineacion = {
+                    jugador_seleccionado: jugadorSeleccionado,
+                    posicion_seleccionada: posicionSeleccionada,
+                    capitan: document.querySelector('#capitan .dropdown-toggle').textContent.trim(),
+                    tirador_penalti: document.querySelector('#tpenal .dropdown-toggle').textContent.trim(),
+                    formacion: document.getElementById('formacion').textContent.trim(),
+                    tactica: document.getElementById('tactica').value,
+                    instrucciones: instrucciones_actuales
+                };
+                console.log(datosAlineacion);
+                // Enviar datos al servidor usando fetch
+                console.log('Datos REALES a enviar (jugador_seleccionado):', datosAlineacion.jugador_seleccionado);
+                console.log('Datos REALES a enviar (posicion_seleccionada):', datosAlineacion.posicion_seleccionada);
+                fetch("{% url 'clubs:guardar_alineacion' %}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken') // Asegúrate de tener la función getCookie definida
+                    },
+                    body: JSON.stringify(datosAlineacion)
+                })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error('Error en la respuesta del servidor');
+                    }
+                })
+                .then(data => {
+                    console.log('Respuesta del servidor:', data);
+                    alert('Alineación guardada correctamente.');
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error al guardar la alineación.');
+                });
+            });
+            const storageKey = 'alineacionInstrucciones';
+
+            // Función para obtener todas las instrucciones desde sessionStorage
+            function getAllInstructions() {
+                const stored = sessionStorage.getItem(storageKey);
+                try {
+                    // Si hay datos guardados, los parsea; si no, devuelve la estructura inicial vacía
+                    return stored ? JSON.parse(stored) : { cambiosTactica: [], substituciones: [], reposiciones: [] };
+                } catch (e) {
+                    console.error("Error al parsear instrucciones desde sessionStorage:", e);
+                    return { cambiosTactica: [], substituciones: [], reposiciones: [] }; // Devuelve default en caso de error
+                }
+            }
+
+            // Función para guardar todas las instrucciones en sessionStorage
+            function saveAllInstructions(instructions) {
+                sessionStorage.setItem(storageKey, JSON.stringify(instructions));
+            }
+
+            function getSelectValue(id) {
+                const element = document.getElementById(id);
+                return element ? element.value : null; // Devuelve null si no se encuentra
+            }
+
+            // 1. Guardar Cambio de Táctica
+            const btnGuardarCambioTactica = document.getElementById('guardarTactica');
+            if (btnGuardarCambioTactica) {
+                btnGuardarCambioTactica.addEventListener('click', function() {
+                    const newInstruction = {
+                        nueva: getSelectValue('ct-tactica'),
+                        minOp: getSelectValue('ct-opMinuto'),
+                        minVal: getSelectValue('ct-minuto'),
+                        resOp: getSelectValue('ct-opResultado'),
+                        resVal: getSelectValue('ct-resultado'),
+                        amarilla: getSelectValue('ct-amarilla'),
+                        roja: getSelectValue('ct-roja'),
+                        lesion: getSelectValue('ct-lesionado')
+                    };
+                    // Obtener instrucciones existentes, añadir la nueva y guardar
+                    const allInstructions = getAllInstructions();
+                    allInstructions.cambiosTactica.push(newInstruction);
+                    saveAllInstructions(allInstructions);
+
+                    console.log("Instrucción de Cambio de Táctica añadida:", newInstruction);
+                    console.log("Todas las instrucciones actuales:", allInstructions);
+                    alert('Instrucción de Cambio de Táctica guardada.'); // Feedback visual temporal
+                });
+            } else {
+                console.error("Botón 'guardarTactica' no encontrado.");
+            }
+
+            // 2. Guardar Substitución
+            const btnGuardarSubstitucion = document.getElementById('guardarSubstitucion');
+            if (btnGuardarSubstitucion) {
+                btnGuardarSubstitucion.addEventListener('click', function() {
+                    const newInstruction = {
+                        sale: getSelectValue('sb-sale'),
+                        entra: getSelectValue('sb-entra'),
+                        posicion: getSelectValue('sb-posicion'),
+                        minOp: getSelectValue('sb-opMinuto'),
+                        minVal: getSelectValue('sb-minuto'),
+                        resOp: getSelectValue('sb-opResultado'),
+                        resVal: getSelectValue('sb-resultado'),
+                        amarilla: getSelectValue('sb-amarilla'),
+                        roja: getSelectValue('sb-roja'),
+                        lesion: getSelectValue('sb-lesionado')
+                    };
+                    // Obtener instrucciones existentes, añadir la nueva y guardar
+                    const allInstructions = getAllInstructions();
+                    allInstructions.substituciones.push(newInstruction);
+                    saveAllInstructions(allInstructions);
+
+                    console.log("Instrucción de Substitución añadida:", newInstruction);
+                    console.log("Todas las instrucciones actuales:", allInstructions);
+                    alert('Instrucción de Substitución guardada.'); // Feedback visual temporal
+                });
+            } else {
+                console.error("Botón 'guardarSubstitucion' no encontrado.");
+            }
+
+            // 3. Guardar Reposición
+            const btnGuardarReposicion = document.getElementById('guardarReposicion');
+            if (btnGuardarReposicion) {
+                btnGuardarReposicion.addEventListener('click', function() {
+                    const newInstruction = {
+                        jugador: getSelectValue('rp-jugador'),
+                        posicion: getSelectValue('rp-posicion'),
+                        minOp: getSelectValue('rp-opMinuto'),
+                        minVal: getSelectValue('rp-minuto'),
+                        resOp: getSelectValue('rp-opResultado'),
+                        resVal: getSelectValue('rp-resultado'),
+                        amarilla: getSelectValue('rp-amarilla'),
+                        roja: getSelectValue('rp-roja'),
+                        lesion: getSelectValue('rp-lesionado')
+                    };
+                    // Obtener instrucciones existentes, añadir la nueva y guardar
+                    const allInstructions = getAllInstructions();
+                    allInstructions.reposiciones.push(newInstruction);
+                    saveAllInstructions(allInstructions);
+
+                    console.log("Instrucción de Reposición añadida:", newInstruction);
+                    console.log("Todas las instrucciones actuales:", allInstructions);
+                    alert('Instrucción de Reposición guardada.'); // Feedback visual temporal
+                });
+            } else {
+                console.error("Botón 'guardarReposicion' no encontrado.");
+            }
+            // Función para obtener el token CSRF
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+        
+        });
+    </script>
+
+{% endblock contenido %}

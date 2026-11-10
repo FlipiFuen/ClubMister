@@ -10,4 +10,7 @@ urlpatterns = [
     path('estadio/', views.estadio, name='estadio'),
     path('estadio/editar-nombre/', views.editar_nombre_estadio, name='editar_nombre_estadio'),
     path('division/', views.division, name="division"),
+    path('alineacion/', views.alineacion, name="alineacion"),
+    path('alineacion/<int:partido_id>', views.alineacion, name="alineacion_partido"),
+    path('alineacion/guardar/', views.guardar_alineacion, name="guardar_alineacion"),
 ]

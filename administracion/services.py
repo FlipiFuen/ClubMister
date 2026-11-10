@@ -10,7 +10,7 @@ from django.template.loader import render_to_string
 
 from administracion.models import Arbitro, CalendarioTemporada, PartidoProgramado, ReportePartido
 from administracion.Partidos.constantes import PARTIDOS_DIR
-from clubs.models import Equipo
+from clubs.models import Equipo, Alineacion
 
 def guardar_calendario_html(division, grupo, temporada, calendario):
     """
@@ -64,6 +64,7 @@ def calendario_desde_bd(temporada, division, grupo):
     jornadas = {}
     for partido in partidos:
         jornadas.setdefault(partido.jornada, []).append({
+            "id": partido.id,
             "jornada": partido.jornada,
             "local": partido.equipo_local.nombre_equipo,
             "visitante": partido.equipo_visitante.nombre_equipo,
@@ -243,14 +244,22 @@ def simular_jornada(division, grupo, jornada):
     resultados = []
     for p in programados:
         if ReportePartido.objects.filter(partido_programado=p).exists():
-            resultados.append({"programado": p, "estado": "ya_simulado", "reporte": None})
+            resultados.append({"programado": p, "estado": "ya_simulado", "reporte": None, "sin_alineacion": []})
             continue
+        
+        # Comprobar si los equipos enviaron su alineación en BD para este partido
+        sin_alineacion = []
+        if not Alineacion.objects.filter(equipo=p.equipo_local, partido=p).exists():
+            sin_alineacion.append(p.equipo_local.nombre_equipo)
+        if not Alineacion.objects.filter(equipo=p.equipo_visitante, partido=p).exists():
+            sin_alineacion.append(p.equipo_visitante.nombre_equipo)
         
         reporte = _simular(p.equipo_local, p.equipo_visitante, p.fecha, p.hora, True, "liga", p)
         resultados.append({
             "programado": p,
             "estado": "ok" if reporte else "error",
             "reporte": reporte,
+            "sin_alineacion": sin_alineacion,
         })
         
     return resultados

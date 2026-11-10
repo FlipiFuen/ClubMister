@@ -2,7 +2,7 @@ import os
 import json
 import random
 
-from clubs.models import Futbolista
+from clubs.models import Futbolista, Alineacion
 
 from administracion.Partidos.constantes import *
 
@@ -125,17 +125,31 @@ class EquipoSimulado:
         self.tact_array_equipo = [[0.0 for _ in range(num_skill_categorias)] for _ in range(num_posicion_categorias)]
 
     def _cargar_alineacion(self, ruta_archivo):
-        """ Carga la alineación del equipo desde un archivo JSON y devuelve un diccionario con la información de la alineación.
+        """ Carga la alineación del equipo desde la BD. Si no existe intenta cargar desde archivo o genera una automática
+        Devuelve un diccionario con la información de la alineación.
         """
-        try:
-            with open(ruta_archivo, "r") as file:
-                return json.load(file)
-        except FileNotFoundError:
-            print (f"Sin alineación enviada para {self.nombre}: se genera una automática")
-            return generar_alineacion_automatica(self.django_equipo)
-        except json.JSONDecodeError as e:
-            print(f"Error al decodificar el archivo JSON: {e}")
-            return None
+        # Busca en la BD para este partido programado
+        partido_prog = getattr(self.juego, "partido_programado", None)
+        if partido_prog:
+            alineacion_obj = Alineacion.objects.filter(
+                equipo = self.django_equipo,
+                partido = partido_prog,
+            ).first()
+            if alineacion_obj and alineacion_obj.datos:
+                return alineacion_obj.datos
+            
+        # Fallback a archivo JSON si existe (útil para amistosos)
+        if ruta_archivo and os.path.exists(ruta_archivo):
+            try:
+                with open(ruta_archivo, "r", encoding="utf-8") as archivo:
+                    return json.load(archivo)
+            except Exception as e:
+                print(f"Error al leer el archivo JSON {ruta_archivo}: {e}")
+                
+        # Si no hay alineación se genera una automática
+        print(f"Sin alineación enviada para {self.nombre}: se genera una automática")
+        
+        return generar_alineacion_automatica(self.django_equipo)
 
     def _inicializar_plantilla(self):
         """ Inicializa la plantilla del equipo cargando los jugadores desde la base de datos de Django. """

@@ -1,5 +1,5 @@
 
-{% extends "club_mister_base.html" %}
+{% extends "club_mister/base.html" %}
 {% load custom_filters query_utils i18n static %}
 
 {% block title %}{% trans "Alineación" %}{% endblock %}
@@ -18,12 +18,70 @@
 </style>
 
  
-    <div class= 'encjugadores2'><div class= 'futi'></div>
+    <div class= 'encjugadores2'>
+        <div class= 'futi'></div>
         <div class= 'dorsal'>
-            <H1>{% trans "Alineacion" %}</H1>
+            <h1>{% trans "Alineación" %}</h1>
         </div>
-        <div class= 'posi'><p>proximo</p></div>
+        <div class= 'posi' style="text-align: right; padding-right: 15px;">
+            {% if partido %}
+                <p class="mb-0 fw-bold" style="font-size: 13px;">
+                    {% trans "Jornada" %} {{ partido.jornada }}: {{ partido.equipo_local.nombre_equipo }} vs 
+                    {{ partido.equipo_visitante.nombre_equipo }}
+                </p>
+                <small class="d-block" style="font-size: 11px;">
+                    {{ partido.fecha|date:"d/m/y" }} {{ partido.hora|time:"H:i"}}
+                </small>
+                {% if puede_enviar %}
+                    <span class="badge bg-success" style="font-size: 10px;">
+                        {% trans "Plazo hasta:" %} {{ fecha_limite|date:"H:i" }}
+                    </span>
+                {% else %}
+                    <span class="badge bg-danger" style="font-size: 10px;" title="{{ mensaje_plazo }}">
+                        {{ mensaje_plazo }}
+                    </span>
+                {% endif %}
+            {% else %}
+                    <p class="mb-0 text-muted" style="font-size: 12px;">{% trans "Sin partido próximo" %}</p>
+            {% endif %}
+        </div>
     </div>
+    {% if partido %}
+        <div class="container-fluid px-3 pt-2">
+            {% if not puede_enviar %}
+                <div class="alert alert-danger d-flex align-items-center py-2 mb-2" role="alert">
+                    <i class="bi bi.exclamation-triangle-fill fs-5 me-2"></i>
+                    <div>
+                        <strong>{% trans "Plazo expirado" %}:</strong>{{ mensaje_plazo }}
+                        {% if not tiene_alineacion_guardada %}
+                            {% trans "Tu equipo disputará este partido con una alineación automática (4-4-2)" %}
+                        {% else %}
+                            {% trans " Tu equipo jugará con la última alineación que enviaste" %}
+                        {% endif %}
+                    </div>
+                </div>
+            {% elif not tiene_alineacion_guardada %}
+                <div class="alert alert-warning d-flex align-items-center py-2 mb-2" role="alert">
+                    <i class="bi bi-info-circle-fill fs-5 me-2"></i>
+                    <div>
+                        <strong>{% trans "Alineación pemdiente" %}:</strong>
+                        {% trans "Aún no has enviado tu alineación para este partido. Tienes hasta las" %}
+                        <strong>{{ fecha_limite|date:"H:i" }}</strong>
+                        {% trans "Si no la envías a tiempo, el simulador generará una alineación automática 4-4-2 con tus mejores jugadores" %}
+                    </div>
+                </div>
+            {% else %}
+                <div class="alert alert-success d-flex align-items-center py-2 mb-2" role="alert">
+                    <i class="bi bi-check-circle.fill fs-5 me-2"></i>
+                    <div>
+                        <strong>{% trans "Alineación enviada" %}:</strong>
+                        {% trans "Ya has enviado tu alineación para este partido. Puedes modificarla antes de las" %}
+                        <strong>{{ fecha_limite|date:"H:i" }}</strong>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    {% endif %}
     <div class= 'abajo3'>
         <div class= 'titupos'>
             <div class = 'primero' style="height: 70px;">
@@ -784,7 +842,13 @@
                 </div>
             </div>
             <div class="d-grid gap-2" style="margin-top: 5px;">
-                <button class="btn btn-warning" id="enviarAlineacion" type="button">{% trans "Enviar Alineación" %}</button>
+                {% if puede_enviar %}
+                    <button class="btn btn-warning" id="enviarAlineacion" type="button">{% trans "Enviar Alineación" %}</button>
+                {% else %}
+                    <button class="btn btn-secondary" id="enviarAlineacion" type="button" disabled title="{{ mensaje_plazo }}">
+                        <i class="bi bi-lock-fill me-1"></i>{% trans "Plazo cerrado" %}
+                    </button>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -1030,6 +1094,7 @@
                 console.log('en la {{ posicion_seleccionada|escapejs }}');
                 const instrucciones_actuales = getAllInstructions();
                 const datosAlineacion = {
+                    partido_id: "{{ partido_id }}",
                     jugador_seleccionado: jugadorSeleccionado,
                     posicion_seleccionada: posicionSeleccionada,
                     capitan: document.querySelector('#capitan .dropdown-toggle').textContent.trim(),
@@ -1051,19 +1116,20 @@
                     body: JSON.stringify(datosAlineacion)
                 })
                 .then(response => {
-                    if (response.ok) {
-                        return response.json();
-                    } else {
-                        throw new Error('Error en la respuesta del servidor');
-                    }
+                    return response.json().then(data => {
+                        if (!response.ok) {        
+                            throw new Error('Error en la respuesta del servidor');
+                        }
+                        return data;
+                    });
                 })
                 .then(data => {
                     console.log('Respuesta del servidor:', data);
-                    alert('Alineación guardada correctamente.');
+                    alert(data.mensaje || 'Alineación guardada correctamente.');
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('Error al guardar la alineación.');
+                    alert(error.message);
                 });
             });
             const storageKey = 'alineacionInstrucciones';

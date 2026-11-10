@@ -38,16 +38,30 @@
                             <th>{% trans "Visitante" %}</th>
                             <th>{% trans "Fecha" %}</th>
                             <th>{% trans "Hora" %}</th>
+                            <th class="text-center">{% trans "Alineación" %}</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for partido in jornada %}
-                            <tr>
-                                <td>{{ partido.local }}</td>
-                                <td>{{ partido.visitante }}</td>
-                                <td>{{ partido.fecha }}</td>
-                                <td>{{ partido.hora }}</td>
-                            </tr>
+                            {% with es_propio=user.equipo.nombre_equipo == partido.local or user.equipo.nombre_equipo == partido.visitante %}
+                                <tr>
+                                    <td>{{ partido.local }}</td>
+                                    <td>{{ partido.visitante }}</td>
+                                    <td>{{ partido.fecha }}</td>
+                                    <td>{{ partido.hora }}</td>
+                                    <td class="text-center">
+                                        {% if es_propio and proximo_partido and proximo_partido.id == partido.id %}
+                                            <a href="{% url "clubs:alineacion_partido" partido.id %}" class="btn btn-sm btn-success fw-bold">
+                                                <i class="bi bi-diagram-3 fill me-1"></i>{% trans "Alinear" %}
+                                            </a>
+                                        {% elif es_propio %}
+                                            <span class="text-muted small">{% trans "No disponible" %}</span>
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endwith %}
                         {% endfor %}
                     </tbody>
                 </table>

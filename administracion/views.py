@@ -10,6 +10,7 @@ from clubs.models import Equipo
 
 from .models import CalendarioTemporada, ReportePartido
 from .forms import GenerarCalendarioForm, SimularPartidosForm
+from clubs.services import obtener_proximo_partido
 from .services import (
     calendario_desde_bd, generar_calendario_liga, simular_individual, simular_jornada,
     )
@@ -61,6 +62,17 @@ def simular_partidos(request):
                 if datos["modo"] == "jornada":
                     resultados = simular_jornada(datos["division"], datos["grupo"], datos["jornada"])
                     messages.success(request, "Jornada procesada")
+                    # Avisar sobre equipos que jugaron con alineación automática
+                    equipos_auto = []
+                    for r in resultados:
+                        equipos_auto.extend(r.get("sin_alineacion", []))
+                        
+                    if equipos_auto:
+                        lista_equipos = ", ".join(set(equipos_auto))
+                        messages.warning(
+                            request,
+                            f"Equipos sin alineación enviada para esta jornada: {lista_equipos}"
+                        )
                 else:
                     reporte = simular_individual(
                         datos["equipo_local"], datos["equipo_visitante"], oficial,
@@ -131,6 +143,10 @@ def ver_calendario(request, calendario_id):
     if not usuario_puede_ver_calendario(request.user, calendario):
         raise Http404("Calendario no disponible")
     
+    proximo_partido = None
+    if hasattr(request.user, "equipo"):
+        proximo_partido = obtener_proximo_partido(request.user.equipo)
+        
     return render(request, "clubs/calendario_temporada.html", {
         "division": calendario.division,
         "grupo": calendario.grupo,
@@ -138,6 +154,7 @@ def ver_calendario(request, calendario_id):
         "calendario": calendario_desde_bd(
             calendario.temporada, calendario.division, calendario.grupo
         ),
+        "proximo_partido": proximo_partido,
     })
     
 @login_required

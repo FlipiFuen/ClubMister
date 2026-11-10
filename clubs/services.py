@@ -1,7 +1,17 @@
+import os
+import json
+
+from datetime import datetime, timedelta
+
 from django.shortcuts import redirect
+from django.db.models import Q
+from django.utils import timezone
+from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _ 
 
-from clubs.models import Equipo, Futbolista
+from clubs.models import Alineacion, Equipo, Futbolista
+from administracion.models import PartidoProgramado
+from administracion.Partidos.constantes import PARTIDOS_DIR
 
 def calcular_calificacion(valor):
     """Devuelve un adjetivo de calificación según el valor."""
@@ -87,7 +97,7 @@ def enriquecer_jugador(jugador):
     jugador.calificacion_resistencia = calcular_resistencia(jugador.resistencia)
     jugador.lado = lado_preferido(jugador.lado_preferido)
     jugador.agresivo = calcular_agresividad(jugador.agresividad)
-    
+
 def obtener_equipo_plantilla(user):
     """Obtiene el equipo del usuario y su plantilla
        Devuelve una tupla (club, plantilla)"""
@@ -103,3 +113,109 @@ def obtener_equipo_plantilla(user):
         club = None
         
     return club, plantilla
+
+def obtener_proximo_partido(equipo):
+    """Devuelve el próximo partido programado no jugado para el equipo del usuario"""
+    return PartidoProgramado.objects.filter(
+    Q(equipo_local=equipo) | Q(equipo_visitante=equipo),
+    reporte__isnull = True
+    ).order_by("jornada", "fecha", "hora").first()
+    
+def verificar_plazo_alineacion(partido):
+    """
+    Verifica si se puede enviar alineación para un partido:
+    - No debe haber sido jugado aún
+    - Debe enviarse al menos 15 minutos antes de la hora del partido
+    Devuelve (puede_enviar: bool, mensaje: str, fecha_limite: datertime)
+    """
+    if hasattr(partido, "reporte") and partido.reporte is not None:
+        return False, _("Este partido ya ha sido jugado"), None
+    
+    fecha_hora_partido = datetime.combine(partido.fecha, partido.hora)
+    if timezone.is_aware(timezone.now()):
+        fecha_hora_partido = timezone.make_aware(fecha_hora_partido, timezone.get_current_timezone())
+        
+    limite = fecha_hora_partido - timedelta(minutes=15)
+    ahora = timezone.now()
+    
+    if ahora >= limite:
+        return False, _("El plazo para enviar la alineación ha expirado (límite: 15 min antes)"), limite
+    
+    return True, _("Plazo abierto"), limite
+
+def obtener_contexto_alineacion(equipo, partido=None):
+    """Construye todo el diccionario de contexto necesario para renderizar alineacion.html"""
+    posiciones = [
+        {'codigo': 'GK', 'nombre': _("Portero")},
+        {'codigo': 'DFL', 'nombre': _("Lateral Izquierdo")}, {'codigo': 'DFR', 'nombre': _("Lateral Derecho")},
+        {'codigo': 'DFC', 'nombre': _("Central")}, {'codigo': 'DFCR', 'nombre': _("Central-Derecho")},
+        {'codigo': 'DFCL', 'nombre': _("Central-Izquierdo")}, 
+        {'codigo': 'DMR', 'nombre': _("Mediocentro-Defensivo-Der")}, {'codigo': 'DML', 'nombre': _("Mediocentro-Defensivo-Izq")},
+        {'codigo': 'DMC', 'nombre': _("Mediocentro-Defensivo")}, {'codigo': 'MFC', 'nombre': _("Medio")},
+        {'codigo': 'MFR', 'nombre': _("Medio-Derecho")}, {'codigo': 'MFL', 'nombre': _("Medio-Izquierdo")},
+        {'codigo': 'AMC', 'nombre': _("Mediapunta")}, {'codigo': 'AMR', 'nombre': _("Mediapunta-Derecho")},
+        {'codigo': 'AML', 'nombre': _("Mediapunta-Izquierdo")},
+        {'codigo': 'FWR', 'nombre': _("Extremo-Derecho")}, {'codigo': 'FWL', 'nombre':_("Extremo-Izquierdo")},
+        {'codigo': 'FWC', 'nombre': _("Delantero-Centro")}, {'codigo': 'FWCL', 'nombre': _("Delantero-Izquierdo")},
+        {'codigo': 'FWCR', 'nombre': _("Delantero-Derecho")}, {'codigo': 'GK', 'nombre': _("Portero")},
+        ]
+    
+    abrev_pos = [ "GK", "DFL", "DFR", "DFC", "DML", "DMR", "DMC", "MFL", "MFR", "MFC",
+        "AML", "AMR", "AMC", "FWL", "FWR", "FWC", 
+        ]
+    plantilla = Futbolista.objects.filter(equipo=equipo).order_by('-st')
+    
+    # Si existe una alineación ya guardada en BD para este partido, la cargamos
+    alineacion_guardada = None
+    jugador_seleccionado = {}
+    posicion_seleccionada = {}
+    instrucciones = {}
+    tiene_alineacion_guardada = False
+    
+    if partido:
+        alineacion_obj = Alineacion.objects.filter(equipo=equipo, partido=partido).first()
+        if alineacion_obj and alineacion_obj.datos:
+            tiene_alineacion_guardada = True
+            alineacion_guardada= alineacion_obj.datos
+            jugador_seleccionado = alineacion_guardada.get("jugador_seleccionado", {})
+            posicion_seleccionada = alineacion_guardada.get("posicion_seleccionada", {})
+            instrucciones = alineacion_guardada.get("instrucciones", {})
+            
+    puede_enviar, mensaje_plazo, fecha_limite = False, _("No hay partido seleccionado"), None
+    
+    if partido:
+        puede_enviar, mensaje_plazo, fecha_limite = verificar_plazo_alineacion(partido)
+        
+    return {
+		"equipo": equipo,
+		"partido": partido,
+		"puede_enviar": puede_enviar,
+		"mensaje_plazo": mensaje_plazo,
+		"fecha_limite": fecha_limite,
+		"plantilla": plantilla,
+		"posiciones": posiciones,
+        "tiene_alineacion_guardada": tiene_alineacion_guardada,
+		"abev_pos": abrev_pos,
+		"jugador_seleccionado": jugador_seleccionado,
+		"posicion_seleccionada": posicion_seleccionada,
+		"instrucciones_guardadas": mark_safe(json.dumps(instrucciones)),
+		"fut_seleccionado": mark_safe(json.dumps(jugador_seleccionado)),
+		"pos_seleccionada": mark_safe(json.dumps(posicion_seleccionada)),
+		"selectores": [{"index": i, "jug_key": f"jug{i}"} for i in range(11)],
+		"iteraciones": [{"index": i, "pos_key": f"pos{i}"} for i in range(11, 17)],
+		"rango_minutos": range(1, 95),
+		"rango_resultado": range(-5, 6),
+		"rango_dorsales": range(1, 18),
+		"rango_reservas": range(12, 18),
+	}
+        
+def guardar_alineacion_equipo(equipo, partido, datos):
+    """Valida el plazo y guarda la alineación en la BD y en el archivo json para el simulador"""
+    puede_enviar, mensaje, _ = verificar_plazo_alineacion(partido)
+    if not puede_enviar:
+        raise ValueError(mensaje)
+    
+    # Guardar en la base de datos
+    alineacion_obj = Alineacion.objects.update_or_create(equipo=equipo, partido=partido, defaults={"datos": datos})
+        
+    return alineacion_obj

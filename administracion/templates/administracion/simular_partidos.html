@@ -42,7 +42,12 @@
                             {% endif %}
                         </td>
                         <td>{{ r.programado.equipo_visitante }}</td>
-                        <td>{{ r.estado }}</td>
+                        <td>
+                            {{ r.estado }}
+                            {% if r.sin_alineacion %}
+                                <br><small class="text-warning">Auto: {{ r.sin_alineacion|join:", " }}</small>
+                            {% endif %}
+                        </td>
                     </tr>
                 {% endfor %}
             </tbody>

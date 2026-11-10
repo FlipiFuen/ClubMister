@@ -20,10 +20,10 @@ class Arbitro(models.Model):
         return f"{self.nombre} ({self.origen})"
     
 class PartidoProgramado(models.Model):
-    division = models.PositiveBigIntegerField()
-    grupo = models.PositiveBigIntegerField()
+    division = models.PositiveBigIntegerField(null=True, blank=True)
+    grupo = models.PositiveBigIntegerField(null=True, blank=True)
     temporada = models.PositiveBigIntegerField()
-    jornada = models.PositiveBigIntegerField()
+    jornada = models.PositiveBigIntegerField(null=True, blank=True)
     equipo_local = models.ForeignKey(
         Equipo, on_delete=models.CASCADE, related_name="partidos_locales_programados",
     )
@@ -40,6 +40,14 @@ class PartidoProgramado(models.Model):
         related_name="partidos_programados",
     )
     
+    class TipoPartido(models.TextChoices):
+    
+        LIGA = "liga", "Liga"
+        AMISTOSO_OFICIAL = "amistoso_oficial", "Amistoso Oficial"
+        AMISTOSO_NO_OFICIAL = "amistoso_no_oficial", "Amistoso No Oficial"
+    
+    tipo_partido = models.CharField(max_length=20, choices=TipoPartido.choices, default=TipoPartido.LIGA)
+    
     class Meta:
         ordering = ["jornada", "fecha", "hora"]
         constraints = [
@@ -52,15 +60,61 @@ class PartidoProgramado(models.Model):
                     "equipo_local",
                     "equipo_visitante",
                 ],
-                name="partido_programado_unico",
+                condition=models.Q(tipo_partido="liga"),
+                name="partido_programado_liga_unico",
             ),
         ]
         
     def __str__(self):
-        return(
-            f"Jornada {self.jornada}: {self.equipo_local} vs "
-            f"{self.equipo_visitante}"
+        if self.tipo_partido == self.TipoPartido.LIGA:
+            return(
+                f"Jornada {self.jornada}: {self.equipo_local} vs "
+                f"{self.equipo_visitante}"
+            )
+        return (
+            f"{self.get_tipo_partido_display()}: {self.equipo_local} vs "
+            f"{self.equipo_visitante} ({self.fecha} {self.hora})"
         )
+        
+class SolicitudAmistoso(models.Model):
+    
+    class Tipo(models.TextChoices):
+        OFICIAL = "oficial", "Oficial"
+        NO_OFICIAL = "no_ofocial", "No oficial"
+        
+    class Estado(models.TextChoices):
+        INSCRITO = "inscrito", "Inscrito en bolsa (sin rival asignado)"
+        PENDIENTE = "pendiente", "Reto directo pendiente de aceptación"
+        
+    equipo_origen = models.ForeignKey(Equipo, on_delete=models.CASCADE, related_name="solicitudes_amistoso_enviadas")
+    # Puede ser null si el equipo simplemente se apunta a la bolsa abierta del miércoles
+    equipo_destino = models.ForeignKey(
+        Equipo,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="solicitudes_amistosos_recibidas",
+    )
+    tipo = models.CharField(max_length=20, choices=Tipo.choices)
+    estado = models.CharField(max_length=20, choices=Estado.choices, default=Estado.PENDIENTE)
+    fecha_partido = models.DateField()
+    hora_partido = models.TimeField()
+    creado_en = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        ordering = ["-creado_en"]
+        constraints = [
+            # Evita que un equipo se apunte más de una vez a la bolsa para la misma fecha
+            models.UniqueConstraint(
+                fields = ["equipo_origen", "fecha_partido"],
+                condition = models.Q(estado="inscrito"),
+                name = "inscripcion_unica_por_fecha",
+            ),
+        ]
+        
+    def __str__(self):
+        if self.estado == self.Estado.INSCRITO:
+            return f"{self.equipo_origen} -> {self.equipo_destino} ({self.fecha_partido} {self.hora_partido})"
         
 class CalendarioTemporada(models.Model):
     """Registra el HTML generado con el calendario de una temporada, división y grupo"""
